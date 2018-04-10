@@ -18,9 +18,7 @@ import com.intellij.psi.search.FileTypeIndex
 import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.builder.RawFirBuilder
 import org.jetbrains.kotlin.fir.declarations.FirFile
-import org.jetbrains.kotlin.fir.dependenciesWithoutSelf
 import org.jetbrains.kotlin.fir.java.FirJavaModuleBasedSession
-import org.jetbrains.kotlin.fir.java.FirLibrarySession
 import org.jetbrains.kotlin.fir.java.FirProjectSessionProvider
 import org.jetbrains.kotlin.fir.resolve.FirProvider
 import org.jetbrains.kotlin.fir.resolve.impl.FirProviderImpl
@@ -34,9 +32,10 @@ import org.jetbrains.kotlin.fir.visitors.FirTransformer
 import org.jetbrains.kotlin.fir.visitors.FirVisitorVoid
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.idea.caches.project.IdeaModuleInfo
-import org.jetbrains.kotlin.idea.caches.project.isLibraryClasses
+import org.jetbrains.kotlin.idea.caches.project.ModuleSourceInfo
 import org.jetbrains.kotlin.idea.caches.project.productionSourceInfo
 import org.jetbrains.kotlin.idea.caches.project.testSourceInfo
+import org.jetbrains.kotlin.idea.fir.IdeFirDependenciesSymbolProvider
 import org.jetbrains.kotlin.idea.util.application.runReadAction
 import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 import org.jetbrains.kotlin.psi.KtFile
@@ -46,15 +45,14 @@ import kotlin.reflect.KClass
 import kotlin.system.measureNanoTime
 
 class BuildAndResolveFirAction : AnAction() {
-    private fun createSession(moduleInfo: IdeaModuleInfo, provider: FirProjectSessionProvider): FirJavaModuleBasedSession {
-        return FirJavaModuleBasedSession(moduleInfo, provider, moduleInfo.contentScope())
+    private fun createSession(moduleInfo: ModuleSourceInfo, provider: FirProjectSessionProvider): FirJavaModuleBasedSession {
+        return FirJavaModuleBasedSession(
+            moduleInfo,
+            provider,
+            moduleInfo.contentScope(),
+            IdeFirDependenciesSymbolProvider(moduleInfo, provider.project, provider)
+        )
     }
-
-    private fun createLibrarySession(moduleInfo: IdeaModuleInfo, provider: FirProjectSessionProvider): FirLibrarySession {
-        val contentScope = moduleInfo.contentScope()
-        return FirLibrarySession(moduleInfo, provider, contentScope)
-    }
-
 
     private fun runFirAnalysis(project: Project, indicator: ProgressIndicator) {
         val provider = FirProjectSessionProvider(project)
@@ -73,12 +71,6 @@ class BuildAndResolveFirAction : AnAction() {
                 val psiManager = PsiManager.getInstance(project)
 
                 val ideaModuleInfo = session.moduleInfo.cast<IdeaModuleInfo>()
-
-                ideaModuleInfo.dependenciesWithoutSelf().forEach {
-                    if (it is IdeaModuleInfo && it.isLibraryClasses()) {
-                        createLibrarySession(it, provider)
-                    }
-                }
 
                 val contentScope = ideaModuleInfo.contentScope()
 
@@ -163,9 +155,11 @@ fun doFirResolveTestBenchIde(firFiles: List<FirFile>, transformers: List<FirTran
     } finally {
 
         var implicitTypes = 0
+        var nonImplementedDelegatedConstructorCall = 0
 
 
         val errorTypesReports = mutableMapOf<String, String>()
+        val errorTypesReportCounts = mutableMapOf<String, Int>()
 
         val psiDocumentManager = PsiDocumentManager.getInstance(project)
 
@@ -186,14 +180,25 @@ fun doFirResolveTestBenchIde(firFiles: List<FirFile>, transformers: List<FirTran
                         if (resolvedTypeRef.psi == null) {
                             implicitTypes++
                         } else {
-                            val psi = resolvedTypeRef.psi!!
-                            val problem = "$type with psi `${psi.text}`"
-                            val document = psiDocumentManager.getDocument(psi.containingFile)
-                            val line = document?.getLineNumber(psi.startOffset) ?: 0
-                            val char = psi.startOffset - (document?.getLineStartOffset(line) ?: 0)
-                            val report = "e: ${psi.containingFile?.virtualFile?.path}: ($line:$char): $problem"
-                            errorTypesReports[problem] = report
-                            errorTypes++
+                            val reason = when (type) {
+                                is ConeKotlinErrorType -> type.reason
+                                is ConeClassErrorType -> type.reason
+                                else -> error("!!!!!!!!!!!!!")
+                            }
+
+                            if (reason == "Not implemented yet") {
+                                nonImplementedDelegatedConstructorCall++
+                            } else {
+                                val psi = resolvedTypeRef.psi!!
+                                val problem = "`$reason` with psi `${psi.text}`"
+                                val document = psiDocumentManager.getDocument(psi.containingFile)
+                                val line = document?.getLineNumber(psi.startOffset) ?: 0
+                                val char = psi.startOffset - (document?.getLineStartOffset(line) ?: 0)
+                                val report = "e: ${psi.containingFile?.virtualFile?.path}: ($line:$char): $problem"
+                                errorTypesReports[problem] = report
+                                errorTypesReportCounts.merge(problem, 1) { a, b -> a + b }
+                                errorTypes++
+                            }
                         }
                     }
                 }
@@ -201,15 +206,16 @@ fun doFirResolveTestBenchIde(firFiles: List<FirFile>, transformers: List<FirTran
         }
 
         errorTypesReports.forEach {
-            println(it.value)
+            println(it.value + " (total: ${errorTypesReportCounts[it.key]})")
         }
 
 
         println("UNRESOLVED TYPES: $unresolvedTypes")
         println("RESOLVED TYPES: $resolvedTypes")
         println("GOOD TYPES: ${resolvedTypes - errorTypes}")
+        println("NOT IMPLEMENTED ER TYPES: $nonImplementedDelegatedConstructorCall")
+        println("NOT IMPLEMENTED IMPLICIT TYPES: $implicitTypes")
         println("ERROR TYPES: $errorTypes")
-        println("IMPLICIT TYPES: $implicitTypes")
         println("UNIQUE ERROR TYPES: ${errorTypesReports.size}")
 
 
