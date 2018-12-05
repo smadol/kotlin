@@ -104,6 +104,7 @@ abstract class AbstractScratchRunActionTest : FileEditorManagerTestCase() {
         scratchPanel.scratchFile.saveOptions {
             copy(isRepl = isRepl, isInteractiveMode = false)
         }
+        scratchPanel.setModule(myFixture.module)
 
         launchScratch(scratchFile)
 
