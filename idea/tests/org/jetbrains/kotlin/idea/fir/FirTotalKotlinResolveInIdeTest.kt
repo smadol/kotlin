@@ -30,7 +30,7 @@ import java.io.File
 class FirTotalKotlinResolveInIdeTest : ModuleTestCase() {
     private val forbiddenDirectories = listOf("testdata", "resources")
 
-    private val projectRootFile = File(".")
+    private val projectRootFile = File("C:/KK_130")
 
     override fun setUpModule() {
         super.setUpModule()
