@@ -5,9 +5,13 @@
 
 package org.jetbrains.kotlin.fir
 
+import com.intellij.lang.java.JavaLanguage
+import com.intellij.openapi.util.text.StringUtilRt
+import com.intellij.openapi.vfs.CharsetToolkit
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.testFramework.LightVirtualFile
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
-import org.jetbrains.kotlin.cli.jvm.compiler.TopDownAnalyzerFacadeForJVM
 import org.jetbrains.kotlin.fir.resolve.transformers.FirTotalResolveTransformer
 import org.jetbrains.kotlin.fir.builder.RawFirBuilder
 import org.jetbrains.kotlin.fir.declarations.FirFile
@@ -23,10 +27,23 @@ abstract class AbstractFirResolveTestCase : AbstractFirResolveWithSessionTestCas
         return createEnvironmentWithMockJdk(ConfigurationKind.JDK_NO_RUNTIME)
     }
 
-    private fun doCreateAndProcessFir(ktFiles: List<KtFile>): List<FirFile> {
+    private fun createVirtualJavaFile(name: String, text: String): VirtualFile {
+        var shortName = name.substring(name.lastIndexOf('/') + 1)
+        shortName = shortName.substring(shortName.lastIndexOf('\\') + 1)
+        val virtualFile = object : LightVirtualFile(shortName, JavaLanguage.INSTANCE, StringUtilRt.convertLineSeparators(text)) {
+            override fun getPath(): String = "/$name"
+        }
 
-        val scope = GlobalSearchScope.filesScope(project, ktFiles.mapNotNull { it.virtualFile })
-            .uniteWith(TopDownAnalyzerFacadeForJVM.AllJavaSourcesInProjectScope(project))
+        virtualFile.charset = CharsetToolkit.UTF8_CHARSET
+        return virtualFile
+    }
+
+    private fun doCreateAndProcessFir(ktFiles: List<KtFile>, javaFiles: List<File>): List<FirFile> {
+
+        val scope = GlobalSearchScope.filesScope(
+            project,
+            ktFiles.mapNotNull { it.virtualFile } + javaFiles.map { createVirtualJavaFile(it.name, KotlinTestUtils.doLoadFile(it)) }
+        )
         val session = createSession(scope)
 
         val builder = RawFirBuilder(session)
@@ -65,7 +82,7 @@ abstract class AbstractFirResolveTestCase : AbstractFirResolveWithSessionTestCas
                 KotlinTestUtils.createFile(name, text, project)
             }
 
-        val firFiles = doCreateAndProcessFir(ktFiles)
+        val firFiles = doCreateAndProcessFir(ktFiles, allFiles.filter { it.extension == "java" })
 
         val firFileDump = StringBuilder().also { firFiles.first().accept(FirRenderer(it), null) }.toString()
         val expectedPath = path.replace(".kt", ".txt")
