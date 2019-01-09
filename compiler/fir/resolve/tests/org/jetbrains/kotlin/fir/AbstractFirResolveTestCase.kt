@@ -32,15 +32,15 @@ abstract class AbstractFirResolveTestCase : AbstractFirResolveWithSessionTestCas
         val builder = RawFirBuilder(session)
 
         val transformer = FirTotalResolveTransformer()
-        return ktFiles.map {
-            val firFile = builder.buildFirFile(it)
+        return ktFiles.map { ktFile ->
+            val firFile = builder.buildFirFile(ktFile)
             (session.service<FirProvider>() as FirProviderImpl).recordFile(firFile)
             firFile
-        }.also {
+        }.also { firFile ->
             try {
-                transformer.processFiles(it)
+                transformer.processFiles(firFile)
             } catch (e: Exception) {
-                it.forEach { println(it.render()) }
+                firFile.forEach { println(it.render()) }
                 throw e
             }
         }
@@ -51,20 +51,19 @@ abstract class AbstractFirResolveTestCase : AbstractFirResolveWithSessionTestCas
         val file = File(path)
 
         val allFiles = listOf(file) + file.parentFile.listFiles { sibling ->
-            sibling.name.removePrefix(file.nameWithoutExtension).removeSuffix(file.extension).matches("\\.[0-9]+\\.".toRegex())
+            sibling.name.removePrefix(file.nameWithoutExtension)
+                .removeSuffix(file.extension).removeSuffix("java").matches("\\.[0-9]+\\.".toRegex())
         }
 
         val ktFiles =
-            allFiles.map {
+            allFiles.filter { it.extension != "java" }.map {
                 val text = KotlinTestUtils.doLoadFile(it)
                 it.name to text
+            }.sortedBy { (_, text) ->
+                KotlinTestUtils.parseDirectives(text)["analyzePriority"]?.toInt()
+            }.map { (name, text) ->
+                KotlinTestUtils.createFile(name, text, project)
             }
-                .sortedBy { (_, text) ->
-                    KotlinTestUtils.parseDirectives(text)["analyzePriority"]?.toInt()
-                }
-                .map { (name, text) ->
-                    KotlinTestUtils.createFile(name, text, project)
-                }
 
         val firFiles = doCreateAndProcessFir(ktFiles)
 

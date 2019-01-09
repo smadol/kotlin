@@ -1,0 +1,5 @@
+FILE: JavaSuperType.kt
+    public final class MyClass : R|error: Symbol not found| {
+        public constructor(): super<R|error: Symbol not found|>()
+
+    }

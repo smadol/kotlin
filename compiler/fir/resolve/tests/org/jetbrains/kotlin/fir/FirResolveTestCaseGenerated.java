@@ -202,6 +202,11 @@ public class FirResolveTestCaseGenerated extends AbstractFirResolveTestCase {
             runTest("compiler/fir/resolve/testData/resolve/multifile/ByteArray.kt");
         }
 
+        @TestMetadata("JavaSuperType.kt")
+        public void testJavaSuperType() throws Exception {
+            runTest("compiler/fir/resolve/testData/resolve/multifile/JavaSuperType.kt");
+        }
+
         @TestMetadata("NestedSuperType.kt")
         public void testNestedSuperType() throws Exception {
             runTest("compiler/fir/resolve/testData/resolve/multifile/NestedSuperType.kt");
