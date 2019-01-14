@@ -104,9 +104,24 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
 
         private fun KtDeclarationWithBody.buildFirBody(): FirBlock? =
             when {
-                !hasBody() -> null
-                hasBlockBody() -> bodyBlockExpression?.accept(this@Visitor, Unit) as? FirBlock
-                else -> FirSingleExpressionBlock(session, { bodyExpression }.toFirExpression("Function has no body (but should)"))
+                !hasBody() ->
+                    null
+                hasBlockBody() ->
+                    bodyBlockExpression?.accept(this@Visitor, Unit) as? FirBlock
+                else -> {
+                    val result = { bodyExpression }.toFirExpression("Function has no body (but should)")
+                    FirSingleExpressionBlock(
+                        session,
+                        FirReturnStatementImpl(
+                            session,
+                            result.psi,
+                            result
+                        ).apply {
+                            target = FirFunctionTarget(labelName = null)
+                            target.bind(firFunctions.last())
+                        }
+                    )
+                }
             }
 
         private fun String.parseCharacter(): Char? {
@@ -211,14 +226,16 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                     returnTypeReference?.convertSafe() ?: propertyType
                 } else {
                     returnTypeReference.toFirOrUnitType()
-                },
-                this.buildFirBody()
+                }
             )
+            firFunctions += firAccessor
             extractAnnotationsTo(firAccessor)
             extractValueParametersTo(firAccessor, propertyType)
             if (!isGetter && firAccessor.valueParameters.isEmpty()) {
                 firAccessor.valueParameters += FirDefaultSetterValueParameter(session, this, propertyType)
             }
+            firAccessor.body = this.buildFirBody()
+            firFunctions.removeLast()
             return firAccessor
         }
 
@@ -781,7 +798,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             }
         }
 
-        override fun visitStringTemplateExpression(expression: KtStringTemplateExpression, data: Unit?): FirElement {
+        override fun visitStringTemplateExpression(expression: KtStringTemplateExpression, data: Unit): FirElement {
             val sb = StringBuilder()
             for (entry in expression.entries) {
                 when (entry) {
@@ -793,7 +810,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             return FirConstExpressionImpl(session, expression, IrConstKind.String, sb.toString())
         }
 
-        override fun visitReturnExpression(expression: KtReturnExpression, data: Unit?): FirElement {
+        override fun visitReturnExpression(expression: KtReturnExpression, data: Unit): FirElement {
             return FirReturnStatementImpl(
                 session,
                 expression,

@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.expressions.*
 import org.jetbrains.kotlin.fir.expressions.impl.FirExpressionStub
+import org.jetbrains.kotlin.fir.expressions.impl.FirUnitExpression
 import org.jetbrains.kotlin.fir.symbols.ConeClassLikeSymbol
 import org.jetbrains.kotlin.fir.symbols.ConeSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeParameterSymbol
@@ -377,11 +378,13 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
     }
 
     override fun visitExpression(expression: FirExpression) {
-        if (expression is FirExpressionStub) {
-            print("STUB")
-        } else {
-            print("??? ${expression.javaClass}")
-        }
+        print(
+            when (expression) {
+                is FirExpressionStub -> "STUB"
+                is FirUnitExpression -> "Unit"
+                else -> "??? ${expression.javaClass}"
+            }
+        )
     }
 
     override fun <T> visitConstExpression(constExpression: FirConstExpression<T>) {
