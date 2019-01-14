@@ -7,9 +7,13 @@ package org.jetbrains.kotlin.fir.expressions
 
 import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.declarations.FirValueParameter
+import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
 interface FirCatch : FirElement {
     val parameter: FirValueParameter
 
     val block: FirBlock
+
+    override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
+        visitor.visitCatch(this, data)
 }

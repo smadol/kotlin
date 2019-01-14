@@ -5,4 +5,9 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
-interface FirDoWhileLoop : FirLoopWithCondition
+import org.jetbrains.kotlin.fir.visitors.FirVisitor
+
+interface FirDoWhileLoop : FirLoopWithCondition {
+    override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
+        visitor.visitDoWhileLoop(this, data)
+}

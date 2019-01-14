@@ -6,9 +6,10 @@
 package org.jetbrains.kotlin.fir.expressions
 
 import org.jetbrains.kotlin.fir.types.FirType
+import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
 // is/!is/as/as?
-interface FirExpressionWithType {
+interface FirExpressionWithType : FirExpression {
     val argument: FirExpression
 
     val type: FirType

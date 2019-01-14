@@ -5,6 +5,11 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
+import org.jetbrains.kotlin.fir.visitors.FirVisitor
+
 interface FirLoopWithCondition : FirLoop {
     val condition: FirExpression
+
+    override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
+        visitor.visitLoopWithCondition(this, data)
 }

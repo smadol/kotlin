@@ -166,6 +166,10 @@ abstract class FirVisitor<out R, in D> {
         return visitExpression(errorExpression, data)
     }
 
+    open fun visitExpressionWithType(expressionWithType: FirExpressionWithType, data: D): R {
+        return visitExpression(expressionWithType, data)
+    }
+
     open fun <E : FirTargetElement> visitJump(jump: FirJump<E>, data: D): R {
         return visitExpression(jump, data)
     }

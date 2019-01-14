@@ -166,6 +166,10 @@ abstract class FirTransformer<in D> : FirVisitor<CompositeTransformResult<FirEle
         return transformExpression(errorExpression, data)
     }
 
+    open fun transformExpressionWithType(expressionWithType: FirExpressionWithType, data: D): CompositeTransformResult<FirStatement> {
+        return transformExpression(expressionWithType, data)
+    }
+
     open fun <E : FirTargetElement> transformJump(jump: FirJump<E>, data: D): CompositeTransformResult<FirStatement> {
         return transformExpression(jump, data)
     }
@@ -368,6 +372,10 @@ abstract class FirTransformer<in D> : FirVisitor<CompositeTransformResult<FirEle
 
     final override fun visitExpression(expression: FirExpression, data: D): CompositeTransformResult<FirElement> {
         return transformExpression(expression, data)
+    }
+
+    final override fun visitExpressionWithType(expressionWithType: FirExpressionWithType, data: D): CompositeTransformResult<FirElement> {
+        return transformExpressionWithType(expressionWithType, data)
     }
 
     final override fun visitFile(file: FirFile, data: D): CompositeTransformResult<FirElement> {

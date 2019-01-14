@@ -7,7 +7,11 @@ package org.jetbrains.kotlin.fir.expressions
 
 import org.jetbrains.kotlin.fir.FirTargetElement
 import org.jetbrains.kotlin.fir.VisitedSupertype
+import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
 interface FirLoop : @VisitedSupertype FirStatement, FirTargetElement {
     val block: FirBlock
+
+    override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
+        visitor.visitLoop(this, data)
 }

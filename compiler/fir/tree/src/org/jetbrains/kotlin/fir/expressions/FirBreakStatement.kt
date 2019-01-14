@@ -5,4 +5,9 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
-interface FirBreakStatement : FirJump<FirLoop>
+import org.jetbrains.kotlin.fir.visitors.FirVisitor
+
+interface FirBreakStatement : FirJump<FirLoop> {
+    override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
+        visitor.visitBreakStatement(this, data)
+}

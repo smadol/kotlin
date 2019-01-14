@@ -166,6 +166,10 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitExpression(errorExpression, null)
     }
 
+    open fun visitExpressionWithType(expressionWithType: FirExpressionWithType) {
+        visitExpression(expressionWithType, null)
+    }
+
     open fun <E : FirTargetElement> visitJump(jump: FirJump<E>) {
         visitExpression(jump, null)
     }
@@ -368,6 +372,10 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
 
     final override fun visitExpression(expression: FirExpression, data: Nothing?) {
         visitExpression(expression)
+    }
+
+    final override fun visitExpressionWithType(expressionWithType: FirExpressionWithType, data: Nothing?) {
+        visitExpressionWithType(expressionWithType)
     }
 
     final override fun visitFile(file: FirFile, data: Nothing?) {

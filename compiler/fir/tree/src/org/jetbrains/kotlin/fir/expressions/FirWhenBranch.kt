@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.fir.expressions
 
 import org.jetbrains.kotlin.fir.FirElement
+import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
 interface FirWhenBranch : FirElement {
     // NB: we can represent subject, if it's inside, as a special kind of expression
@@ -15,4 +16,7 @@ interface FirWhenBranch : FirElement {
     val condition: FirExpression
 
     val result: FirExpression
+
+    override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
+        visitor.visitWhenBranch(this, data)
 }

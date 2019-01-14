@@ -5,10 +5,15 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
+import org.jetbrains.kotlin.fir.visitors.FirVisitor
+
 interface FirTryExpression : FirExpression {
     val tryBlock: FirBlock
 
     val catches: FirCatch
 
     val finallyBlock: FirBlock?
+
+    override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
+        visitor.visitTryExpression(this, data)
 }

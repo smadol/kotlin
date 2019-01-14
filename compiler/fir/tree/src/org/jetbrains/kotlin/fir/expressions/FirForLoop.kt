@@ -5,9 +5,14 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
+import org.jetbrains.kotlin.fir.visitors.FirVisitor
+
 interface FirForLoop : FirLoop {
     // TODO: loop parameter
 
     val range: FirExpression
+
+    override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
+        visitor.visitForLoop(this, data)
 }
 
