@@ -10,12 +10,12 @@ import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirTarget
 import org.jetbrains.kotlin.fir.declarations.FirFunction
 import org.jetbrains.kotlin.fir.expressions.FirExpression
-import org.jetbrains.kotlin.fir.expressions.FirReturn
+import org.jetbrains.kotlin.fir.expressions.FirReturnStatement
 
-class FirReturnImpl(
+class FirReturnStatementImpl(
     session: FirSession,
     psi: PsiElement?,
     override val result: FirExpression
-) : FirAbstractExpression(session, psi), FirReturn {
+) : FirAbstractExpression(session, psi), FirReturnStatement {
     override lateinit var target: FirTarget<FirFunction>
 }

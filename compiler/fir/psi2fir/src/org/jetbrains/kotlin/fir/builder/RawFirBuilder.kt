@@ -794,7 +794,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
         }
 
         override fun visitReturnExpression(expression: KtReturnExpression, data: Unit?): FirElement {
-            return FirReturnImpl(
+            return FirReturnStatementImpl(
                 session,
                 expression,
                 expression.returnedExpression?.toFirExpression() ?: FirUnitExpression(session, expression)
