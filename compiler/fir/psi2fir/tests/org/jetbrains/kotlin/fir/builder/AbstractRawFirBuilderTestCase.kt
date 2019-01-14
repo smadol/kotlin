@@ -72,7 +72,7 @@ abstract class AbstractRawFirBuilderTestCase : KtParsingTestCase(
     }
 
     protected fun KtFile.toFirFile(): FirFile =
-        RawFirBuilder(object : FirSessionBase() {}).buildFirFile(this)
+        RawFirBuilder(object : FirSessionBase() {}, stubMode = false).buildFirFile(this)
 
     private fun FirElement.traverseChildren(result: MutableSet<FirElement> = hashSetOf()): MutableSet<FirElement> {
         if (!result.add(this)) {

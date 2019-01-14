@@ -1,0 +1,7 @@
+FILE: simpleReturns.kt
+    public? final? function foo(): kotlin.Unit {
+        STUB
+    }
+    public? final? function bar(): String {
+        STUB
+    }
