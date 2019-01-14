@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.descriptors.Visibility
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.expressions.*
+import org.jetbrains.kotlin.fir.expressions.impl.FirExpressionStub
 import org.jetbrains.kotlin.fir.symbols.ConeClassLikeSymbol
 import org.jetbrains.kotlin.fir.symbols.ConeSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeParameterSymbol
@@ -360,8 +361,27 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         visitElement(statement)
     }
 
+    override fun visitReturnStatement(returnStatement: FirReturnStatement) {
+        print("return")
+        val target = returnStatement.target
+        val labelName = target.labelName
+        if (labelName != null) {
+            print("@$labelName")
+        }
+        val labeledElement = target.labeledElement
+        if (labeledElement is FirNamedFunction) {
+            print("@@@${labeledElement.name}")
+        }
+        print(" ")
+        returnStatement.result.accept(this)
+    }
+
     override fun visitExpression(expression: FirExpression) {
-        print("STUB")
+        if (expression is FirExpressionStub) {
+            print("STUB")
+        } else {
+            print("??? ${expression.javaClass}")
+        }
     }
 
     override fun <T> visitConstExpression(constExpression: FirConstExpression<T>) {
