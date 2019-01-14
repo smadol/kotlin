@@ -40,7 +40,7 @@ class SimpleVisitorGenerator(referencesData: DataCollector.ReferencesData) : Abs
                 "data" to DataCollector.NameWithTypeParameters("D")
             ),
             returnType = "R",
-            typeParameters = className.typeParameters
+            typeParametersWithBounds = className.typeParametersWithBounds()
         ) {
             print("return ")
             generateCall("visit${parent.name.classNameWithoutFir}", listOf(parameterName, "data"))

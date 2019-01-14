@@ -14,7 +14,7 @@ abstract class AbstractVisitorGenerator(val referencesData: DataCollector.Refere
         returnType: String,
         override: Boolean = false,
         final: Boolean = false,
-        typeParameters: List<String> = emptyList(),
+        typeParametersWithBounds: List<String> = emptyList(),
         body: (Printer.() -> Unit)?
     ) {
 
@@ -33,9 +33,9 @@ abstract class AbstractVisitorGenerator(val referencesData: DataCollector.Refere
             }
         }
         printWithNoIndent("fun ")
-        if (typeParameters.isNotEmpty()) {
+        if (typeParametersWithBounds.isNotEmpty()) {
             printWithNoIndent("<")
-            separatedOneLine(typeParameters, ", ")
+            separatedOneLine(typeParametersWithBounds, ", ")
             printWithNoIndent("> ")
         }
         printWithNoIndent(name, "(")

@@ -46,7 +46,7 @@ class UnitVisitorGenerator(referencesData: DataCollector.ReferencesData) : Abstr
                 parameterName to className
             ),
             returnType = "Unit",
-            typeParameters = className.typeParameters
+            typeParametersWithBounds = className.typeParametersWithBounds()
         ) {
             printIndent()
             generateCall("visit${parent.name.classNameWithoutFir}", listOf(parameterName, "null"))
@@ -66,7 +66,7 @@ class UnitVisitorGenerator(referencesData: DataCollector.ReferencesData) : Abstr
             returnType = "Unit",
             override = true,
             final = true,
-            typeParameters = className.typeParameters
+            typeParametersWithBounds = className.typeParametersWithBounds()
         ) {
             printIndent()
             generateCall("visit$shortcutName", listOf(parameterName))
