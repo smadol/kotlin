@@ -5,4 +5,4 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
-interface FirContinue : FirJump<FirLoop>
+interface FirBreakStatement : FirJump<FirLoop>

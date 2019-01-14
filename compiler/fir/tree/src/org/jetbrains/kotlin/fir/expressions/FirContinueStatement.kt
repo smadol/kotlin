@@ -5,8 +5,4 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
-import org.jetbrains.kotlin.fir.declarations.FirFunction
-
-interface FirReturn : FirJump<FirFunction> {
-    val result: FirExpression
-}
+interface FirContinueStatement : FirJump<FirLoop>
