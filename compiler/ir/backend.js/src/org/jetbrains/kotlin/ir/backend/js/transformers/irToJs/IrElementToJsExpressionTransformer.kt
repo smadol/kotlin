@@ -14,9 +14,7 @@ import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
 import org.jetbrains.kotlin.ir.types.IrDynamicType
-import org.jetbrains.kotlin.ir.util.isFunctionTypeOrSubtype
-import org.jetbrains.kotlin.ir.util.parentAsClass
-import org.jetbrains.kotlin.ir.util.resolveFakeOverride
+import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.js.backend.ast.*
 import org.jetbrains.kotlin.util.OperatorNameConventions
 
@@ -137,7 +135,7 @@ class IrElementToJsExpressionTransformer : BaseIrElementToJsNodeTransformer<JsEx
         }
 
         expression.superQualifierSymbol?.let {
-            val target = (symbol.owner as IrSimpleFunction).resolveFakeOverride()!!
+            val target = if (it.owner.isInterface) (symbol.owner as IrSimpleFunction).resolveFakeOverride()!! else symbol.owner
             val owner = target.parentAsClass
             val qualifierName = context.getNameForSymbol(owner.symbol).makeRef()
             val targetName = context.getNameForSymbol(target.symbol)
