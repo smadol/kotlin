@@ -36,13 +36,9 @@ class DataCollector {
             name + if (typeParameters.isEmpty()) "" else typeParameters.joinToString(prefix = "<", postfix = ">", separator = ", ")
 
         override fun equals(other: Any?): Boolean =
-            other is NameWithTypeParameters && name == other.name && typeParameters == other.typeParameters
+            other is NameWithTypeParameters && name == other.name
 
-        override fun hashCode(): Int {
-            var result = name.hashCode()
-            result = 31 * result + typeParameters.hashCode()
-            return result
-        }
+        override fun hashCode(): Int = name.hashCode()
 
         override fun toString(): String =
             name + if (typeParameters.isEmpty()) "" else typeParameters.joinToString(prefix = "<", postfix = ">", separator = ", ") {
@@ -138,7 +134,9 @@ class DataCollector {
     }
 
     fun computeResult(): ReferencesData {
+        println(references)
         val back = references.computeBackReferences()
+        println(back)
 
         val keysToKeep =
             generateSequence(listOf(FIR_ELEMENT_CLASS_NAME)) { firName ->

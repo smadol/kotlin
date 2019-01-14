@@ -118,7 +118,7 @@ abstract class AbstractVisitorGenerator(val referencesData: DataCollector.Refere
 
 
     fun allElementTypes() =
-        referencesData.back.let { map ->
+        referencesData.direct.let { map ->
             map.keys + map.values.flatten()
         }.distinct()
 

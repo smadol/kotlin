@@ -21,8 +21,8 @@ class UnitVisitorGenerator(referencesData: DataCollector.ReferencesData) : Abstr
                 body = null
             )
 
-            referencesData.walkHierarchyTopDown(FIR_ELEMENT_CLASS_NAME) { parent, klass ->
-                generateVisit(klass, parent)
+            referencesData.walkHierarchyTopDown(from = FIR_ELEMENT_CLASS_NAME) { parent, element ->
+                generateVisit(element, parent)
             }
 
             allElementTypes().forEach {

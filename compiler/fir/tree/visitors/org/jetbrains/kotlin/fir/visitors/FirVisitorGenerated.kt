@@ -170,6 +170,18 @@ abstract class FirVisitor<out R, in D> {
         return visitExpression(jump, data)
     }
 
+    open fun visitBreakStatement(breakStatement: FirBreakStatement, data: D): R {
+        return visitJump(breakStatement, data)
+    }
+
+    open fun visitContinueStatement(continueStatement: FirContinueStatement, data: D): R {
+        return visitJump(continueStatement, data)
+    }
+
+    open fun visitReturnStatement(returnStatement: FirReturnStatement, data: D): R {
+        return visitJump(returnStatement, data)
+    }
+
     open fun visitThrowExpression(throwExpression: FirThrowExpression, data: D): R {
         return visitExpression(throwExpression, data)
     }
