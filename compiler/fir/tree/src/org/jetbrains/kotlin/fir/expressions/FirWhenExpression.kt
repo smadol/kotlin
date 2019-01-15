@@ -13,10 +13,7 @@ interface FirWhenExpression : FirExpression {
     // when (val subjectVariable = subject()) { ... }
     val subjectVariable: FirVariable?
 
-    // else branch isn't considered as a regular branch
     val branches: List<FirWhenBranch>
-
-    val elseResult: FirExpression
 
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
         visitor.visitWhenExpression(this, data)
