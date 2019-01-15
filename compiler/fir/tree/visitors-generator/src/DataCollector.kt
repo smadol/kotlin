@@ -134,9 +134,7 @@ class DataCollector {
     }
 
     fun computeResult(): ReferencesData {
-        println(references)
         val back = references.computeBackReferences()
-        println(back)
 
         val keysToKeep =
             generateSequence(listOf(FIR_ELEMENT_CLASS_NAME)) { firName ->
