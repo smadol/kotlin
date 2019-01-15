@@ -102,6 +102,23 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
         private fun KtExpression.toFirExpression(): FirExpression =
             if (stubMode) FirExpressionStub(session, null) else convert<FirExpression>()
 
+        private fun KtExpression?.toFirExpression(errorReason: String): FirExpression =
+            if (stubMode) FirExpressionStub(session, null)
+            else convertSafe<FirExpression>() ?: FirErrorExpressionImpl(session, this, errorReason)
+
+        private fun KtExpression?.toFirBlock(): FirBlock =
+            when (this) {
+                is KtBlockExpression ->
+                    accept(this@Visitor, Unit) as FirBlock
+                null ->
+                    FirEmptyExpressionBlock(session)
+                else ->
+                    FirSingleExpressionBlock(
+                        session,
+                        toFirExpression()
+                    )
+            }
+
         private fun KtDeclarationWithBody.buildFirBody(): FirBlock? =
             when {
                 !hasBody() ->
@@ -823,6 +840,20 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                 } else {
                     // TODO
                 }
+            }
+        }
+
+        override fun visitIfExpression(expression: KtIfExpression, data: Unit): FirElement {
+            return FirWhenExpressionImpl(
+                session,
+                expression
+            ).apply {
+                val condition = expression.condition
+                val firCondition = condition.toFirExpression("If statement should have condition")
+                val trueBranch = expression.then.toFirBlock()
+                branches += FirWhenBranchImpl(session, condition, firCondition, trueBranch)
+                val elseBranch = expression.`else`.toFirBlock()
+                branches += FirWhenBranchImpl(session, null, FirElseIfTrueCondition(session, null), elseBranch)
             }
         }
 

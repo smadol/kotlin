@@ -377,6 +377,32 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         returnStatement.result.accept(this)
     }
 
+    override fun visitWhenBranch(whenBranch: FirWhenBranch) {
+        whenBranch.condition.accept(this)
+        print(" -> ")
+        whenBranch.result.accept(this)
+    }
+
+    override fun visitWhenExpression(whenExpression: FirWhenExpression) {
+        print("when (")
+        val subjectVariable = whenExpression.subjectVariable
+        if (subjectVariable != null) {
+            subjectVariable.accept(this)
+        } else {
+            val subject = whenExpression.subject
+            if (subject != null) {
+                subject.accept(this)
+            }
+        }
+        println(") {")
+        pushIndent()
+        for (branch in whenExpression.branches) {
+            branch.accept(this)
+        }
+        popIndent()
+        println("}")
+    }
+
     override fun visitExpression(expression: FirExpression) {
         print(
             when (expression) {

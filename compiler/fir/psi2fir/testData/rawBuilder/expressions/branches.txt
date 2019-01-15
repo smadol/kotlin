@@ -1,0 +1,25 @@
+FILE: branches.kt
+    public? final? function foo(a: Int, b: Int): <implicit> {
+        return@@@foo when () {
+            STUB ->  {
+                STUB
+            }
+            ??? class org.jetbrains.kotlin.fir.expressions.impl.FirElseIfTrueCondition ->  {
+                STUB
+            }
+        }
+
+    }
+    public? final? function bar(a: Double, b: Double): Double {
+        when () {
+            STUB ->  {
+                STUB
+                return@@@bar STUB
+            }
+            ??? class org.jetbrains.kotlin.fir.expressions.impl.FirElseIfTrueCondition ->  {
+                STUB
+                return@@@bar STUB
+            }
+        }
+
+    }
