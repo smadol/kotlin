@@ -5,13 +5,12 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
-import org.jetbrains.kotlin.fir.FirMemberReference
 import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
-interface FirMemberAccess : FirExpression {
-    val calleeReference: FirMemberReference
+interface FirOperatorCall : FirCall {
+    val operation: FirOperation
 
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R {
-        return visitor.visitMemberAccess(this, data)
+        return visitor.visitOperatorCall(this, data)
     }
 }

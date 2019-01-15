@@ -6,17 +6,13 @@
 package org.jetbrains.kotlin.fir.expressions.impl
 
 import com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.fir.FirAbstractElement
 import org.jetbrains.kotlin.fir.FirMemberReference
 import org.jetbrains.kotlin.fir.FirSession
-import org.jetbrains.kotlin.fir.expressions.FirExpression
-import org.jetbrains.kotlin.fir.expressions.FirMemberAccess
+import org.jetbrains.kotlin.fir.expressions.FirFunctionCall
 
-class FirMemberAccessImpl(
+class FirFunctionCallImpl(
     session: FirSession,
     psi: PsiElement?
-) : FirAbstractElement(session, psi), FirMemberAccess {
+) : FirAbstractCall(session, psi), FirFunctionCall {
     override lateinit var calleeReference: FirMemberReference
-
-    override val arguments = mutableListOf<FirExpression>()
 }

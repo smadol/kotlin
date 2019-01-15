@@ -150,12 +150,12 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitCall(delegatedConstructorCall, null)
     }
 
-    open fun visitMemberAccess(memberAccess: FirMemberAccess) {
-        visitCall(memberAccess, null)
+    open fun visitFunctionCall(functionCall: FirFunctionCall) {
+        visitCall(functionCall, null)
     }
 
-    open fun visitPropertyAccess(propertyAccess: FirPropertyAccess) {
-        visitMemberAccess(propertyAccess, null)
+    open fun visitOperatorCall(operatorCall: FirOperatorCall) {
+        visitCall(operatorCall, null)
     }
 
     open fun <T> visitConstExpression(constExpression: FirConstExpression<T>) {
@@ -184,6 +184,14 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
 
     open fun visitReturnStatement(returnStatement: FirReturnStatement) {
         visitJump(returnStatement, null)
+    }
+
+    open fun visitMemberAccess(memberAccess: FirMemberAccess) {
+        visitExpression(memberAccess, null)
+    }
+
+    open fun visitPropertyAccess(propertyAccess: FirPropertyAccess) {
+        visitMemberAccess(propertyAccess, null)
     }
 
     open fun visitThrowExpression(throwExpression: FirThrowExpression) {
@@ -390,6 +398,10 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitFunction(function)
     }
 
+    final override fun visitFunctionCall(functionCall: FirFunctionCall, data: Nothing?) {
+        visitFunctionCall(functionCall)
+    }
+
     final override fun visitFunctionType(functionType: FirFunctionType, data: Nothing?) {
         visitFunctionType(functionType)
     }
@@ -440,6 +452,10 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
 
     final override fun visitNamedFunction(namedFunction: FirNamedFunction, data: Nothing?) {
         visitNamedFunction(namedFunction)
+    }
+
+    final override fun visitOperatorCall(operatorCall: FirOperatorCall, data: Nothing?) {
+        visitOperatorCall(operatorCall)
     }
 
     final override fun visitPackageFragment(packageFragment: FirPackageFragment, data: Nothing?) {

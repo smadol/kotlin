@@ -908,20 +908,46 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             }
         }
 
-        private fun IElementType.toName(): Name {
-            return OperatorConventions.BINARY_OPERATION_NAMES[this] ?: Name.special("<$this>")
+        private fun IElementType.toName(): Name? {
+            return OperatorConventions.BINARY_OPERATION_NAMES[this]
         }
 
+        private fun IElementType.toFirOperation(): FirOperation =
+            when (this) {
+                KtTokens.LT -> FirOperation.LT
+                KtTokens.GT -> FirOperation.GT
+                KtTokens.LTEQ -> FirOperation.LT_EQ
+                KtTokens.GTEQ -> FirOperation.GT_EQ
+                KtTokens.EQEQ -> FirOperation.EQ
+                KtTokens.EXCLEQ -> FirOperation.NOT_EQ
+                KtTokens.EQEQEQ -> FirOperation.IDENTITY
+                KtTokens.EXCLEQEQEQ -> FirOperation.NOT_IDENTITY
+                KtTokens.ANDAND -> FirOperation.AND
+                KtTokens.OROR -> FirOperation.OR
+                KtTokens.IN_KEYWORD -> FirOperation.IN
+                KtTokens.NOT_IN -> FirOperation.NOT_IN
+                KtTokens.RANGE -> FirOperation.RANGE
+                else -> FirOperation.OTHER
+            }
+
         override fun visitBinaryExpression(expression: KtBinaryExpression, data: Unit): FirElement {
-            return FirMemberAccessImpl(
-                session, expression
-            ).apply {
-                calleeReference = FirSimpleMemberReference(
-                    session, expression.operationReference,
-                    expression.operationToken.toName()
+            val conventionCallName = expression.operationToken.toName()
+            return if (conventionCallName != null) {
+                FirFunctionCallImpl(
+                    session, expression
+                ).apply {
+                    calleeReference = FirSimpleMemberReference(
+                        session, expression.operationReference,
+                        conventionCallName
+                    )
+                }
+            } else {
+                FirOperatorCallImpl(
+                    session, expression, expression.operationToken.toFirOperation()
                 )
+            }.apply {
                 arguments += expression.left.toFirExpression("No left operand")
-                arguments += expression.right.toFirExpression("No left operand")
+                arguments += expression.right.toFirExpression("No right operand")
             }
         }
 

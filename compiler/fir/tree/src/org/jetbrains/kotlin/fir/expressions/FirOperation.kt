@@ -5,28 +5,22 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
-// May be this structure isn't needed
-enum class FirOperation {
-    // Used both for binary/unary
-    PLUS,
-    MINUS,
+enum class FirOperation(val operator: String = "???") {
     // Binary
-    TIMES,
-    DIV,
-    REM,
-    RANGE,
-    EQ,
-    NOT_EQ,
-    IDENTITY,
-    NOT_IDENTITY,
-    LT,
-    GT,
-    LT_EQ,
-    GT_EQ,
-    AND,
-    OR,
-    IN,
-    NOT_IN,
+    RANGE(".."),
+    EQ("=="),
+    NOT_EQ("!="),
+    IDENTITY("==="),
+    NOT_IDENTITY("!=="),
+    LT("<"),
+    GT(">"),
+    LT_EQ("<="),
+    GT_EQ(">="),
+    AND("&&"),
+    OR("||"),
+    IN("in"),
+    NOT_IN("!in"),
+
     ASSIGN,
     PLUS_ASSIGN,
     MINUS_ASSIGN,
@@ -35,9 +29,7 @@ enum class FirOperation {
     REM_ASSIGN,
 
     // Unary
-    INCR,
-    DECR,
-    EXCL,
+    EXCL("!"),
     // Type
     IS,
     NOT_IS,

@@ -150,12 +150,12 @@ abstract class FirVisitor<out R, in D> {
         return visitCall(delegatedConstructorCall, data)
     }
 
-    open fun visitMemberAccess(memberAccess: FirMemberAccess, data: D): R {
-        return visitCall(memberAccess, data)
+    open fun visitFunctionCall(functionCall: FirFunctionCall, data: D): R {
+        return visitCall(functionCall, data)
     }
 
-    open fun visitPropertyAccess(propertyAccess: FirPropertyAccess, data: D): R {
-        return visitMemberAccess(propertyAccess, data)
+    open fun visitOperatorCall(operatorCall: FirOperatorCall, data: D): R {
+        return visitCall(operatorCall, data)
     }
 
     open fun <T> visitConstExpression(constExpression: FirConstExpression<T>, data: D): R {
@@ -184,6 +184,14 @@ abstract class FirVisitor<out R, in D> {
 
     open fun visitReturnStatement(returnStatement: FirReturnStatement, data: D): R {
         return visitJump(returnStatement, data)
+    }
+
+    open fun visitMemberAccess(memberAccess: FirMemberAccess, data: D): R {
+        return visitExpression(memberAccess, data)
+    }
+
+    open fun visitPropertyAccess(propertyAccess: FirPropertyAccess, data: D): R {
+        return visitMemberAccess(propertyAccess, data)
     }
 
     open fun visitThrowExpression(throwExpression: FirThrowExpression, data: D): R {
