@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.fir.builder
 
+import com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.KtNodeTypes
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.Modality
@@ -34,6 +35,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.hasActualModifier
 import org.jetbrains.kotlin.psi.psiUtil.hasExpectModifier
 import org.jetbrains.kotlin.types.Variance
+import org.jetbrains.kotlin.types.expressions.OperatorConventions
 
 class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
 
@@ -903,6 +905,23 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                         FirWhenBranchImpl(session, null, FirElseIfTrueCondition(session, null), elseBranch)
                     }
                 }
+            }
+        }
+
+        private fun IElementType.toName(): Name {
+            return OperatorConventions.BINARY_OPERATION_NAMES[this] ?: Name.special("<$this>")
+        }
+
+        override fun visitBinaryExpression(expression: KtBinaryExpression, data: Unit): FirElement {
+            return FirMemberAccessImpl(
+                session, expression
+            ).apply {
+                calleeReference = FirSimpleMemberReference(
+                    session, expression.operationReference,
+                    expression.operationToken.toName()
+                )
+                arguments += expression.left.toFirExpression("No left operand")
+                arguments += expression.right.toFirExpression("No left operand")
             }
         }
 
