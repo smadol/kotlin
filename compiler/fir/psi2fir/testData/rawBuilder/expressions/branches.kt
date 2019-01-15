@@ -9,3 +9,13 @@ fun bar(a: Double, b: Double): Double {
         return b
     }
 }
+
+fun baz(a: Long, b: Long): Long {
+    when {
+        a > b -> {
+            println(a)
+            return a
+        }
+        else -> return b
+    }
+}

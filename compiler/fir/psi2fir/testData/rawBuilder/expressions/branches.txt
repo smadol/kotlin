@@ -4,7 +4,7 @@ FILE: branches.kt
             STUB ->  {
                 STUB
             }
-            ??? class org.jetbrains.kotlin.fir.expressions.impl.FirElseIfTrueCondition ->  {
+            else ->  {
                 STUB
             }
         }
@@ -16,9 +16,21 @@ FILE: branches.kt
                 STUB
                 return@@@bar STUB
             }
-            ??? class org.jetbrains.kotlin.fir.expressions.impl.FirElseIfTrueCondition ->  {
+            else ->  {
                 STUB
                 return@@@bar STUB
+            }
+        }
+
+    }
+    public? final? function baz(a: Long, b: Long): Long {
+        when () {
+            STUB ->  {
+                STUB
+                return@@@baz STUB
+            }
+            else ->  {
+                return@@@baz STUB
             }
         }
 

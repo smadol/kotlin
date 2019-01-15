@@ -15,10 +15,7 @@ import org.jetbrains.kotlin.fir.FirFunctionTarget
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.declarations.impl.*
-import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
-import org.jetbrains.kotlin.fir.expressions.FirBlock
-import org.jetbrains.kotlin.fir.expressions.FirDelegatedConstructorCall
-import org.jetbrains.kotlin.fir.expressions.FirExpression
+import org.jetbrains.kotlin.fir.expressions.*
 import org.jetbrains.kotlin.fir.expressions.impl.*
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeAliasSymbol
@@ -854,6 +851,28 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                 branches += FirWhenBranchImpl(session, condition, firCondition, trueBranch)
                 val elseBranch = expression.`else`.toFirBlock()
                 branches += FirWhenBranchImpl(session, null, FirElseIfTrueCondition(session, null), elseBranch)
+            }
+        }
+
+        override fun visitWhenExpression(expression: KtWhenExpression, data: Unit): FirElement {
+            return FirWhenExpressionImpl(
+                session,
+                expression,
+                subject = expression.subjectExpression?.toFirExpression()
+                // TODO: integrate subject into conditions and support subjectVariable
+            ).apply {
+                for (entry in expression.entries) {
+                    branches += if (!entry.isElse) {
+                        // TODO: yet only the first condition is supported, and only with expression
+                        val condition = entry.conditions.firstOrNull() as? KtWhenConditionWithExpression
+                        val firCondition = condition?.expression.toFirExpression("When entry should have condition")
+                        val branch = entry.expression.toFirBlock()
+                        FirWhenBranchImpl(session, condition, firCondition, branch)
+                    } else {
+                        val elseBranch = entry.expression.toFirBlock()
+                        FirWhenBranchImpl(session, null, FirElseIfTrueCondition(session, null), elseBranch)
+                    }
+                }
             }
         }
 

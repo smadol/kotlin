@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.descriptors.Visibility
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.expressions.*
+import org.jetbrains.kotlin.fir.expressions.impl.FirElseIfTrueCondition
 import org.jetbrains.kotlin.fir.expressions.impl.FirExpressionStub
 import org.jetbrains.kotlin.fir.expressions.impl.FirUnitExpression
 import org.jetbrains.kotlin.fir.symbols.ConeClassLikeSymbol
@@ -378,7 +379,12 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
     }
 
     override fun visitWhenBranch(whenBranch: FirWhenBranch) {
-        whenBranch.condition.accept(this)
+        val condition = whenBranch.condition
+        if (condition is FirElseIfTrueCondition) {
+            print("else")
+        } else {
+            condition.accept(this)
+        }
         print(" -> ")
         whenBranch.result.accept(this)
     }
