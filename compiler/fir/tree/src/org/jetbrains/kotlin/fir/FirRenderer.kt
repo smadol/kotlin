@@ -592,4 +592,7 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         print("*")
     }
 
+    override fun visitPropertyAccess(propertyAccess: FirPropertyAccess) {
+        print("${propertyAccess.calleeReference.name}#")
+    }
 }

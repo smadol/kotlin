@@ -5,7 +5,13 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
+import org.jetbrains.kotlin.fir.visitors.FirVisitor
+
 interface FirPropertyAccess : FirMemberAccess {
     override val arguments: List<FirExpression>
         get() = emptyList()
+
+    override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R {
+        return visitor.visitPropertyAccess(this, data)
+    }
 }
