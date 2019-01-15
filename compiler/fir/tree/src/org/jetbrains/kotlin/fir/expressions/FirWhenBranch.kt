@@ -15,7 +15,7 @@ interface FirWhenBranch : FirElement {
     // }
     val condition: FirExpression
 
-    val result: FirExpression
+    val result: FirBlock
 
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
         visitor.visitWhenBranch(this, data)
