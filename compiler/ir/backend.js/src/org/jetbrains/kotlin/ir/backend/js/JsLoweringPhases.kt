@@ -25,32 +25,36 @@ private fun DeclarationContainerLoweringPass.runOnFilesPostfix(files: Iterable<I
 
 private fun ClassLoweringPass.runOnFilesPostfix(moduleFragment: IrModuleFragment) = moduleFragment.files.forEach { runOnFilePostfix(it) }
 
-object IrModuleStartPhase : CompilerPhase<JsIrBackendContext, IrModuleFragment> {
-    override val name = "IrModuleFragment"
-    override val description = "State at start of IrModuleFragment lowering"
-    override val prerequisite = emptySet()
-    override fun invoke(
-            manager: CompilerPhaseManager<JsIrBackendContext, IrModuleFragment>,
-            input: IrModuleFragment
-    ) = input
-}
-
 private fun makeJsModulePhase(
     lowering: (JsIrBackendContext) -> FileLoweringPass,
     description: String,
     name: String,
-    prerequisite: Set<CompilerPhase<JsIrBackendContext, IrModuleFragment>> = emptySet()
-) = makeModuleLoweringPhase(lowering, description, name, prerequisite)
+    prerequisite: Set<CompilerPhase<*, *, *>> = emptySet()
+) = makeIrModulePhase<JsIrBackendContext>(lowering, description, name, prerequisite)
 
-private fun makeJsPhase(
-    op: CompilerPhaseManager<JsIrBackendContext, IrModuleFragment>.(IrModuleFragment) -> Unit,
+private fun makeCustomJsModulePhase(
+    op: (JsIrBackendContext, IrModuleFragment) -> Unit,
     description: String,
     name: String,
-    prerequisite: Set<CompilerPhase<JsIrBackendContext, IrModuleFragment>> = emptySet()
-) = makePhase<JsIrBackendContext, IrModuleFragment>(op, description, name, prerequisite)
+    prerequisite: Set<CompilerPhase<*, *, *>> = emptySet()
+) = object : AbstractIrModuleCompilerPhase<JsIrBackendContext>() {
+    override val name = name
+    override val description = description
+    override val prerequisite = prerequisite
 
-private val MoveBodilessDeclarationsToSeparatePlacePhase = makeJsPhase(
-    { module -> MoveBodilessDeclarationsToSeparatePlace().lower(module) },
+    override fun invoke(
+        phaseConfig: PhaseConfig,
+        phaserState: PhaserState,
+        context: JsIrBackendContext,
+        input: IrModuleFragment
+    ): IrModuleFragment {
+        op(context, input)
+        return input
+    }
+}
+
+private val MoveBodilessDeclarationsToSeparatePlacePhase = makeJsModulePhase(
+    ::MoveBodilessDeclarationsToSeparatePlace,
     name = "MoveBodilessDeclarationsToSeparatePlace",
     description = "Move `external` and `built-in` declarations into separate place to make the following lowerings do not care about them"
 )
@@ -73,21 +77,21 @@ private val ArrayInlineConstructorLoweringPhase = makeJsModulePhase(
     description = "Replace array constructor with platform specific factory functions"
 )
 
-private val LateinitLoweringPhase = makeJsPhase(
-    { module -> LateinitLowering(context).lower(module) },
+private val LateinitLoweringPhase = makeJsModulePhase(
+    ::LateinitLowering,
     name = "LateinitLowering",
     description = "Insert checks for lateinit field references"
 )
 
-private val ModuleCopyingPhase = makePhase<JsIrBackendContext, IrModuleFragment>(
-    { module -> context.moduleFragmentCopy = module.deepCopyWithSymbols() },
+private val ModuleCopyingPhase = makeCustomJsModulePhase(
+    { context, module -> context.moduleFragmentCopy = module.deepCopyWithSymbols() },
     name = "ModuleCopying",
     description = "<Supposed to be removed> Copy current module to make it accessible from different one",
     prerequisite = setOf(LateinitLoweringPhase)
 )
 
-private val FunctionInliningPhase = makeJsPhase(
-    { module ->
+private val FunctionInliningPhase = makeCustomJsModulePhase(
+    { context, module ->
         FunctionInlining(context).inline(module)
         module.replaceUnboundSymbols(context)
         module.patchDeclarationParents()
@@ -198,8 +202,8 @@ private val CallableReferenceLoweringPhase = makeJsModulePhase(
     )
 )
 
-private val DefaultArgumentStubGeneratorPhase = makeJsPhase(
-    { module -> JsDefaultArgumentStubGenerator(context).lower(module) },
+private val DefaultArgumentStubGeneratorPhase = makeJsModulePhase(
+    ::JsDefaultArgumentStubGenerator,
     name = "DefaultArgumentStubGenerator",
     description = "Generate synthetic stubs for functions with default parameter values"
 )
@@ -217,14 +221,14 @@ private val DefaultParameterCleanerPhase = makeJsModulePhase(
     description = "Clean default parameters up"
 )
 
-private val JsDefaultCallbackGeneratorPhase = makeJsPhase(
-    { module -> JsDefaultCallbackGenerator(context).lower(module) },
+private val JsDefaultCallbackGeneratorPhase = makeJsModulePhase(
+    ::JsDefaultCallbackGenerator,
     name = "JsDefaultCallbackGenerator",
     description = "Build binding for super calls with default parameters"
 )
 
-private val VarargLoweringPhase = makeJsPhase(
-    { module -> VarargLowering(context).lower(module) },
+private val VarargLoweringPhase = makeJsModulePhase(
+    ::VarargLowering,
     name = "VarargLowering",
     description = "Lower vararg arguments",
     prerequisite = setOf(CallableReferenceLoweringPhase)
@@ -236,8 +240,8 @@ private val PropertiesLoweringPhase = makeJsModulePhase(
     description = "Move fields and accessors out from its property"
 )
 
-private val InitializersLoweringPhase = makeJsPhase(
-    { module -> InitializersLowering(context, JsLoweredDeclarationOrigin.CLASS_STATIC_INITIALIZER, false).lower(module) },
+private val InitializersLoweringPhase = makeCustomJsModulePhase(
+    { context, module -> InitializersLowering(context, JsLoweredDeclarationOrigin.CLASS_STATIC_INITIALIZER, false).lower(module) },
     name = "InitializersLowering",
     description = "Merge init block and field initializers into [primary] constructor",
     prerequisite = setOf(EnumClassLoweringPhase)
@@ -263,22 +267,22 @@ private val TypeOperatorLoweringPhase = makeJsModulePhase(
     prerequisite = setOf(BridgesConstructionPhase, RemoveInlineFunctionsWithReifiedTypeParametersLoweringPhase)
 )
 
-private val SecondaryConstructorLoweringPhase = makeJsPhase(
-    { module -> SecondaryConstructorLowering(context).lower(module) },
+private val SecondaryConstructorLoweringPhase = makeJsModulePhase(
+    ::SecondaryConstructorLowering,
     name = "SecondaryConstructorLoweringPhase",
     description = "Generate static functions for each secondary constructor",
     prerequisite = setOf(InnerClassesLoweringPhase)
 )
 
-private val SecondaryFactoryInjectorLoweringPhase = makeJsPhase(
-    { module -> SecondaryFactoryInjectorLowering(context).lower(module) },
+private val SecondaryFactoryInjectorLoweringPhase = makeJsModulePhase(
+    ::SecondaryFactoryInjectorLowering,
     name = "SecondaryFactoryInjectorLoweringPhase",
     description = "Replace usage of secondary constructor with corresponding static function",
     prerequisite = setOf(InnerClassesLoweringPhase)
 )
 
-private val InlineClassLoweringPhase = makeJsPhase(
-    { module ->
+private val InlineClassLoweringPhase = makeCustomJsModulePhase(
+    { context, module ->
         InlineClassLowering(context).run {
             inlineClassDeclarationLowering.runOnFilesPostfix(module)
             inlineClassUsageLowering.lower(module)
@@ -294,8 +298,8 @@ private val AutoboxingTransformerPhase = makeJsModulePhase(
     description = "Insert box/unbox intrinsics"
 )
 
-private val BlockDecomposerLoweringPhase = makeJsPhase(
-    { module ->
+private val BlockDecomposerLoweringPhase = makeCustomJsModulePhase(
+    { context, module ->
         BlockDecomposerLowering(context).lower(module)
         module.patchDeclarationParents()
     },
@@ -328,65 +332,55 @@ private val CallsLoweringPhase = makeJsModulePhase(
     description = "Handle intrinsics"
 )
 
-object IrModuleEndPhase : CompilerPhase<JsIrBackendContext, IrModuleFragment> {
-    override val name = "IrModuleFragment"
-    override val description = "State at end of IrModuleFragment lowering"
-    override val prerequisite = emptySet()
-    override fun invoke(
-            manager: CompilerPhaseManager<JsIrBackendContext, IrModuleFragment>,
-            input: IrModuleFragment
-    ) = input
-}
-
-private val IrToJsPhase = makeJsPhase(
-    { module -> context.jsProgram = IrModuleToJsTransformer(context).let { module.accept(it, null) } },
+private val IrToJsPhase = makeCustomJsModulePhase(
+    { context, module -> context.jsProgram = IrModuleToJsTransformer(context).let { module.accept(it, null) } },
     name = "IrModuleToJsTransformer",
     description = "Generate JsAst from IrTree"
 )
 
-val jsPhases = listOf(
-    IrModuleStartPhase,
-    MoveBodilessDeclarationsToSeparatePlacePhase,
-    ExpectDeclarationsRemovingPhase,
-    CoroutineIntrinsicLoweringPhase,
-    ArrayInlineConstructorLoweringPhase,
-    LateinitLoweringPhase,
-    ModuleCopyingPhase,
-    FunctionInliningPhase,
-    RemoveInlineFunctionsWithReifiedTypeParametersLoweringPhase,
-    ThrowableSuccessorsLoweringPhase,
-    TailrecLoweringPhase,
-    UnitMaterializationLoweringPhase,
-    EnumClassLoweringPhase,
-    EnumUsageLoweringPhase,
-    SharedVariablesLoweringPhase,
-    ReturnableBlockLoweringPhase,
-    LocalDelegatedPropertiesLoweringPhase,
-    LocalDeclarationsLoweringPhase,
-    InnerClassesLoweringPhase,
-    InnerClassConstructorCallsLoweringPhase,
-    SuspendFunctionsLoweringPhase,
-    PrivateMembersLoweringPhase,
-    CallableReferenceLoweringPhase,
-    DefaultArgumentStubGeneratorPhase,
-    DefaultParameterInjectorPhase,
-    DefaultParameterCleanerPhase,
-    JsDefaultCallbackGeneratorPhase,
-    VarargLoweringPhase,
-    PropertiesLoweringPhase,
-    InitializersLoweringPhase,
-    MultipleCatchesLoweringPhase,
-    BridgesConstructionPhase,
-    TypeOperatorLoweringPhase,
-    SecondaryConstructorLoweringPhase,
-    SecondaryFactoryInjectorLoweringPhase,
-    ClassReferenceLoweringPhase,
-    InlineClassLoweringPhase,
-    AutoboxingTransformerPhase,
-    BlockDecomposerLoweringPhase,
-    PrimitiveCompanionLoweringPhase,
-    ConstLoweringPhase,
-    CallsLoweringPhase,
-    IrModuleEndPhase,
-    IrToJsPhase
+val jsPhases = namedIrModulePhase(
+    name = "IrModuleLowering",
+    description = "IR module lowering",
+    lower = MoveBodilessDeclarationsToSeparatePlacePhase then
+            ExpectDeclarationsRemovingPhase then
+            CoroutineIntrinsicLoweringPhase then
+            ArrayInlineConstructorLoweringPhase then
+            LateinitLoweringPhase then
+            ModuleCopyingPhase then
+            FunctionInliningPhase then
+            RemoveInlineFunctionsWithReifiedTypeParametersLoweringPhase then
+            ThrowableSuccessorsLoweringPhase then
+            TailrecLoweringPhase then
+            UnitMaterializationLoweringPhase then
+            EnumClassLoweringPhase then
+            EnumUsageLoweringPhase then
+            SharedVariablesLoweringPhase then
+            ReturnableBlockLoweringPhase then
+            LocalDelegatedPropertiesLoweringPhase then
+            LocalDeclarationsLoweringPhase then
+            InnerClassesLoweringPhase then
+            InnerClassConstructorCallsLoweringPhase then
+            SuspendFunctionsLoweringPhase then
+            PrivateMembersLoweringPhase then
+            CallableReferenceLoweringPhase then
+            DefaultArgumentStubGeneratorPhase then
+            DefaultParameterInjectorPhase then
+            DefaultParameterCleanerPhase then
+            JsDefaultCallbackGeneratorPhase then
+            VarargLoweringPhase then
+            PropertiesLoweringPhase then
+            InitializersLoweringPhase then
+            MultipleCatchesLoweringPhase then
+            BridgesConstructionPhase then
+            TypeOperatorLoweringPhase then
+            SecondaryConstructorLoweringPhase then
+            SecondaryFactoryInjectorLoweringPhase then
+            ClassReferenceLoweringPhase then
+            InlineClassLoweringPhase then
+            AutoboxingTransformerPhase then
+            BlockDecomposerLoweringPhase then
+            PrimitiveCompanionLoweringPhase then
+            ConstLoweringPhase then
+            CallsLoweringPhase then
+            IrToJsPhase
 )

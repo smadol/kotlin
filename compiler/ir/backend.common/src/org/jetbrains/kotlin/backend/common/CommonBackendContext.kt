@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.name.FqName
 
 interface LoggingContext {
+    var inVerbosePhase: Boolean
     fun log(message: () -> String)
 }
 

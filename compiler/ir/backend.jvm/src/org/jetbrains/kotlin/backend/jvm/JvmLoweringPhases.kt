@@ -10,22 +10,14 @@ import org.jetbrains.kotlin.backend.common.lower.*
 import org.jetbrains.kotlin.backend.jvm.lower.*
 import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationWithName
-import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.name.NameUtils
-
-object IrFileStartPhase : CompilerPhase<JvmBackendContext, IrFile> {
-    override val name = "IrFileStart"
-    override val description = "State at start of IrFile lowering"
-    override val prerequisite = emptySet()
-    override fun invoke(manager: CompilerPhaseManager<JvmBackendContext, IrFile>, input: IrFile) = input
-}
 
 private fun makeJvmPhase(
     lowering: (JvmBackendContext) -> FileLoweringPass,
     description: String,
     name: String,
-    prerequisite: Set<CompilerPhase<JvmBackendContext, IrFile>> = emptySet()
-) = makeFileLoweringPhase(lowering, description, name, prerequisite)
+    prerequisite: Set<CompilerPhase<*, *, *>> = emptySet()
+) = makeIrFilePhase(lowering, description, name, prerequisite)
 
 private val JvmCoercionToUnitPhase = makeJvmPhase(
     ::JvmCoercionToUnitPatcher,
@@ -78,8 +70,8 @@ private val AnnotationPhase = makeJvmPhase(
     description = "Remove constructors from annotation classes"
 )
 
-private val DefaultArgumentStubPhase = makePhase<JvmBackendContext, IrFile>(
-    { irFile -> DefaultArgumentStubGenerator(context, false).lower(irFile) },
+private val DefaultArgumentStubPhase = makeJvmPhase(
+    { context -> DefaultArgumentStubGenerator(context, false) },
     name = "DefaultArgumentsStubGenerator",
     description = "Generate synthetic stubs for functions with default parameter values"
 )
@@ -102,12 +94,12 @@ private val SharedVariablesPhase = makeJvmPhase(
     description = "Transform shared variables"
 )
 
-private val LocalDeclarationsPhase = makePhase<JvmBackendContext, IrFile>(
-    { irFile ->
+private val LocalDeclarationsPhase = makeJvmPhase(
+    { context ->
         LocalDeclarationsLowering(context, object : LocalNameProvider {
             override fun localName(declaration: IrDeclarationWithName): String =
                 NameUtils.sanitizeAsJavaIdentifier(super.localName(declaration))
-        }, Visibilities.PUBLIC, true).lower(data)
+        }, Visibilities.PUBLIC, true)
     },
     name = "JvmLocalDeclarations",
     description = "Move local declarations to classes",
@@ -153,8 +145,8 @@ private val ObjectClassPhase = makeJvmPhase(
     description = "Handle object classes"
 )
 
-private val InitializersPhase = makePhase<JvmBackendContext, IrFile>(
-    { file -> InitializersLowering(context, JvmLoweredDeclarationOrigin.CLASS_STATIC_INITIALIZER, true).lower(file) },
+private val InitializersPhase = makeJvmPhase(
+    { context -> InitializersLowering(context, JvmLoweredDeclarationOrigin.CLASS_STATIC_INITIALIZER, true) },
     name = "Initializers",
     description = "Handle initializer statements"
 )
@@ -226,60 +218,51 @@ private val JvmBuiltinOptimizationLoweringPhase = makeJvmPhase(
     description = "Optimize builtin calls for JVM code generation"
 )
 
-object IrFileEndPhase : CompilerPhase<JvmBackendContext, IrFile> {
-    override val name = "IrFileEnd"
-    override val description = "State at end of IrFile lowering"
-    override val prerequisite = emptySet()
-    override fun invoke(manager: CompilerPhaseManager<JvmBackendContext, IrFile>, input: IrFile) = input
-}
+val jvmPhases = namedIrFilePhase(
+    name = "IrLowering",
+    description = "IR lowering",
+    lower = JvmCoercionToUnitPhase then
+            FileClassPhase then
+            KCallableNamePropertyPhase then
 
-val jvmPhases: List<CompilerPhase<JvmBackendContext, IrFile>> = listOf(
-    IrFileStartPhase,
+            LateinitPhase then
 
-    JvmCoercionToUnitPhase,
-    FileClassPhase,
-    KCallableNamePropertyPhase,
+            MoveCompanionObjectFieldsPhase then
+            ConstAndJvmFieldPropertiesPhase then
+            PropertiesPhase then
+            AnnotationPhase then
 
-    LateinitPhase,
+            DefaultArgumentStubPhase then
 
-    MoveCompanionObjectFieldsPhase,
-    ConstAndJvmFieldPropertiesPhase,
-    PropertiesPhase,
-    AnnotationPhase,
+            InterfacePhase then
+            InterfaceDelegationPhase then
+            SharedVariablesPhase then
 
-    DefaultArgumentStubPhase,
+            makePatchParentsPhase(1) then
 
-    InterfacePhase,
-    InterfaceDelegationPhase,
-    SharedVariablesPhase,
+            LocalDeclarationsPhase then
+            CallableReferencePhase then
+            FunctionNVarargInvokePhase then
 
-    makePatchParentsPhase(1),
+            InnerClassesPhase then
+            InnerClassConstructorCallsPhase then
 
-    LocalDeclarationsPhase,
-    CallableReferencePhase,
-    FunctionNVarargInvokePhase,
+            makePatchParentsPhase(2) then
 
-    InnerClassesPhase,
-    InnerClassConstructorCallsPhase,
+            EnumClassPhase then
+            ObjectClassPhase then
+            InitializersPhase then
+            SingletonReferencesPhase then
+            SyntheticAccessorPhase then
+            BridgePhase then
+            JvmOverloadsAnnotationPhase then
+            JvmStaticAnnotationPhase then
+            StaticDefaultFunctionPhase then
 
-    makePatchParentsPhase(2),
+            TailrecPhase then
+            ToArrayPhase then
+            JvmTypeOperatorLoweringPhase then
+            JvmBuiltinOptimizationLoweringPhase then
 
-    EnumClassPhase,
-    ObjectClassPhase,
-    InitializersPhase,
-    SingletonReferencesPhase,
-    SyntheticAccessorPhase,
-    BridgePhase,
-    JvmOverloadsAnnotationPhase,
-    JvmStaticAnnotationPhase,
-    StaticDefaultFunctionPhase,
-
-    TailrecPhase,
-    ToArrayPhase,
-    JvmTypeOperatorLoweringPhase,
-    JvmBuiltinOptimizationLoweringPhase,
-
-    makePatchParentsPhase(3),
-
-    IrFileEndPhase
+            makePatchParentsPhase(3)
 )
