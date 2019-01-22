@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.Variance.IN_VARIANCE
 import org.jetbrains.kotlin.types.Variance.OUT_VARIANCE
 import org.jetbrains.kotlin.types.checker.NewCapturedTypeConstructor
+import org.jetbrains.kotlin.types.model.CapturedTypeIM
 import org.jetbrains.kotlin.types.typeUtil.builtIns
 
 class CapturedTypeConstructor(
@@ -64,7 +65,7 @@ class CapturedType(
         override val constructor: CapturedTypeConstructor = CapturedTypeConstructor(typeProjection),
         override val isMarkedNullable: Boolean = false,
         override val annotations: Annotations = Annotations.EMPTY
-): SimpleType(), SubtypingRepresentatives {
+): SimpleType(), SubtypingRepresentatives, CapturedTypeIM {
     override val arguments: List<TypeProjection>
         get() = listOf()
 
