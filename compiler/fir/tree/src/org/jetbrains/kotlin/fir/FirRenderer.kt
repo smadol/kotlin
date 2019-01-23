@@ -711,13 +711,26 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         propertyGet.calleeReference.accept(this)
     }
 
+    override fun visitSet(set: FirSet) {
+        print(set.operation.operator)
+        print(" ")
+        set.value.accept(this)
+    }
+
     override fun visitPropertySet(propertySet: FirPropertySet) {
         visitMemberAccess(propertySet)
         propertySet.calleeReference.accept(this)
         print(" ")
-        print(propertySet.operation.operator)
-        print(" ")
-        propertySet.value.accept(this)
+        visitSet(propertySet)
+    }
+
+    override fun visitArraySetCall(arraySetCall: FirArraySetCall) {
+        visitMemberAccess(arraySetCall)
+        arraySetCall.calleeReference.accept(this)
+        print("[")
+        arraySetCall.arguments.renderSeparated()
+        print("] ")
+        visitSet(arraySetCall)
     }
 
     override fun visitFunctionCall(functionCall: FirFunctionCall) {
