@@ -684,6 +684,16 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         print("${memberReference.name}#")
     }
 
+    override fun visitThisReference(thisReference: FirThisReference) {
+        print("this")
+        val labelName = thisReference.labelName
+        if (labelName != null) {
+            print("@$labelName")
+        } else {
+            print("#")
+        }
+    }
+
     override fun visitMemberAccess(memberAccess: FirMemberAccess) {
         val explicitReceiver = memberAccess.explicitReceiver
         if (explicitReceiver != null) {
@@ -703,7 +713,8 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
 
     override fun visitPropertySet(propertySet: FirPropertySet) {
         visitMemberAccess(propertySet)
-        print("${propertySet.calleeReference.name}# ")
+        propertySet.calleeReference.accept(this)
+        print(" ")
         print(propertySet.operation.operator)
         print(" ")
         propertySet.value.accept(this)
@@ -711,7 +722,7 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
 
     override fun visitFunctionCall(functionCall: FirFunctionCall) {
         visitMemberAccess(functionCall)
-        print("${functionCall.calleeReference.name}#")
+        functionCall.calleeReference.accept(this)
         visitCall(functionCall)
     }
 
