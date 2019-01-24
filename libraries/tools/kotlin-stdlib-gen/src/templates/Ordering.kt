@@ -10,8 +10,17 @@ import templates.SequenceClass.*
 
 object Ordering : TemplateGroupBase() {
 
+    init {
+        defaultBuilder {
+            specialFor(ArraysOfUnsigned) {
+                since("1.3")
+                annotation("@ExperimentalUnsignedTypes")
+            }
+        }
+    }
+
     val f_reverse = fn("reverse()") {
-        include(Lists, InvariantArraysOfObjects, ArraysOfPrimitives)
+        include(Lists, InvariantArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         doc { "Reverses ${f.element.pluralize()} in the ${f.collection} in-place." }
         returns("Unit")
@@ -28,6 +37,11 @@ object Ordering : TemplateGroupBase() {
             }
             """
         }
+        body(ArraysOfUnsigned) {
+            """
+            storage.reverse()
+            """
+        }
         specialFor(Lists) {
             receiver("MutableList<T>")
             on(Platform.JVM) {
@@ -37,7 +51,7 @@ object Ordering : TemplateGroupBase() {
     }
 
     val f_reversed = fn("reversed()") {
-        include(Iterables, ArraysOfObjects, ArraysOfPrimitives, CharSequences, Strings)
+        include(Iterables, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned, CharSequences, Strings)
     } builder {
         doc { "Returns a list with elements in reversed order." }
         returns("List<T>")
@@ -50,7 +64,7 @@ object Ordering : TemplateGroupBase() {
             """
         }
 
-        body(ArraysOfObjects, ArraysOfPrimitives) {
+        body(ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             """
             if (isEmpty()) return emptyList()
             val list = toMutableList()
@@ -70,7 +84,7 @@ object Ordering : TemplateGroupBase() {
     }
 
     val f_reversedArray = fn("reversedArray()") {
-        include(InvariantArraysOfObjects, ArraysOfPrimitives)
+        include(InvariantArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         doc { "Returns an array with elements of this array in reversed order." }
         returns("SELF")
@@ -92,6 +106,11 @@ object Ordering : TemplateGroupBase() {
             for (i in 0..lastIndex)
                 result[lastIndex - i] = this[i]
             return result
+            """
+        }
+        body(ArraysOfUnsigned) {
+            """
+            return SELF(storage.reversedArray())
             """
         }
     }
