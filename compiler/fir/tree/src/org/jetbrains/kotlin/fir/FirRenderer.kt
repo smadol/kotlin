@@ -701,6 +701,12 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         }
     }
 
+    override fun visitSuperReference(superReference: FirSuperReference) {
+        print("super<")
+        superReference.superType.accept(this)
+        print(">")
+    }
+
     override fun visitMemberAccess(memberAccess: FirMemberAccess) {
         val explicitReceiver = memberAccess.explicitReceiver
         if (explicitReceiver != null) {
