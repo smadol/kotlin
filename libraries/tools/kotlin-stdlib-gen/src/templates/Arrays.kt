@@ -314,13 +314,20 @@ object ArrayOps : TemplateGroupBase() {
     }
 
     val f_toPrimitiveArray = fn("toPrimitiveArray()") {
-        include(ArraysOfObjects, PrimitiveType.defaultPrimitives)
-        include(Collections, PrimitiveType.defaultPrimitives)
+        include(ArraysOfObjects, PrimitiveType.values().toSet())
+        include(Collections, PrimitiveType.values().toSet())
     } builder {
         val primitive = checkNotNull(primitive)
         val arrayType = primitive.name + "Array"
         signature("to$arrayType()")
         returns(arrayType)
+
+        if (primitive in PrimitiveType.unsignedPrimitives) {
+            sourceFile(SourceFile.UArrays)
+            since("1.3")
+            annotation("@ExperimentalUnsignedTypes")
+        }
+
         // TODO: Use different implementations for JS
         specialFor(ArraysOfObjects) {
             doc { "Returns an array of ${primitive.name} containing all of the elements of this generic array." }
