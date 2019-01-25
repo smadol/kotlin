@@ -5,12 +5,12 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
-import org.jetbrains.kotlin.fir.FirMemberReference
+import org.jetbrains.kotlin.fir.FirNamedReference
 import org.jetbrains.kotlin.fir.VisitedSupertype
 import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
 interface FirFunctionCall : @VisitedSupertype FirCall, FirMemberAccess {
-    override val calleeReference: FirMemberReference
+    override val calleeReference: FirNamedReference
 
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
         visitor.visitFunctionCall(this, data)

@@ -7,14 +7,12 @@ package org.jetbrains.kotlin.fir.references
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.fir.FirAbstractElement
-import org.jetbrains.kotlin.fir.FirMemberReference
+import org.jetbrains.kotlin.fir.FirNamedReference
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.name.Name
 
-class FirErrorMemberReference(
+class FirSimpleNamedReference(
     session: FirSession,
     psi: PsiElement?,
-    val errorReason: String
-) : FirAbstractElement(session, psi), FirMemberReference {
-    override val name: Name = Name.special("<$errorReason>")
-}
+    override val name: Name
+) : FirAbstractElement(session, psi), FirNamedReference

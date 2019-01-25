@@ -15,9 +15,9 @@ import org.jetbrains.kotlin.fir.declarations.impl.*
 import org.jetbrains.kotlin.fir.expressions.*
 import org.jetbrains.kotlin.fir.expressions.impl.*
 import org.jetbrains.kotlin.fir.labels.FirLabelImpl
-import org.jetbrains.kotlin.fir.references.FirErrorMemberReference
+import org.jetbrains.kotlin.fir.references.FirErrorNamedReference
 import org.jetbrains.kotlin.fir.references.FirExplicitSuperReference
-import org.jetbrains.kotlin.fir.references.FirSimpleMemberReference
+import org.jetbrains.kotlin.fir.references.FirSimpleNamedReference
 import org.jetbrains.kotlin.fir.references.FirExplicitThisReference
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeAliasSymbol
@@ -840,7 +840,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             val sb = StringBuilder()
             var hasExpressions = false
             val interpolatingCall = FirFunctionCallImpl(session, expression).apply {
-                calleeReference = FirSimpleMemberReference(session, expression, OperatorNameConventions.PLUS)
+                calleeReference = FirSimpleNamedReference(session, expression, OperatorNameConventions.PLUS)
                 for (entry in expression.entries) {
                     when (entry) {
                         is KtLiteralStringTemplateEntry -> {
@@ -1025,14 +1025,14 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                 statements += generateTemporaryVariable(
                     session, expression.loopRange, iteratorName,
                     FirFunctionCallImpl(session, expression).apply {
-                        calleeReference = FirSimpleMemberReference(session, expression, Name.identifier("iterator"))
+                        calleeReference = FirSimpleNamedReference(session, expression, Name.identifier("iterator"))
                         explicitReceiver = generatePropertyGet(session, expression.loopRange, rangeName)
                     }
                 )
                 statements += FirWhileLoopImpl(
                     session, expression,
                     FirFunctionCallImpl(session, expression).apply {
-                        calleeReference = FirSimpleMemberReference(session, expression, Name.identifier("hasNext"))
+                        calleeReference = FirSimpleNamedReference(session, expression, Name.identifier("hasNext"))
                         explicitReceiver = generatePropertyGet(session, expression, iteratorName)
                     }
                 ).configure {
@@ -1043,7 +1043,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                             session, expression,
                             if (multiDeclaration != null) Name.special("<destruct>") else parameter.nameAsSafeName,
                             FirFunctionCallImpl(session, expression).apply {
-                                calleeReference = FirSimpleMemberReference(session, expression, Name.identifier("next"))
+                                calleeReference = FirSimpleNamedReference(session, expression, Name.identifier("next"))
                                 explicitReceiver = generatePropertyGet(session, expression, iteratorName)
                             }
                         )
@@ -1100,7 +1100,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             return baseExpression.toFirExpression("No operand").generateNotNullOrOther(
                 FirThrowExpressionImpl(
                     session, this, FirFunctionCallImpl(session, this).apply {
-                        calleeReference = FirSimpleMemberReference(session, this@bangBangToWhen, KNPE)
+                        calleeReference = FirSimpleNamedReference(session, this@bangBangToWhen, KNPE)
                     }
                 ), "bangbang"
             )
@@ -1117,7 +1117,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                 FirFunctionCallImpl(
                     session, expression
                 ).apply {
-                    calleeReference = FirSimpleMemberReference(
+                    calleeReference = FirSimpleNamedReference(
                         session, expression.operationReference,
                         conventionCallName ?: expression.operationReference.getReferencedNameAsName()
                     )
@@ -1171,7 +1171,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                 FirFunctionCallImpl(
                     session, expression
                 ).apply {
-                    calleeReference = FirSimpleMemberReference(
+                    calleeReference = FirSimpleNamedReference(
                         session, expression.operationReference, conventionCallName
                     )
                 }
@@ -1191,15 +1191,15 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             val calleeExpression = expression.calleeExpression
             return FirFunctionCallImpl(session, expression).apply {
                 val calleeReference = when (calleeExpression) {
-                    is KtSimpleNameExpression -> FirSimpleMemberReference(
+                    is KtSimpleNameExpression -> FirSimpleNamedReference(
                         session, calleeExpression, calleeExpression.getReferencedNameAsName()
                     )
-                    null -> FirErrorMemberReference(
+                    null -> FirErrorNamedReference(
                         session, calleeExpression, "Call has no callee"
                     )
                     else -> {
                         arguments += calleeExpression.toFirExpression()
-                        FirSimpleMemberReference(
+                        FirSimpleNamedReference(
                             session, expression, OperatorNameConventions.INVOKE
                         )
                     }
@@ -1293,7 +1293,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
 
         override fun visitCallableReferenceExpression(expression: KtCallableReferenceExpression, data: Unit): FirElement {
             return FirCallableReferenceAccessImpl(session, expression).apply {
-                calleeReference = FirSimpleMemberReference(session, expression, expression.callableReference.getReferencedNameAsName())
+                calleeReference = FirSimpleNamedReference(session, expression, expression.callableReference.getReferencedNameAsName())
                 explicitReceiver = expression.receiverExpression?.toFirExpression()
             }
         }

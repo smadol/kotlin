@@ -14,9 +14,9 @@ import org.jetbrains.kotlin.fir.declarations.FirNamedDeclaration
 import org.jetbrains.kotlin.fir.declarations.impl.FirVariableImpl
 import org.jetbrains.kotlin.fir.expressions.*
 import org.jetbrains.kotlin.fir.expressions.impl.*
-import org.jetbrains.kotlin.fir.references.FirErrorMemberReference
+import org.jetbrains.kotlin.fir.references.FirErrorNamedReference
 import org.jetbrains.kotlin.fir.references.FirExplicitThisReference
-import org.jetbrains.kotlin.fir.references.FirSimpleMemberReference
+import org.jetbrains.kotlin.fir.references.FirSimpleNamedReference
 import org.jetbrains.kotlin.fir.types.FirType
 import org.jetbrains.kotlin.fir.types.impl.FirImplicitTypeImpl
 import org.jetbrains.kotlin.ir.expressions.IrConstKind
@@ -216,7 +216,7 @@ internal fun generateIncrementOrDecrementBlock(
         statements += generateTemporaryVariable(session, baseExpression, tempName, argument.convert())
         val resultName = Name.special("<unary-result>")
         val resultInitializer = FirFunctionCallImpl(session, baseExpression).apply {
-            this.calleeReference = FirSimpleMemberReference(session, baseExpression.operationReference, callName)
+            this.calleeReference = FirSimpleNamedReference(session, baseExpression.operationReference, callName)
             this.arguments += generatePropertyGet(session, baseExpression, tempName)
         }
         val resultVar = generateTemporaryVariable(session, baseExpression, resultName, resultInitializer)
@@ -255,7 +255,7 @@ internal fun generateIncrementOrDecrementBlock(
 
 internal fun generatePropertyGet(session: FirSession, psi: PsiElement?, name: Name): FirPropertyGet =
     FirPropertyGetImpl(session, psi).apply {
-        calleeReference = FirSimpleMemberReference(session, psi, name)
+        calleeReference = FirSimpleNamedReference(session, psi, name)
     }
 
 internal fun generateDestructuringBlock(
@@ -296,7 +296,7 @@ private fun FirModifiableMemberAccess.initializeLValue(
 ): FirReference {
     return when (left) {
         is KtSimpleNameExpression -> {
-            FirSimpleMemberReference(session, left.getReferencedNameElement(), left.getReferencedNameAsName())
+            FirSimpleNamedReference(session, left.getReferencedNameElement(), left.getReferencedNameAsName())
         }
         is KtThisExpression -> {
             FirExplicitThisReference(session, left, left.getLabelName())
@@ -308,14 +308,14 @@ private fun FirModifiableMemberAccess.initializeLValue(
                 safe = firMemberAccess.safe
                 firMemberAccess.calleeReference
             } else {
-                FirErrorMemberReference(session, left, "Unsupported qualified LValue: ${left.text}")
+                FirErrorNamedReference(session, left, "Unsupported qualified LValue: ${left.text}")
             }
         }
         is KtParenthesizedExpression -> {
             initializeLValue(session, left.expression, convertQualified)
         }
         else -> {
-            FirErrorMemberReference(session, left, "Unsupported LValue: ${left?.javaClass}")
+            FirErrorNamedReference(session, left, "Unsupported LValue: ${left?.javaClass}")
         }
     }
 }
@@ -348,7 +348,7 @@ internal fun KtExpression?.generateSet(
                 session, arrayExpression, name,
                 arrayExpression?.convert() ?: FirErrorExpressionImpl(session, arrayExpression, "No array expression")
             )
-            statements += arraySet.apply { calleeReference = FirSimpleMemberReference(session, arrayExpression, name) }
+            statements += arraySet.apply { calleeReference = FirSimpleNamedReference(session, arrayExpression, name) }
         }
     }
     if (operation != FirOperation.ASSIGN &&
@@ -361,7 +361,7 @@ internal fun KtExpression?.generateSet(
                 this@generateSet?.convert() ?: FirErrorExpressionImpl(session, this@generateSet, "No LValue in assignment")
             )
             statements += FirPropertySetImpl(session, psi, value, operation).apply {
-                calleeReference = FirSimpleMemberReference(session, this@generateSet, name)
+                calleeReference = FirSimpleNamedReference(session, this@generateSet, name)
             }
         }
     }

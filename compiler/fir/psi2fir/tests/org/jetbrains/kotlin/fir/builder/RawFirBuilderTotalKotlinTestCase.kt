@@ -13,7 +13,7 @@ import org.jetbrains.kotlin.fir.expressions.FirErrorExpression
 import org.jetbrains.kotlin.fir.expressions.FirExpression
 import org.jetbrains.kotlin.fir.expressions.FirMemberAccess
 import org.jetbrains.kotlin.fir.expressions.impl.FirExpressionStub
-import org.jetbrains.kotlin.fir.references.FirErrorMemberReference
+import org.jetbrains.kotlin.fir.references.FirErrorNamedReference
 import org.jetbrains.kotlin.fir.render
 import org.jetbrains.kotlin.fir.visitors.FirVisitorVoid
 import org.jetbrains.kotlin.test.JUnit3RunnerWithInners
@@ -61,7 +61,7 @@ class RawFirBuilderTotalKotlinTestCase : AbstractRawFirBuilderTestCase() {
 
                     override fun visitMemberAccess(memberAccess: FirMemberAccess) {
                         val calleeReference = memberAccess.calleeReference
-                        if (calleeReference is FirErrorMemberReference) {
+                        if (calleeReference is FirErrorNamedReference) {
                             errorReferences++
                             println(calleeReference.errorReason)
                         } else {

@@ -136,8 +136,8 @@ abstract class FirVisitor<out R, in D> {
         return visitElement(reference, data)
     }
 
-    open fun visitMemberReference(memberReference: FirMemberReference, data: D): R {
-        return visitReference(memberReference, data)
+    open fun visitNamedReference(namedReference: FirNamedReference, data: D): R {
+        return visitReference(namedReference, data)
     }
 
     open fun visitSuperReference(superReference: FirSuperReference, data: D): R {

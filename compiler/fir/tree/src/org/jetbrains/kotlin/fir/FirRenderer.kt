@@ -687,8 +687,8 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         print("*")
     }
 
-    override fun visitMemberReference(memberReference: FirMemberReference) {
-        print("${memberReference.name}#")
+    override fun visitNamedReference(namedReference: FirNamedReference) {
+        print("${namedReference.name}#")
     }
 
     override fun visitThisReference(thisReference: FirThisReference) {

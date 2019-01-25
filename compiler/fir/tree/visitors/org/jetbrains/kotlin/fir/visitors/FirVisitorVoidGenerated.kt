@@ -136,8 +136,8 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitElement(reference, null)
     }
 
-    open fun visitMemberReference(memberReference: FirMemberReference) {
-        visitReference(memberReference, null)
+    open fun visitNamedReference(namedReference: FirNamedReference) {
+        visitReference(namedReference, null)
     }
 
     open fun visitSuperReference(superReference: FirSuperReference) {
@@ -524,10 +524,6 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitMemberDeclaration(memberDeclaration)
     }
 
-    final override fun visitMemberReference(memberReference: FirMemberReference, data: Nothing?) {
-        visitMemberReference(memberReference)
-    }
-
     final override fun visitModifiableClass(modifiableClass: FirModifiableClass, data: Nothing?) {
         visitModifiableClass(modifiableClass)
     }
@@ -546,6 +542,10 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
 
     final override fun visitNamedFunction(namedFunction: FirNamedFunction, data: Nothing?) {
         visitNamedFunction(namedFunction)
+    }
+
+    final override fun visitNamedReference(namedReference: FirNamedReference, data: Nothing?) {
+        visitNamedReference(namedReference)
     }
 
     final override fun visitOperatorCall(operatorCall: FirOperatorCall, data: Nothing?) {
