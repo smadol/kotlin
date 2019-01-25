@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.fir.resolve.AbstractFirSymbolProvider
 import org.jetbrains.kotlin.fir.resolve.FirProvider
 import org.jetbrains.kotlin.fir.resolve.impl.FirProviderImpl
 import org.jetbrains.kotlin.fir.service
+import org.jetbrains.kotlin.fir.symbols.CallableId
 import org.jetbrains.kotlin.fir.symbols.ConeSymbol
 import org.jetbrains.kotlin.idea.caches.project.ModuleSourceInfo
 import org.jetbrains.kotlin.idea.caches.project.getModuleInfo
@@ -32,7 +33,9 @@ class IdeFirDependenciesSymbolProvider(
     val project: Project,
     private val sessionProvider: FirProjectSessionProvider
 ) : AbstractFirSymbolProvider() {
-
+    override fun getCallableSymbols(callableId: CallableId): List<ConeSymbol> {
+        TODO()
+    }
 
     // TODO: Our special scope here?
     private val depScope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(moduleInfo.module)

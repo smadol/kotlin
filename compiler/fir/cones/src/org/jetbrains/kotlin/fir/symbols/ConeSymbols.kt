@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.fir.symbols
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.fir.types.ConeClassLikeType
 import org.jetbrains.kotlin.name.ClassId
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
 interface ConeSymbol
@@ -30,4 +31,8 @@ interface ConeClassSymbol : ConeClassLikeSymbol {
     val kind: ClassKind
 
     val superTypes: List<ConeClassLikeType>
+}
+
+interface ConePackageSymbol {
+    val fqName: FqName
 }

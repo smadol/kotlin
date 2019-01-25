@@ -20,9 +20,8 @@ import org.jetbrains.kotlin.fir.references.FirErrorNamedReference
 import org.jetbrains.kotlin.fir.references.FirExplicitSuperReference
 import org.jetbrains.kotlin.fir.references.FirSimpleNamedReference
 import org.jetbrains.kotlin.fir.references.FirExplicitThisReference
-import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirTypeAliasSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirTypeParameterSymbol
+import org.jetbrains.kotlin.fir.symbols.CallableId
+import org.jetbrains.kotlin.fir.symbols.impl.*
 import org.jetbrains.kotlin.fir.types.FirType
 import org.jetbrains.kotlin.fir.types.FirTypeProjection
 import org.jetbrains.kotlin.fir.types.impl.*
@@ -246,6 +245,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             val firProperty = FirMemberPropertyImpl(
                 session,
                 this,
+                FirPropertySymbol(callableIdForName(nameAsSafeName)),
                 nameAsSafeName,
                 visibility,
                 modality,
@@ -355,6 +355,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             val firConstructor = FirPrimaryConstructorImpl(
                 session,
                 this ?: owner,
+                FirFunctionSymbol(callableIdForClassConstructor()),
                 this?.visibility ?: Visibilities.UNKNOWN,
                 this?.hasExpectModifier() ?: false,
                 this?.hasActualModifier() ?: false,
@@ -427,6 +428,14 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
         }
 
         val currentClassId get() = ClassId(packageFqName, className, false)
+
+        fun callableIdForName(name: Name) =
+            if (className == FqName.ROOT) CallableId(packageFqName, name)
+            else CallableId(packageFqName, className, name)
+
+        fun callableIdForClassConstructor() =
+            if (className == FqName.ROOT) CallableId(packageFqName, Name.special("<anonymous-init>"))
+            else CallableId(packageFqName, className, className.shortName())
 
         var className: FqName = FqName.ROOT
 
@@ -542,6 +551,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                 FirMemberFunctionImpl(
                     session,
                     function,
+                    FirFunctionSymbol(callableIdForName(function.nameAsSafeName)),
                     function.nameAsSafeName,
                     function.visibility,
                     function.modality,
@@ -617,6 +627,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             val firConstructor = FirConstructorImpl(
                 session,
                 this,
+                FirFunctionSymbol(callableIdForClassConstructor()),
                 visibility,
                 hasExpectModifier(),
                 hasActualModifier(),
@@ -681,6 +692,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                 FirMemberPropertyImpl(
                     session,
                     property,
+                    FirPropertySymbol(callableIdForName(name)),
                     name,
                     property.visibility,
                     property.modality,
