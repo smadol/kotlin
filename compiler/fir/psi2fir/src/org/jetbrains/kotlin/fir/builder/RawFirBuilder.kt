@@ -1125,7 +1125,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             } else {
                 val firOperation = operationToken.toFirOperation()
                 if (firOperation in FirOperation.ASSIGNMENTS) {
-                    return expression.left.generateSet(session, expression, rightArgument, firOperation) { toFirExpression() }
+                    return expression.left.generateAssignment(session, expression, rightArgument, firOperation) { toFirExpression() }
                 } else {
                     FirOperatorCallImpl(session, expression, firOperation)
                 }

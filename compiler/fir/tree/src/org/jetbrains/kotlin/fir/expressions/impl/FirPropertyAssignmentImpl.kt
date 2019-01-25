@@ -6,18 +6,15 @@
 package org.jetbrains.kotlin.fir.expressions.impl
 
 import com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.expressions.FirExpression
 import org.jetbrains.kotlin.fir.expressions.FirOperation
-import org.jetbrains.kotlin.fir.expressions.FirPropertySet
-import org.jetbrains.kotlin.fir.transformSingle
-import org.jetbrains.kotlin.fir.visitors.FirTransformer
+import org.jetbrains.kotlin.fir.expressions.FirPropertyAssignment
 
-class FirPropertySetImpl(
+class FirPropertyAssignmentImpl(
     session: FirSession,
     psi: PsiElement?,
     value: FirExpression,
     operation: FirOperation,
     safe: Boolean = false
-) : FirAbstractSet(session, psi, value, operation, safe), FirPropertySet
+) : FirAbstractAssignment(session, psi, value, operation, safe), FirPropertyAssignment

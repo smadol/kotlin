@@ -164,16 +164,16 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitAccessExpression(callableReferenceAccess, null)
     }
 
+    open fun visitAssignment(assignment: FirAssignment) {
+        visitAccess(assignment, null)
+    }
+
+    open fun visitPropertyAssignment(propertyAssignment: FirPropertyAssignment) {
+        visitAssignment(propertyAssignment, null)
+    }
+
     open fun visitModifiableAccess(modifiableAccess: FirModifiableAccess) {
         visitAccess(modifiableAccess, null)
-    }
-
-    open fun visitSet(set: FirSet) {
-        visitAccess(set, null)
-    }
-
-    open fun visitPropertySet(propertySet: FirPropertySet) {
-        visitSet(propertySet, null)
     }
 
     open fun visitClass(klass: FirClass) {
@@ -388,6 +388,10 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitArraySetCall(arraySetCall)
     }
 
+    final override fun visitAssignment(assignment: FirAssignment, data: Nothing?) {
+        visitAssignment(assignment)
+    }
+
     final override fun visitBlock(block: FirBlock, data: Nothing?) {
         visitBlock(block)
     }
@@ -568,8 +572,8 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitPropertyAccessor(propertyAccessor)
     }
 
-    final override fun visitPropertySet(propertySet: FirPropertySet, data: Nothing?) {
-        visitPropertySet(propertySet)
+    final override fun visitPropertyAssignment(propertyAssignment: FirPropertyAssignment, data: Nothing?) {
+        visitPropertyAssignment(propertyAssignment)
     }
 
     final override fun visitReference(reference: FirReference, data: Nothing?) {
@@ -598,10 +602,6 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
 
     final override fun visitReturnStatement(returnStatement: FirReturnStatement, data: Nothing?) {
         visitReturnStatement(returnStatement)
-    }
-
-    final override fun visitSet(set: FirSet, data: Nothing?) {
-        visitSet(set)
     }
 
     final override fun visitStarProjection(starProjection: FirStarProjection, data: Nothing?) {

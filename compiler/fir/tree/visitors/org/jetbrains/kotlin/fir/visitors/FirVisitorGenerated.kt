@@ -164,16 +164,16 @@ abstract class FirVisitor<out R, in D> {
         return visitAccessExpression(callableReferenceAccess, data)
     }
 
+    open fun visitAssignment(assignment: FirAssignment, data: D): R {
+        return visitAccess(assignment, data)
+    }
+
+    open fun visitPropertyAssignment(propertyAssignment: FirPropertyAssignment, data: D): R {
+        return visitAssignment(propertyAssignment, data)
+    }
+
     open fun visitModifiableAccess(modifiableAccess: FirModifiableAccess, data: D): R {
         return visitAccess(modifiableAccess, data)
-    }
-
-    open fun visitSet(set: FirSet, data: D): R {
-        return visitAccess(set, data)
-    }
-
-    open fun visitPropertySet(propertySet: FirPropertySet, data: D): R {
-        return visitSet(propertySet, data)
     }
 
     open fun visitClass(klass: FirClass, data: D): R {

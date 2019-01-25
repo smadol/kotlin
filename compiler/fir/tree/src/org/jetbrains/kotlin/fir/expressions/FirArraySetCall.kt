@@ -8,12 +8,12 @@ package org.jetbrains.kotlin.fir.expressions
 import org.jetbrains.kotlin.fir.VisitedSupertype
 import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
-interface FirArraySetCall : @VisitedSupertype FirCall, FirSet {
+interface FirArraySetCall : @VisitedSupertype FirCall, FirAssignment {
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
         visitor.visitArraySetCall(this, data)
 
     override fun <R, D> acceptChildren(visitor: FirVisitor<R, D>, data: D) {
         super<FirCall>.acceptChildren(visitor, data)
-        super<FirSet>.acceptChildren(visitor, data)
+        super<FirAssignment>.acceptChildren(visitor, data)
     }
 }

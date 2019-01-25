@@ -220,7 +220,7 @@ internal fun generateIncrementOrDecrementBlock(
             this.arguments += generateAccessExpression(session, baseExpression, tempName)
         }
         val resultVar = generateTemporaryVariable(session, baseExpression, resultName, resultInitializer)
-        val directSet = argument.generateSet(
+        val assignment = argument.generateAssignment(
             session, baseExpression,
             if (prefix && argument !is KtSimpleNameExpression)
                 generateAccessExpression(session, baseExpression, resultName)
@@ -229,25 +229,25 @@ internal fun generateIncrementOrDecrementBlock(
             FirOperation.ASSIGN, convert
         )
 
-        fun appendDirectSet() {
-            if (directSet is FirBlock) {
-                statements += directSet.statements
+        fun appendAssignment() {
+            if (assignment is FirBlock) {
+                statements += assignment.statements
             } else {
-                statements += directSet
+                statements += assignment
             }
         }
 
         if (prefix) {
             if (argument !is KtSimpleNameExpression) {
                 statements += resultVar
-                appendDirectSet()
+                appendAssignment()
                 statements += generateAccessExpression(session, baseExpression, resultName)
             } else {
-                appendDirectSet()
+                appendAssignment()
                 statements += generateAccessExpression(session, baseExpression, argument.getReferencedNameAsName())
             }
         } else {
-            appendDirectSet()
+            appendAssignment()
             statements += generateAccessExpression(session, baseExpression, tempName)
         }
     }
@@ -320,7 +320,7 @@ private fun FirModifiableAccess.initializeLValue(
     }
 }
 
-internal fun KtExpression?.generateSet(
+internal fun KtExpression?.generateAssignment(
     session: FirSession,
     psi: PsiElement?,
     value: FirExpression,
@@ -328,7 +328,7 @@ internal fun KtExpression?.generateSet(
     convert: KtExpression.() -> FirExpression
 ): FirStatement {
     if (this is KtParenthesizedExpression) {
-        return expression.generateSet(session, psi, value, operation, convert)
+        return expression.generateAssignment(session, psi, value, operation, convert)
     }
     if (this is KtArrayAccessExpression) {
         val arrayExpression = this.arrayExpression
@@ -357,15 +357,15 @@ internal fun KtExpression?.generateSet(
         return FirBlockImpl(session, this).apply {
             val name = Name.special("<complex-set>")
             statements += generateTemporaryVariable(
-                session, this@generateSet, name,
-                this@generateSet?.convert() ?: FirErrorExpressionImpl(session, this@generateSet, "No LValue in assignment")
+                session, this@generateAssignment, name,
+                this@generateAssignment?.convert() ?: FirErrorExpressionImpl(session, this@generateAssignment, "No LValue in assignment")
             )
-            statements += FirPropertySetImpl(session, psi, value, operation).apply {
-                calleeReference = FirSimpleNamedReference(session, this@generateSet, name)
+            statements += FirPropertyAssignmentImpl(session, psi, value, operation).apply {
+                calleeReference = FirSimpleNamedReference(session, this@generateAssignment, name)
             }
         }
     }
-    return FirPropertySetImpl(session, psi, value, operation).apply {
-        calleeReference = initializeLValue(session, this@generateSet) { convert() as? FirAccess }
+    return FirPropertyAssignmentImpl(session, psi, value, operation).apply {
+        calleeReference = initializeLValue(session, this@generateAssignment) { convert() as? FirAccess }
     }
 }

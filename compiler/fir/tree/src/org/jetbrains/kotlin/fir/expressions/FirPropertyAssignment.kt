@@ -7,7 +7,7 @@ package org.jetbrains.kotlin.fir.expressions
 
 import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
-interface FirPropertySet : FirSet {
+interface FirPropertyAssignment : FirAssignment {
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
-        visitor.visitPropertySet(this, data)
+        visitor.visitPropertyAssignment(this, data)
 }
