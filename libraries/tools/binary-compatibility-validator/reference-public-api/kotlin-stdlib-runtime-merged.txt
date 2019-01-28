@@ -2298,6 +2298,14 @@ public final class kotlin/collections/UArraysKt {
 	public static final fun toTypedArray-GBYM_sE ([B)[Lkotlin/UByte;
 	public static final fun toTypedArray-QwZRm1k ([J)[Lkotlin/ULong;
 	public static final fun toTypedArray-rL5Bavg ([S)[Lkotlin/UShort;
+	public static final fun toUByteArray (Ljava/util/Collection;)[B
+	public static final fun toUByteArray ([Lkotlin/UByte;)[B
+	public static final fun toUIntArray (Ljava/util/Collection;)[I
+	public static final fun toUIntArray ([Lkotlin/UInt;)[I
+	public static final fun toULongArray (Ljava/util/Collection;)[J
+	public static final fun toULongArray ([Lkotlin/ULong;)[J
+	public static final fun toUShortArray (Ljava/util/Collection;)[S
+	public static final fun toUShortArray ([Lkotlin/UShort;)[S
 }
 
 public abstract class kotlin/collections/UByteIterator : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {
