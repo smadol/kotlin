@@ -7,10 +7,9 @@ package org.jetbrains.kotlin.fir.expressions.impl
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.fir.FirSession
-import org.jetbrains.kotlin.fir.expressions.FirBreakStatement
-import org.jetbrains.kotlin.fir.expressions.FirContinueStatement
+import org.jetbrains.kotlin.fir.expressions.FirContinueExpression
 
-class FirContinueStatementImpl(
+class FirContinueExpressionImpl(
     session: FirSession,
     psi: PsiElement?
-) : FirAbstractLoopJump(session, psi), FirContinueStatement
+) : FirAbstractLoopJump(session, psi), FirContinueExpression

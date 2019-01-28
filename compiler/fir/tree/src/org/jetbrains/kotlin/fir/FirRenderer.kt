@@ -400,10 +400,10 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         visitElement(statement)
     }
 
-    override fun visitReturnStatement(returnStatement: FirReturnStatement) {
-        returnStatement.annotations.renderAnnotations()
+    override fun visitReturnExpression(returnExpression: FirReturnExpression) {
+        returnExpression.annotations.renderAnnotations()
         print("return")
-        val target = returnStatement.target
+        val target = returnExpression.target
         val labeledElement = target.labeledElement
         if (labeledElement is FirNamedFunction) {
             print("@@@${labeledElement.name}")
@@ -417,7 +417,7 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
             }
         }
         print(" ")
-        returnStatement.result.accept(this)
+        returnExpression.result.accept(this)
     }
 
     override fun visitWhenBranch(whenBranch: FirWhenBranch) {
@@ -495,16 +495,16 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         print("] ")
     }
 
-    override fun visitBreakStatement(breakStatement: FirBreakStatement) {
-        breakStatement.annotations.renderAnnotations()
+    override fun visitBreakExpression(breakExpression: FirBreakExpression) {
+        breakExpression.annotations.renderAnnotations()
         print("break")
-        visitLoopJump(breakStatement)
+        visitLoopJump(breakExpression)
     }
 
-    override fun visitContinueStatement(continueStatement: FirContinueStatement) {
-        continueStatement.annotations.renderAnnotations()
+    override fun visitContinueExpression(continueExpression: FirContinueExpression) {
+        continueExpression.annotations.renderAnnotations()
         print("continue")
-        visitLoopJump(continueStatement)
+        visitLoopJump(continueExpression)
     }
 
     override fun visitExpression(expression: FirExpression) {

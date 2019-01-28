@@ -8,11 +8,11 @@ package org.jetbrains.kotlin.fir.expressions
 import org.jetbrains.kotlin.fir.declarations.FirFunction
 import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
-interface FirReturnStatement : FirJump<FirFunction> {
+interface FirReturnExpression : FirJump<FirFunction> {
     val result: FirExpression
 
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
-        visitor.visitReturnStatement(this, data)
+        visitor.visitReturnExpression(this, data)
 
     override fun <R, D> acceptChildren(visitor: FirVisitor<R, D>, data: D) {
         result.accept(visitor, data)

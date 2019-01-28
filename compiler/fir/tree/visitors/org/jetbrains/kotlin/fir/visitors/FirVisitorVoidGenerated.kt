@@ -252,16 +252,16 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitExpression(jump, null)
     }
 
-    open fun visitBreakStatement(breakStatement: FirBreakStatement) {
-        visitJump(breakStatement, null)
+    open fun visitBreakExpression(breakExpression: FirBreakExpression) {
+        visitJump(breakExpression, null)
     }
 
-    open fun visitContinueStatement(continueStatement: FirContinueStatement) {
-        visitJump(continueStatement, null)
+    open fun visitContinueExpression(continueExpression: FirContinueExpression) {
+        visitJump(continueExpression, null)
     }
 
-    open fun visitReturnStatement(returnStatement: FirReturnStatement) {
-        visitJump(returnStatement, null)
+    open fun visitReturnExpression(returnExpression: FirReturnExpression) {
+        visitJump(returnExpression, null)
     }
 
     open fun visitThrowExpression(throwExpression: FirThrowExpression) {
@@ -396,8 +396,8 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitBlock(block)
     }
 
-    final override fun visitBreakStatement(breakStatement: FirBreakStatement, data: Nothing?) {
-        visitBreakStatement(breakStatement)
+    final override fun visitBreakExpression(breakExpression: FirBreakExpression, data: Nothing?) {
+        visitBreakExpression(breakExpression)
     }
 
     final override fun visitCall(call: FirCall, data: Nothing?) {
@@ -432,8 +432,8 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitConstructor(constructor)
     }
 
-    final override fun visitContinueStatement(continueStatement: FirContinueStatement, data: Nothing?) {
-        visitContinueStatement(continueStatement)
+    final override fun visitContinueExpression(continueExpression: FirContinueExpression, data: Nothing?) {
+        visitContinueExpression(continueExpression)
     }
 
     final override fun visitDeclaration(declaration: FirDeclaration, data: Nothing?) {
@@ -600,8 +600,8 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitResolvedType(resolvedType)
     }
 
-    final override fun visitReturnStatement(returnStatement: FirReturnStatement, data: Nothing?) {
-        visitReturnStatement(returnStatement)
+    final override fun visitReturnExpression(returnExpression: FirReturnExpression, data: Nothing?) {
+        visitReturnExpression(returnExpression)
     }
 
     final override fun visitStarProjection(starProjection: FirStarProjection, data: Nothing?) {

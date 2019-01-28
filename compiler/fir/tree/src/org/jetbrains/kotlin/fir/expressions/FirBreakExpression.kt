@@ -7,7 +7,7 @@ package org.jetbrains.kotlin.fir.expressions
 
 import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
-interface FirContinueStatement : FirJump<FirLoop> {
+interface FirBreakExpression : FirJump<FirLoop> {
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
-        visitor.visitContinueStatement(this, data)
+        visitor.visitBreakExpression(this, data)
 }

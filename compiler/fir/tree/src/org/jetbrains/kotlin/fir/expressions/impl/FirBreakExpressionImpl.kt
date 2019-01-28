@@ -7,9 +7,9 @@ package org.jetbrains.kotlin.fir.expressions.impl
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.fir.FirSession
-import org.jetbrains.kotlin.fir.expressions.FirBreakStatement
+import org.jetbrains.kotlin.fir.expressions.FirBreakExpression
 
-class FirBreakStatementImpl(
+class FirBreakExpressionImpl(
     session: FirSession,
     psi: PsiElement?
-) : FirAbstractLoopJump(session, psi), FirBreakStatement
+) : FirAbstractLoopJump(session, psi), FirBreakExpression

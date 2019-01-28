@@ -252,16 +252,16 @@ abstract class FirTransformer<in D> : FirVisitor<CompositeTransformResult<FirEle
         return transformExpression(jump, data)
     }
 
-    open fun transformBreakStatement(breakStatement: FirBreakStatement, data: D): CompositeTransformResult<FirStatement> {
-        return transformJump(breakStatement, data)
+    open fun transformBreakExpression(breakExpression: FirBreakExpression, data: D): CompositeTransformResult<FirStatement> {
+        return transformJump(breakExpression, data)
     }
 
-    open fun transformContinueStatement(continueStatement: FirContinueStatement, data: D): CompositeTransformResult<FirStatement> {
-        return transformJump(continueStatement, data)
+    open fun transformContinueExpression(continueExpression: FirContinueExpression, data: D): CompositeTransformResult<FirStatement> {
+        return transformJump(continueExpression, data)
     }
 
-    open fun transformReturnStatement(returnStatement: FirReturnStatement, data: D): CompositeTransformResult<FirStatement> {
-        return transformJump(returnStatement, data)
+    open fun transformReturnExpression(returnExpression: FirReturnExpression, data: D): CompositeTransformResult<FirStatement> {
+        return transformJump(returnExpression, data)
     }
 
     open fun transformThrowExpression(throwExpression: FirThrowExpression, data: D): CompositeTransformResult<FirStatement> {
@@ -396,8 +396,8 @@ abstract class FirTransformer<in D> : FirVisitor<CompositeTransformResult<FirEle
         return transformBlock(block, data)
     }
 
-    final override fun visitBreakStatement(breakStatement: FirBreakStatement, data: D): CompositeTransformResult<FirElement> {
-        return transformBreakStatement(breakStatement, data)
+    final override fun visitBreakExpression(breakExpression: FirBreakExpression, data: D): CompositeTransformResult<FirElement> {
+        return transformBreakExpression(breakExpression, data)
     }
 
     final override fun visitCall(call: FirCall, data: D): CompositeTransformResult<FirElement> {
@@ -432,8 +432,8 @@ abstract class FirTransformer<in D> : FirVisitor<CompositeTransformResult<FirEle
         return transformConstructor(constructor, data)
     }
 
-    final override fun visitContinueStatement(continueStatement: FirContinueStatement, data: D): CompositeTransformResult<FirElement> {
-        return transformContinueStatement(continueStatement, data)
+    final override fun visitContinueExpression(continueExpression: FirContinueExpression, data: D): CompositeTransformResult<FirElement> {
+        return transformContinueExpression(continueExpression, data)
     }
 
     final override fun visitDeclaration(declaration: FirDeclaration, data: D): CompositeTransformResult<FirElement> {
@@ -600,8 +600,8 @@ abstract class FirTransformer<in D> : FirVisitor<CompositeTransformResult<FirEle
         return transformResolvedType(resolvedType, data)
     }
 
-    final override fun visitReturnStatement(returnStatement: FirReturnStatement, data: D): CompositeTransformResult<FirElement> {
-        return transformReturnStatement(returnStatement, data)
+    final override fun visitReturnExpression(returnExpression: FirReturnExpression, data: D): CompositeTransformResult<FirElement> {
+        return transformReturnExpression(returnExpression, data)
     }
 
     final override fun visitStarProjection(starProjection: FirStarProjection, data: D): CompositeTransformResult<FirElement> {

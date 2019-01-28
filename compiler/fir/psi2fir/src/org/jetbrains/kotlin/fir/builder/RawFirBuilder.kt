@@ -119,8 +119,8 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                     )
             }
 
-        private fun FirExpression.toReturn(basePsi: PsiElement? = psi, labelName: String? = null): FirReturnStatement {
-            return FirReturnStatementImpl(
+        private fun FirExpression.toReturn(basePsi: PsiElement? = psi, labelName: String? = null): FirReturnExpression {
+            return FirReturnExpressionImpl(
                 session,
                 basePsi,
                 this
@@ -1084,11 +1084,11 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
         }
 
         override fun visitBreakExpression(expression: KtBreakExpression, data: Unit): FirElement {
-            return FirBreakStatementImpl(session, expression).bindLabel(expression)
+            return FirBreakExpressionImpl(session, expression).bindLabel(expression)
         }
 
         override fun visitContinueExpression(expression: KtContinueExpression, data: Unit): FirElement {
-            return FirContinueStatementImpl(session, expression).bindLabel(expression)
+            return FirContinueExpressionImpl(session, expression).bindLabel(expression)
         }
 
         private fun KtBinaryExpression.elvisToWhen(): FirWhenExpression {
