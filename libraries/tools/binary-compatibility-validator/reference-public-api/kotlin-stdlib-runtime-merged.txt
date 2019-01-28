@@ -2340,6 +2340,10 @@ public final class kotlin/collections/UArraysKt {
 	public static final fun singleOrNull-GBYM_sE ([B)Lkotlin/UByte;
 	public static final fun singleOrNull-QwZRm1k ([J)Lkotlin/ULong;
 	public static final fun singleOrNull-rL5Bavg ([S)Lkotlin/UShort;
+	public static final fun sumOfUByte ([B)I
+	public static final fun sumOfUInt ([I)I
+	public static final fun sumOfULong ([J)J
+	public static final fun sumOfUShort ([S)I
 	public static final fun toTypedArray--ajY-9A ([I)[Lkotlin/UInt;
 	public static final fun toTypedArray-GBYM_sE ([B)[Lkotlin/UByte;
 	public static final fun toTypedArray-QwZRm1k ([J)[Lkotlin/ULong;
