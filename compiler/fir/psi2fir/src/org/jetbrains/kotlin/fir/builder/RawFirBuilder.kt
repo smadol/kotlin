@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.fir.builder
 
+import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.Visibilities
@@ -118,10 +119,10 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                     )
             }
 
-        private fun FirExpression.toReturn(labelName: String? = null): FirReturnStatement {
+        private fun FirExpression.toReturn(basePsi: PsiElement? = psi, labelName: String? = null): FirReturnStatement {
             return FirReturnStatementImpl(
                 session,
-                this.psi,
+                basePsi,
                 this
             ).apply {
                 target = FirFunctionTarget(labelName)
@@ -581,7 +582,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                     val multiDeclaration = valueParameter.destructuringDeclaration
                     valueParameters += if (multiDeclaration != null) {
                         val multiParameter = FirValueParameterImpl(
-                            session, multiDeclaration, Name.special("<destruct>"),
+                            session, valueParameter, Name.special("<destruct>"),
                             FirImplicitTypeImpl(session, multiDeclaration),
                             defaultValue = null, isCrossinline = false, isNoinline = false, isVararg = false
                         )
@@ -874,7 +875,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
 
         override fun visitReturnExpression(expression: KtReturnExpression, data: Unit): FirElement {
             val result = expression.returnedExpression?.toFirExpression() ?: FirUnitExpression(session, expression)
-            return result.toReturn(expression.getTargetLabel()?.getReferencedName())
+            return result.toReturn(expression, expression.getTargetLabel()?.getReferencedName())
         }
 
         override fun visitTryExpression(expression: KtTryExpression, data: Unit): FirElement {
@@ -984,10 +985,10 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                         } else {
                             val condition = entry.conditions.first() as KtWhenConditionWithExpression
                             val firCondition = condition.expression.toFirExpression("No expression in condition with expression")
-                            FirWhenBranchImpl(session, condition, firCondition, branch)
+                            FirWhenBranchImpl(session, entry, firCondition, branch)
                         }
                     } else {
-                        FirWhenBranchImpl(session, null, FirElseIfTrueCondition(session, null), branch)
+                        FirWhenBranchImpl(session, entry, FirElseIfTrueCondition(session, null), branch)
                     }
                 }
             }
@@ -1040,7 +1041,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                     if (block is FirBlockImpl && parameter != null) {
                         val multiDeclaration = parameter.destructuringDeclaration
                         val firLoopParameter = generateTemporaryVariable(
-                            session, expression,
+                            session, expression.loopParameter,
                             if (multiDeclaration != null) Name.special("<destruct>") else parameter.nameAsSafeName,
                             FirFunctionCallImpl(session, expression).apply {
                                 calleeReference = FirSimpleNamedReference(session, expression, Name.identifier("next"))
@@ -1093,7 +1094,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
         private fun KtBinaryExpression.elvisToWhen(): FirWhenExpression {
             val rightArgument = right.toFirExpression("No right operand")
             val leftArgument = left.toFirExpression("No left operand")
-            return leftArgument.generateNotNullOrOther(rightArgument, "elvis")
+            return leftArgument.generateNotNullOrOther(rightArgument, "elvis", this)
         }
 
         private fun KtUnaryExpression.bangBangToWhen(): FirWhenExpression {
@@ -1102,7 +1103,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                     session, this, FirFunctionCallImpl(session, this).apply {
                         calleeReference = FirSimpleNamedReference(session, this@bangBangToWhen, KNPE)
                     }
-                ), "bangbang"
+                ), "bangbang", this
             )
         }
 
@@ -1293,7 +1294,9 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
 
         override fun visitCallableReferenceExpression(expression: KtCallableReferenceExpression, data: Unit): FirElement {
             return FirCallableReferenceAccessImpl(session, expression).apply {
-                calleeReference = FirSimpleNamedReference(session, expression, expression.callableReference.getReferencedNameAsName())
+                calleeReference = FirSimpleNamedReference(
+                    session, expression.callableReference, expression.callableReference.getReferencedNameAsName()
+                )
                 explicitReceiver = expression.receiverExpression?.toFirExpression()
             }
         }

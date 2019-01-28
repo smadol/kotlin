@@ -175,12 +175,12 @@ internal fun IElementType.toFirOperation(): FirOperation =
         else -> throw AssertionError(this.toString())
     }
 
-internal fun FirExpression.generateNotNullOrOther(other: FirExpression, caseId: String): FirWhenExpression {
+internal fun FirExpression.generateNotNullOrOther(other: FirExpression, caseId: String, basePsi: KtElement): FirWhenExpression {
     val subjectName = Name.special("<$caseId>")
     val subjectVariable = generateTemporaryVariable(session, psi, subjectName, this)
     val subjectExpression = FirWhenSubjectExpression(session, psi)
     return FirWhenExpressionImpl(
-        session, psi, this, subjectVariable
+        session, basePsi, this, subjectVariable
     ).apply {
         branches += FirWhenBranchImpl(
             session, psi,
@@ -296,7 +296,7 @@ private fun FirModifiableAccess.initializeLValue(
 ): FirReference {
     return when (left) {
         is KtSimpleNameExpression -> {
-            FirSimpleNamedReference(session, left.getReferencedNameElement(), left.getReferencedNameAsName())
+            FirSimpleNamedReference(session, left, left.getReferencedNameAsName())
         }
         is KtThisExpression -> {
             FirExplicitThisReference(session, left, left.getLabelName())
@@ -345,7 +345,7 @@ internal fun KtExpression?.generateAssignment(
         return FirBlockImpl(session, arrayExpression).apply {
             val name = Name.special("<array-set>")
             statements += generateTemporaryVariable(
-                session, arrayExpression, name,
+                session, this@generateAssignment, name,
                 arrayExpression?.convert() ?: FirErrorExpressionImpl(session, arrayExpression, "No array expression")
             )
             statements += arraySet.apply { calleeReference = FirSimpleNamedReference(session, arrayExpression, name) }
