@@ -8,10 +8,13 @@ package org.jetbrains.kotlin.fir.builder
 import com.intellij.testFramework.TestDataPath
 import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirRenderer
+import org.jetbrains.kotlin.fir.declarations.FirDeclaration
+import org.jetbrains.kotlin.fir.declarations.FirErrorDeclaration
 import org.jetbrains.kotlin.fir.declarations.FirFile
 import org.jetbrains.kotlin.fir.expressions.FirErrorExpression
 import org.jetbrains.kotlin.fir.expressions.FirExpression
-import org.jetbrains.kotlin.fir.expressions.FirMemberAccess
+import org.jetbrains.kotlin.fir.expressions.FirAccess
+import org.jetbrains.kotlin.fir.expressions.FirStatement
 import org.jetbrains.kotlin.fir.expressions.impl.FirExpressionStub
 import org.jetbrains.kotlin.fir.references.FirErrorNamedReference
 import org.jetbrains.kotlin.fir.render
@@ -33,6 +36,9 @@ class RawFirBuilderTotalKotlinTestCase : AbstractRawFirBuilderTestCase() {
         var expressionStubs = 0
         var errorExpressions = 0
         var normalExpressions = 0
+        var normalStatements = 0
+        var errorDeclarations = 0
+        var normalDeclarations = 0
         var errorReferences = 0
         var normalReferences = 0
         println("BASE PATH: $testDataPath")
@@ -59,15 +65,15 @@ class RawFirBuilderTotalKotlinTestCase : AbstractRawFirBuilderTestCase() {
                         errorExpression.psi?.let { println(it) }
                     }
 
-                    override fun visitMemberAccess(memberAccess: FirMemberAccess) {
-                        val calleeReference = memberAccess.calleeReference
+                    override fun visitAccess(access: FirAccess) {
+                        val calleeReference = access.calleeReference
                         if (calleeReference is FirErrorNamedReference) {
                             errorReferences++
                             println(calleeReference.errorReason)
                         } else {
                             normalReferences++
                         }
-                        super.visitMemberAccess(memberAccess)
+                        super.visitAccess(access)
                     }
 
                     override fun visitExpression(expression: FirExpression) {
@@ -81,6 +87,22 @@ class RawFirBuilderTotalKotlinTestCase : AbstractRawFirBuilderTestCase() {
                             else -> normalExpressions++
                         }
                         expression.acceptChildren(this)
+                    }
+
+                    override fun visitStatement(statement: FirStatement) {
+                        normalStatements++
+                        statement.acceptChildren(this)
+                    }
+
+                    override fun visitErrorDeclaration(errorDeclaration: FirErrorDeclaration) {
+                        errorDeclarations++
+                        println(errorDeclaration.render())
+                        errorDeclaration.psi?.let { println(it) }
+                    }
+
+                    override fun visitDeclaration(declaration: FirDeclaration) {
+                        normalDeclarations++
+                        declaration.acceptChildren(this)
                     }
                 })
 
@@ -98,12 +120,16 @@ class RawFirBuilderTotalKotlinTestCase : AbstractRawFirBuilderTestCase() {
         println("EXPRESSION STUBS: $expressionStubs")
         println("ERROR EXPRESSIONS: $errorExpressions")
         println("NORMAL EXPRESSIONS: $normalExpressions")
+        println("NORMAL STATEMENTS: $normalStatements")
+        println("ERROR DECLARATIONS: $errorDeclarations")
+        println("NORMAL DECLARATIONS: $normalDeclarations")
         println("ERROR REFERENCES: $errorReferences")
         println("NORMAL REFERENCES: $normalReferences")
         if (!stubMode) {
             assertEquals(0, expressionStubs)
         }
         assertEquals(0, errorExpressions)
+        assertEquals(0, errorDeclarations)
         assertEquals(0, errorReferences)
     }
 

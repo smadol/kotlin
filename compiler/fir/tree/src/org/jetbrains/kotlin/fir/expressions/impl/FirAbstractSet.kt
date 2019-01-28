@@ -20,9 +20,9 @@ abstract class FirAbstractSet(
     final override var value: FirExpression,
     final override val operation: FirOperation,
     safe: Boolean = false
-) : FirAbstractMemberAccess(session, psi, safe), FirPropertySet {
+) : FirAbstractAccess(session, psi, safe), FirPropertySet {
     override fun <D> transformChildren(transformer: FirTransformer<D>, data: D): FirElement {
         value = value.transformSingle(transformer, data)
-        return super<FirAbstractMemberAccess>.transformChildren(transformer, data)
+        return super<FirAbstractAccess>.transformChildren(transformer, data)
     }
 }

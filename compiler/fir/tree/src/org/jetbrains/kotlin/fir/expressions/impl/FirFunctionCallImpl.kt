@@ -18,7 +18,7 @@ class FirFunctionCallImpl(
     session: FirSession,
     psi: PsiElement?,
     override var safe: Boolean = false
-) : FirAbstractCall(session, psi), FirFunctionCall, FirModifiableMemberAccess {
+) : FirAbstractCall(session, psi), FirFunctionCall, FirModifiableAccess {
     override lateinit var calleeReference: FirNamedReference
 
     override var explicitReceiver: FirExpression? = null

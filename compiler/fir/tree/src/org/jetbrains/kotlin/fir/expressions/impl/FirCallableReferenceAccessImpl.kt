@@ -6,10 +6,14 @@
 package org.jetbrains.kotlin.fir.expressions.impl
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSession
+import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
 import org.jetbrains.kotlin.fir.expressions.FirCallableReferenceAccess
+import org.jetbrains.kotlin.fir.transformInplace
+import org.jetbrains.kotlin.fir.visitors.FirTransformer
 
 class FirCallableReferenceAccessImpl(
     session: FirSession,
     psi: PsiElement?
-) : FirAbstractMemberAccess(session, psi), FirCallableReferenceAccess
+) : FirAbstractAccess(session, psi), FirCallableReferenceAccess

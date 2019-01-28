@@ -7,7 +7,7 @@ package org.jetbrains.kotlin.fir.expressions
 
 import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
-interface FirSet : FirMemberAccess {
+interface FirSet : FirAccess {
     val value: FirExpression
 
     val operation: FirOperation

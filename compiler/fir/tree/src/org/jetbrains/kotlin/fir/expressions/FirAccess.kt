@@ -8,7 +8,7 @@ package org.jetbrains.kotlin.fir.expressions
 import org.jetbrains.kotlin.fir.FirReference
 import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
-interface FirMemberAccess : FirExpression {
+interface FirAccess : FirStatement {
     val calleeReference: FirReference
 
     val safe: Boolean get() = false
@@ -16,7 +16,7 @@ interface FirMemberAccess : FirExpression {
     val explicitReceiver: FirExpression? get() = null
 
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
-        visitor.visitMemberAccess(this, data)
+        visitor.visitAccess(this, data)
 
     override fun <R, D> acceptChildren(visitor: FirVisitor<R, D>, data: D) {
         calleeReference.accept(visitor, data)

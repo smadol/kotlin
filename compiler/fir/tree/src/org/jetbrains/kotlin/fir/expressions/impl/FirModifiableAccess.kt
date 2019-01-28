@@ -6,9 +6,9 @@
 package org.jetbrains.kotlin.fir.expressions.impl
 
 import org.jetbrains.kotlin.fir.expressions.FirExpression
-import org.jetbrains.kotlin.fir.expressions.FirMemberAccess
+import org.jetbrains.kotlin.fir.expressions.FirAccess
 
-interface FirModifiableMemberAccess : FirMemberAccess {
+interface FirModifiableAccess : FirAccess {
     override var safe: Boolean
         get() = super.safe
         set(_) {}

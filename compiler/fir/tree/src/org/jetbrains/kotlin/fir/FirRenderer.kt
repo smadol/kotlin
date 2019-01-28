@@ -617,7 +617,7 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
                 val sb = StringBuilder()
                 sb.append(symbol.classId.asString())
                 if (typeArguments.isNotEmpty()) {
-                    sb.append(typeArguments.joinToString(prefix = "<", postfix = ">") { it ->
+                    sb.append(typeArguments.joinToString(prefix = "<", postfix = ">") {
                         when (it) {
                             StarProjection -> "*"
                             is ConeKotlinTypeProjectionIn -> "in ${it.type.asString()}"
@@ -707,11 +707,11 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         print(">")
     }
 
-    override fun visitMemberAccess(memberAccess: FirMemberAccess) {
-        val explicitReceiver = memberAccess.explicitReceiver
+    override fun visitAccess(access: FirAccess) {
+        val explicitReceiver = access.explicitReceiver
         if (explicitReceiver != null) {
             explicitReceiver.accept(this)
-            if (memberAccess.safe) {
+            if (access.safe) {
                 print("?.")
             } else {
                 print(".")
@@ -726,10 +726,10 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         callableReferenceAccess.calleeReference.accept(this)
     }
 
-    override fun visitPropertyGet(propertyGet: FirPropertyGet) {
-        propertyGet.annotations.renderAnnotations()
-        visitMemberAccess(propertyGet)
-        propertyGet.calleeReference.accept(this)
+    override fun visitAccessExpression(accessExpression: FirAccessExpression) {
+        accessExpression.annotations.renderAnnotations()
+        visitAccess(accessExpression)
+        accessExpression.calleeReference.accept(this)
     }
 
     override fun visitSet(set: FirSet) {
@@ -740,7 +740,7 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
 
     override fun visitPropertySet(propertySet: FirPropertySet) {
         propertySet.annotations.renderAnnotations()
-        visitMemberAccess(propertySet)
+        visitAccess(propertySet)
         propertySet.calleeReference.accept(this)
         print(" ")
         visitSet(propertySet)
@@ -748,7 +748,7 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
 
     override fun visitArraySetCall(arraySetCall: FirArraySetCall) {
         arraySetCall.annotations.renderAnnotations()
-        visitMemberAccess(arraySetCall)
+        visitAccess(arraySetCall)
         arraySetCall.calleeReference.accept(this)
         print("[")
         arraySetCall.arguments.renderSeparated()
@@ -758,7 +758,7 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
 
     override fun visitFunctionCall(functionCall: FirFunctionCall) {
         functionCall.annotations.renderAnnotations()
-        visitMemberAccess(functionCall)
+        visitAccess(functionCall)
         functionCall.calleeReference.accept(this)
         visitCall(functionCall)
     }

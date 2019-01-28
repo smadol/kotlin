@@ -114,7 +114,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                 else ->
                     FirSingleExpressionBlock(
                         session,
-                        toFirExpression()
+                        convert()
                     )
             }
 
@@ -830,7 +830,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
         }
 
         override fun visitSimpleNameExpression(expression: KtSimpleNameExpression, data: Unit): FirElement {
-            return generatePropertyGet(session, expression, expression.getReferencedNameAsName())
+            return generateAccessExpression(session, expression, expression.getReferencedNameAsName())
         }
 
         override fun visitConstantExpression(expression: KtConstantExpression, data: Unit): FirElement =
@@ -1026,14 +1026,14 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                     session, expression.loopRange, iteratorName,
                     FirFunctionCallImpl(session, expression).apply {
                         calleeReference = FirSimpleNamedReference(session, expression, Name.identifier("iterator"))
-                        explicitReceiver = generatePropertyGet(session, expression.loopRange, rangeName)
+                        explicitReceiver = generateAccessExpression(session, expression.loopRange, rangeName)
                     }
                 )
                 statements += FirWhileLoopImpl(
                     session, expression,
                     FirFunctionCallImpl(session, expression).apply {
                         calleeReference = FirSimpleNamedReference(session, expression, Name.identifier("hasNext"))
-                        explicitReceiver = generatePropertyGet(session, expression, iteratorName)
+                        explicitReceiver = generateAccessExpression(session, expression, iteratorName)
                     }
                 ).configure {
                     val block = expression.body.toFirBlock()
@@ -1044,7 +1044,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                             if (multiDeclaration != null) Name.special("<destruct>") else parameter.nameAsSafeName,
                             FirFunctionCallImpl(session, expression).apply {
                                 calleeReference = FirSimpleNamedReference(session, expression, Name.identifier("next"))
-                                explicitReceiver = generatePropertyGet(session, expression, iteratorName)
+                                explicitReceiver = generateAccessExpression(session, expression, iteratorName)
                             }
                         )
                         if (multiDeclaration != null) {
@@ -1225,7 +1225,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
         override fun visitQualifiedExpression(expression: KtQualifiedExpression, data: Unit): FirElement {
             val selector = expression.selectorExpression
                 ?: return FirErrorExpressionImpl(session, expression, "Qualified expression without selector")
-            val firSelector = selector.toFirExpression() as FirModifiableMemberAccess
+            val firSelector = selector.toFirExpression() as FirModifiableAccess
             firSelector.safe = expression is KtSafeQualifiedExpression
             firSelector.explicitReceiver = expression.receiverExpression.toFirExpression()
             return firSelector
@@ -1233,14 +1233,14 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
 
         override fun visitThisExpression(expression: KtThisExpression, data: Unit): FirElement {
             val labelName = expression.getLabelName()
-            return FirPropertyGetImpl(session, expression).apply {
+            return FirAccessExpressionImpl(session, expression).apply {
                 calleeReference = FirExplicitThisReference(session, expression, labelName)
             }
         }
 
         override fun visitSuperExpression(expression: KtSuperExpression, data: Unit): FirElement {
             val superType = expression.superTypeQualifier
-            return FirPropertyGetImpl(session, expression).apply {
+            return FirAccessExpressionImpl(session, expression).apply {
                 calleeReference = FirExplicitSuperReference(session, expression, superType.toFirOrImplicitType())
             }
         }

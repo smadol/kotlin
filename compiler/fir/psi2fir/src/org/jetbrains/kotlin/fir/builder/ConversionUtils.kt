@@ -190,7 +190,7 @@ internal fun FirExpression.generateNotNullOrOther(other: FirExpression, caseId: 
             },
             FirSingleExpressionBlock(
                 session,
-                generatePropertyGet(session, psi, subjectName)
+                generateAccessExpression(session, psi, subjectName)
             )
         )
         branches += FirWhenBranchImpl(
@@ -217,13 +217,13 @@ internal fun generateIncrementOrDecrementBlock(
         val resultName = Name.special("<unary-result>")
         val resultInitializer = FirFunctionCallImpl(session, baseExpression).apply {
             this.calleeReference = FirSimpleNamedReference(session, baseExpression.operationReference, callName)
-            this.arguments += generatePropertyGet(session, baseExpression, tempName)
+            this.arguments += generateAccessExpression(session, baseExpression, tempName)
         }
         val resultVar = generateTemporaryVariable(session, baseExpression, resultName, resultInitializer)
         val directSet = argument.generateSet(
             session, baseExpression,
             if (prefix && argument !is KtSimpleNameExpression)
-                generatePropertyGet(session, baseExpression, resultName)
+                generateAccessExpression(session, baseExpression, resultName)
             else
                 resultInitializer,
             FirOperation.ASSIGN, convert
@@ -241,20 +241,20 @@ internal fun generateIncrementOrDecrementBlock(
             if (argument !is KtSimpleNameExpression) {
                 statements += resultVar
                 appendDirectSet()
-                statements += generatePropertyGet(session, baseExpression, resultName)
+                statements += generateAccessExpression(session, baseExpression, resultName)
             } else {
                 appendDirectSet()
-                statements += generatePropertyGet(session, baseExpression, argument.getReferencedNameAsName())
+                statements += generateAccessExpression(session, baseExpression, argument.getReferencedNameAsName())
             }
         } else {
             appendDirectSet()
-            statements += generatePropertyGet(session, baseExpression, tempName)
+            statements += generateAccessExpression(session, baseExpression, tempName)
         }
     }
 }
 
-internal fun generatePropertyGet(session: FirSession, psi: PsiElement?, name: Name): FirPropertyGet =
-    FirPropertyGetImpl(session, psi).apply {
+internal fun generateAccessExpression(session: FirSession, psi: PsiElement?, name: Name): FirAccessExpression =
+    FirAccessExpressionImpl(session, psi).apply {
         calleeReference = FirSimpleNamedReference(session, psi, name)
     }
 
@@ -274,7 +274,7 @@ internal fun generateDestructuringBlock(
                 session, entry, entry.nameAsSafeName,
                 entry.typeReference.toFirOrImplicitType(), isVar,
                 FirComponentCallImpl(session, entry, index + 1).apply {
-                    arguments += generatePropertyGet(session, entry, container.name)
+                    arguments += generateAccessExpression(session, entry, container.name)
                 }
             )
         }
@@ -289,10 +289,10 @@ internal fun generateTemporaryVariable(
     session: FirSession, psi: PsiElement?, specialName: String, initializer: FirExpression
 ): FirVariable = generateTemporaryVariable(session, psi, Name.special("<$specialName>"), initializer)
 
-private fun FirModifiableMemberAccess.initializeLValue(
+private fun FirModifiableAccess.initializeLValue(
     session: FirSession,
     left: KtExpression?,
-    convertQualified: KtQualifiedExpression.() -> FirMemberAccess?
+    convertQualified: KtQualifiedExpression.() -> FirAccess?
 ): FirReference {
     return when (left) {
         is KtSimpleNameExpression -> {
@@ -326,7 +326,7 @@ internal fun KtExpression?.generateSet(
     value: FirExpression,
     operation: FirOperation,
     convert: KtExpression.() -> FirExpression
-): FirExpression {
+): FirStatement {
     if (this is KtParenthesizedExpression) {
         return expression.generateSet(session, psi, value, operation, convert)
     }
@@ -339,7 +339,7 @@ internal fun KtExpression?.generateSet(
         }
         if (arrayExpression is KtSimpleNameExpression) {
             return arraySet.apply {
-                calleeReference = initializeLValue(session, arrayExpression) { convert() as? FirMemberAccess }
+                calleeReference = initializeLValue(session, arrayExpression) { convert() as? FirAccess }
             }
         }
         return FirBlockImpl(session, arrayExpression).apply {
@@ -366,6 +366,6 @@ internal fun KtExpression?.generateSet(
         }
     }
     return FirPropertySetImpl(session, psi, value, operation).apply {
-        calleeReference = initializeLValue(session, this@generateSet) { convert() as? FirMemberAccess }
+        calleeReference = initializeLValue(session, this@generateSet) { convert() as? FirAccess }
     }
 }

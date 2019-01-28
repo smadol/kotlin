@@ -5,9 +5,14 @@
 
 package org.jetbrains.kotlin.fir.expressions
 
+import org.jetbrains.kotlin.fir.VisitedSupertype
 import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
-interface FirPropertyGet : FirMemberAccess {
+interface FirAccessExpression : @VisitedSupertype FirAccess, FirExpression {
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
-        visitor.visitPropertyGet(this, data)
+        visitor.visitAccessExpression(this, data)
+
+    override fun <R, D> acceptChildren(visitor: FirVisitor<R, D>, data: D) {
+        super<FirAccess>.acceptChildren(visitor, data)
+    }
 }

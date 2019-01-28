@@ -8,19 +8,19 @@ package org.jetbrains.kotlin.fir.expressions.impl
 import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.expressions.FirBlock
-import org.jetbrains.kotlin.fir.expressions.FirExpression
+import org.jetbrains.kotlin.fir.expressions.FirStatement
 import org.jetbrains.kotlin.fir.transformSingle
 import org.jetbrains.kotlin.fir.visitors.FirTransformer
 
 class FirSingleExpressionBlock(
     session: FirSession,
-    private var expression: FirExpression
-) : FirAbstractAnnotatedElement(session, expression.psi), FirBlock {
+    private var statement: FirStatement
+) : FirAbstractAnnotatedElement(session, statement.psi), FirBlock {
     override val statements
-        get() = listOf(expression)
+        get() = listOf(statement)
 
     override fun <D> transformChildren(transformer: FirTransformer<D>, data: D): FirElement {
-        expression = expression.transformSingle(transformer, data)
+        statement = statement.transformSingle(transformer, data)
         return super<FirAbstractAnnotatedElement>.transformChildren(transformer, data)
     }
 }

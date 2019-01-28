@@ -6,11 +6,15 @@
 package org.jetbrains.kotlin.fir.expressions.impl
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSession
-import org.jetbrains.kotlin.fir.expressions.FirPropertyGet
+import org.jetbrains.kotlin.fir.expressions.FirAccessExpression
+import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
+import org.jetbrains.kotlin.fir.transformInplace
+import org.jetbrains.kotlin.fir.visitors.FirTransformer
 
-class FirPropertyGetImpl(
+class FirAccessExpressionImpl(
     session: FirSession,
     psi: PsiElement?,
     safe: Boolean = false
-) : FirAbstractMemberAccess(session, psi, safe), FirPropertyGet
+) : FirAbstractAccess(session, psi, safe), FirAccessExpression
