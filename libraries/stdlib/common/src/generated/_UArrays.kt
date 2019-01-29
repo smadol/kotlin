@@ -576,6 +576,38 @@ public inline fun UShortArray.copyOfRange(fromIndex: Int, toIndex: Int): UShortA
 }
 
 /**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UIntArray.lastIndex: Int
+    get() = storage.lastIndex
+
+/**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val ULongArray.lastIndex: Int
+    get() = storage.lastIndex
+
+/**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UByteArray.lastIndex: Int
+    get() = storage.lastIndex
+
+/**
+ * Returns the last valid index for the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public val UShortArray.lastIndex: Int
+    get() = storage.lastIndex
+
+/**
  * Returns an array of type [ByteArray], which is a copy of this array where each element is a signed reinterpretation
  * of the corresponding element of this array.
  */
@@ -697,5 +729,441 @@ public inline fun LongArray.toULongArray(): ULongArray {
 @kotlin.internal.InlineOnly
 public inline fun ShortArray.toUShortArray(): UShortArray {
     return UShortArray(this.copyOf())
+}
+
+/**
+ * Returns `true` if all elements match the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.all
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UIntArray.all(predicate: (UInt) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (!predicate(element)) return false
+    }
+    return true
+}
+
+/**
+ * Returns `true` if all elements match the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.all
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun ULongArray.all(predicate: (ULong) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (!predicate(element)) return false
+    }
+    return true
+}
+
+/**
+ * Returns `true` if all elements match the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.all
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UByteArray.all(predicate: (UByte) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (!predicate(element)) return false
+    }
+    return true
+}
+
+/**
+ * Returns `true` if all elements match the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.all
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UShortArray.all(predicate: (UShort) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (!predicate(element)) return false
+    }
+    return true
+}
+
+/**
+ * Returns `true` if array has at least one element.
+ * 
+ * @sample samples.collections.Collections.Aggregates.any
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UIntArray.any(): Boolean {
+    return !isEmpty()
+}
+
+/**
+ * Returns `true` if array has at least one element.
+ * 
+ * @sample samples.collections.Collections.Aggregates.any
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun ULongArray.any(): Boolean {
+    return !isEmpty()
+}
+
+/**
+ * Returns `true` if array has at least one element.
+ * 
+ * @sample samples.collections.Collections.Aggregates.any
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UByteArray.any(): Boolean {
+    return !isEmpty()
+}
+
+/**
+ * Returns `true` if array has at least one element.
+ * 
+ * @sample samples.collections.Collections.Aggregates.any
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UShortArray.any(): Boolean {
+    return !isEmpty()
+}
+
+/**
+ * Returns `true` if at least one element matches the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.anyWithPredicate
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UIntArray.any(predicate: (UInt) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) return true
+    }
+    return false
+}
+
+/**
+ * Returns `true` if at least one element matches the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.anyWithPredicate
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun ULongArray.any(predicate: (ULong) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) return true
+    }
+    return false
+}
+
+/**
+ * Returns `true` if at least one element matches the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.anyWithPredicate
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UByteArray.any(predicate: (UByte) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) return true
+    }
+    return false
+}
+
+/**
+ * Returns `true` if at least one element matches the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.anyWithPredicate
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UShortArray.any(predicate: (UShort) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) return true
+    }
+    return false
+}
+
+/**
+ * Returns the number of elements matching the given [predicate].
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UIntArray.count(predicate: (UInt) -> Boolean): Int {
+    var count = 0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) ++count
+    }
+    return count
+}
+
+/**
+ * Returns the number of elements matching the given [predicate].
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun ULongArray.count(predicate: (ULong) -> Boolean): Int {
+    var count = 0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) ++count
+    }
+    return count
+}
+
+/**
+ * Returns the number of elements matching the given [predicate].
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UByteArray.count(predicate: (UByte) -> Boolean): Int {
+    var count = 0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) ++count
+    }
+    return count
+}
+
+/**
+ * Returns the number of elements matching the given [predicate].
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UShortArray.count(predicate: (UShort) -> Boolean): Int {
+    var count = 0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) ++count
+    }
+    return count
+}
+
+/**
+ * Returns `true` if the array has no elements.
+ * 
+ * @sample samples.collections.Collections.Aggregates.none
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UIntArray.none(): Boolean {
+    return isEmpty()
+}
+
+/**
+ * Returns `true` if the array has no elements.
+ * 
+ * @sample samples.collections.Collections.Aggregates.none
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun ULongArray.none(): Boolean {
+    return isEmpty()
+}
+
+/**
+ * Returns `true` if the array has no elements.
+ * 
+ * @sample samples.collections.Collections.Aggregates.none
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UByteArray.none(): Boolean {
+    return isEmpty()
+}
+
+/**
+ * Returns `true` if the array has no elements.
+ * 
+ * @sample samples.collections.Collections.Aggregates.none
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun UShortArray.none(): Boolean {
+    return isEmpty()
+}
+
+/**
+ * Returns `true` if no elements match the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.noneWithPredicate
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UIntArray.none(predicate: (UInt) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) return false
+    }
+    return true
+}
+
+/**
+ * Returns `true` if no elements match the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.noneWithPredicate
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun ULongArray.none(predicate: (ULong) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) return false
+    }
+    return true
+}
+
+/**
+ * Returns `true` if no elements match the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.noneWithPredicate
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UByteArray.none(predicate: (UByte) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) return false
+    }
+    return true
+}
+
+/**
+ * Returns `true` if no elements match the given [predicate].
+ * 
+ * @sample samples.collections.Collections.Aggregates.noneWithPredicate
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UShortArray.none(predicate: (UShort) -> Boolean): Boolean {
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        if (predicate(element)) return false
+    }
+    return true
+}
+
+/**
+ * Returns the sum of all values produced by [selector] function applied to each element in the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UIntArray.sumBy(selector: (UInt) -> Int): Int {
+    var sum: Int = 0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        sum += selector(element)
+    }
+    return sum
+}
+
+/**
+ * Returns the sum of all values produced by [selector] function applied to each element in the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun ULongArray.sumBy(selector: (ULong) -> Int): Int {
+    var sum: Int = 0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        sum += selector(element)
+    }
+    return sum
+}
+
+/**
+ * Returns the sum of all values produced by [selector] function applied to each element in the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UByteArray.sumBy(selector: (UByte) -> Int): Int {
+    var sum: Int = 0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        sum += selector(element)
+    }
+    return sum
+}
+
+/**
+ * Returns the sum of all values produced by [selector] function applied to each element in the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UShortArray.sumBy(selector: (UShort) -> Int): Int {
+    var sum: Int = 0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        sum += selector(element)
+    }
+    return sum
+}
+
+/**
+ * Returns the sum of all values produced by [selector] function applied to each element in the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UIntArray.sumByDouble(selector: (UInt) -> Double): Double {
+    var sum: Double = 0.0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        sum += selector(element)
+    }
+    return sum
+}
+
+/**
+ * Returns the sum of all values produced by [selector] function applied to each element in the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun ULongArray.sumByDouble(selector: (ULong) -> Double): Double {
+    var sum: Double = 0.0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        sum += selector(element)
+    }
+    return sum
+}
+
+/**
+ * Returns the sum of all values produced by [selector] function applied to each element in the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UByteArray.sumByDouble(selector: (UByte) -> Double): Double {
+    var sum: Double = 0.0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        sum += selector(element)
+    }
+    return sum
+}
+
+/**
+ * Returns the sum of all values produced by [selector] function applied to each element in the array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public inline fun UShortArray.sumByDouble(selector: (UShort) -> Double): Double {
+    var sum: Double = 0.0
+    for (index in 0..lastIndex) {
+        val element = get(index)
+        sum += selector(element)
+    }
+    return sum
 }
 

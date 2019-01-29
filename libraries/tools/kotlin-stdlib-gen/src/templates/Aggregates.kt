@@ -15,12 +15,16 @@ object Aggregates : TemplateGroupBase() {
             if (sequenceClassification.isEmpty()) {
                 sequenceClassification(terminal)
             }
+            specialFor(ArraysOfUnsigned) {
+                since("1.3")
+                annotation("@ExperimentalUnsignedTypes")
+            }
         }
     }
 
     val f_all = fn("all(predicate: (T) -> Boolean)") {
         includeDefault()
-        include(Maps, CharSequences)
+        include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
         doc {
@@ -41,11 +45,20 @@ object Aggregates : TemplateGroupBase() {
             return true
             """
         }
+        body(ArraysOfUnsigned) {
+            """
+            for (index in 0..lastIndex) {
+                val element = get(index)
+                if (!predicate(element)) return false
+            }
+            return true
+            """
+        }
     }
 
     val f_none_predicate = fn("none(predicate: (T) -> Boolean)") {
         includeDefault()
-        include(Maps, CharSequences)
+        include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -67,11 +80,20 @@ object Aggregates : TemplateGroupBase() {
             return true
             """
         }
+        body(ArraysOfUnsigned) {
+            """
+            for (index in 0..lastIndex) {
+                val element = get(index)
+                if (predicate(element)) return false
+            }
+            return true
+            """
+        }
     }
 
     val f_none = fn("none()") {
         includeDefault()
-        include(Maps, CharSequences)
+        include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         doc {
             """
@@ -91,14 +113,14 @@ object Aggregates : TemplateGroupBase() {
                 """
             }
         }
-        specialFor(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives) {
+        specialFor(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             body { "return isEmpty()" }
         }
     }
 
     val f_any_predicate = fn("any(predicate: (T) -> Boolean)") {
         includeDefault()
-        include(Maps, CharSequences)
+        include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -120,11 +142,20 @@ object Aggregates : TemplateGroupBase() {
             return false
             """
         }
+        body(ArraysOfUnsigned) {
+            """
+            for (index in 0..lastIndex) {
+                val element = get(index)
+                if (predicate(element)) return true
+            }
+            return false
+            """
+        }
     }
 
     val f_any = fn("any()") {
         includeDefault()
-        include(Maps, CharSequences)
+        include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         doc {
             """
@@ -142,13 +173,13 @@ object Aggregates : TemplateGroupBase() {
             return iterator().hasNext()
             """
         }
-        body(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives) { "return !isEmpty()" }
+        body(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) { "return !isEmpty()" }
     }
 
 
     val f_count_predicate = fn("count(predicate: (T) -> Boolean)") {
         includeDefault()
-        include(Maps, CharSequences)
+        include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
 
@@ -164,6 +195,16 @@ object Aggregates : TemplateGroupBase() {
             }}
             var count = 0
             for (element in this) if (predicate(element)) ${checkOverflow("++count")}
+            return count
+            """
+        }
+        body(ArraysOfUnsigned) {
+            """
+            var count = 0
+            for (index in 0..lastIndex) {
+                val element = get(index)
+                if (predicate(element)) ++count
+            }
             return count
             """
         }
@@ -184,27 +225,37 @@ object Aggregates : TemplateGroupBase() {
             return count
             """
         }
-        specialFor(CharSequences, Maps, Collections, ArraysOfObjects, ArraysOfPrimitives) { inlineOnly() }
+        specialFor(CharSequences, Maps, Collections, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) { inlineOnly() }
         specialFor(CharSequences) {
             doc { "Returns the length of this char sequence." }
             body { "return length" }
         }
-        specialFor(Maps, Collections, ArraysOfObjects, ArraysOfPrimitives) {
+        specialFor(Maps, Collections, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             body { "return size" }
         }
     }
 
     val f_sumBy = fn("sumBy(selector: (T) -> Int)") {
         includeDefault()
-        include(CharSequences)
+        include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
         doc { "Returns the sum of all values produced by [selector] function applied to each ${f.element} in the ${f.collection}." }
         returns("Int")
+
+        val iterationExpression = if (f == ArraysOfUnsigned)
+            """
+            for (index in 0..lastIndex) {
+                val element = get(index)
+            """
+        else
+            """
+            for (element in this) {
+            """
         body {
             """
             var sum: Int = 0
-            for (element in this) {
+            $iterationExpression
                 sum += selector(element)
             }
             return sum
@@ -214,15 +265,25 @@ object Aggregates : TemplateGroupBase() {
 
     val f_sumByDouble = fn("sumByDouble(selector: (T) -> Double)") {
         includeDefault()
-        include(CharSequences)
+        include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
         doc { "Returns the sum of all values produced by [selector] function applied to each ${f.element} in the ${f.collection}." }
         returns("Double")
+
+        val iterationExpression = if (f == ArraysOfUnsigned)
+            """
+            for (index in 0..lastIndex) {
+                val element = get(index)
+            """
+        else
+            """
+            for (element in this) {
+            """
         body {
             """
             var sum: Double = 0.0
-            for (element in this) {
+            $iterationExpression
                 sum += selector(element)
             }
             return sum

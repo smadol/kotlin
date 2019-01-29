@@ -44,12 +44,15 @@ object ArrayOps : TemplateGroupBase() {
 
 
     val f_lastIndex = pval("lastIndex") {
-        include(ArraysOfObjects, ArraysOfPrimitives)
+        include(ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned)
     } builder {
         doc { "Returns the last valid index for the array." }
         returns("Int")
         body {
             "get() = size - 1"
+        }
+        body(ArraysOfUnsigned) {
+            "get() = storage.lastIndex"
         }
     }
 
