@@ -834,7 +834,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             return FirBlockImpl(session, expression).apply {
                 for (statement in expression.statements) {
                     val firStatement = statement.toFirStatement("Statement expected: ${statement.text}")
-                    if (firStatement !is FirBlock) {
+                    if (firStatement !is FirBlock || firStatement.annotations.isNotEmpty()) {
                         statements += firStatement
                     } else {
                         statements += firStatement.statements
