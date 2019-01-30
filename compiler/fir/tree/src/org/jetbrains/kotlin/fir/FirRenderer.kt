@@ -766,6 +766,11 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
         functionCall.annotations.renderAnnotations()
         visitAccess(functionCall)
         functionCall.calleeReference.accept(this)
+        if (functionCall.typeArguments.isNotEmpty()) {
+            print("<")
+            functionCall.typeArguments.renderSeparated()
+            print(">")
+        }
         visitCall(functionCall)
     }
 

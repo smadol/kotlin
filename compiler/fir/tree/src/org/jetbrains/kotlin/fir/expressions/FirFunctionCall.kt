@@ -7,9 +7,10 @@ package org.jetbrains.kotlin.fir.expressions
 
 import org.jetbrains.kotlin.fir.FirNamedReference
 import org.jetbrains.kotlin.fir.VisitedSupertype
+import org.jetbrains.kotlin.fir.types.FirTypeProjectionContainer
 import org.jetbrains.kotlin.fir.visitors.FirVisitor
 
-interface FirFunctionCall : @VisitedSupertype FirCall, FirAccess {
+interface FirFunctionCall : @VisitedSupertype FirCall, FirAccess, FirTypeProjectionContainer {
     override val calleeReference: FirNamedReference
 
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R =
@@ -18,6 +19,9 @@ interface FirFunctionCall : @VisitedSupertype FirCall, FirAccess {
     override fun <R, D> acceptChildren(visitor: FirVisitor<R, D>, data: D) {
         for (argument in arguments) {
             argument.accept(visitor, data)
+        }
+        for (typeArgument in typeArguments) {
+            typeArgument.accept(visitor, data)
         }
         super<FirAccess>.acceptChildren(visitor, data)
     }

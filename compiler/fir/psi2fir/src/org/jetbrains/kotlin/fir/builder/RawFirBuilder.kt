@@ -1222,6 +1222,9 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                 for (argument in expression.valueArguments) {
                     arguments += argument.getArgumentExpression().toFirExpression("No argument expression")
                 }
+                for (typeArgument in expression.typeArguments) {
+                    typeArguments += typeArgument.convert<FirTypeProjection>()
+                }
                 firFunctionCalls.removeLast()
             }
         }
