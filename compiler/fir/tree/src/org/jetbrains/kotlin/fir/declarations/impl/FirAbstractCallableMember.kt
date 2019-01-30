@@ -32,6 +32,7 @@ abstract class FirAbstractCallableMember(
 ) : FirAbstractMemberDeclaration(session, psi, name, visibility, modality, isExpect, isActual), FirCallableMember {
 
     init {
+        symbol.bind(this)
         status.isOverride = isOverride
     }
 
