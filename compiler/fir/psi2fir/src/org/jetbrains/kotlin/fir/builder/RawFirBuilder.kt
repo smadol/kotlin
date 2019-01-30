@@ -668,7 +668,7 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
             return FirAnonymousInitializerImpl(
                 session,
                 initializer,
-                FirBlockImpl(session, initializer)
+                if (stubMode) FirEmptyExpressionBlock(session) else initializer.body.toFirBlock()
             )
         }
 

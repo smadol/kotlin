@@ -199,6 +199,11 @@ public class RawFirBuilderTestCaseGenerated extends AbstractRawFirBuilderTestCas
             runTest("compiler/fir/psi2fir/testData/rawBuilder/expressions/genericCalls.kt");
         }
 
+        @TestMetadata("init.kt")
+        public void testInit() throws Exception {
+            runTest("compiler/fir/psi2fir/testData/rawBuilder/expressions/init.kt");
+        }
+
         @TestMetadata("lambda.kt")
         public void testLambda() throws Exception {
             runTest("compiler/fir/psi2fir/testData/rawBuilder/expressions/lambda.kt");
