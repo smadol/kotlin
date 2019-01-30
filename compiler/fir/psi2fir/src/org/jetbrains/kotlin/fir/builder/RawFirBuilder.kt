@@ -686,7 +686,8 @@ class RawFirBuilder(val session: FirSession, val stubMode: Boolean) {
                     name,
                     propertyType,
                     isVar,
-                    initializer
+                    initializer,
+                    property.delegate?.expression?.toFirExpression()
                 )
             } else {
                 FirMemberPropertyImpl(

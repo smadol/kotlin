@@ -244,6 +244,10 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
             print(" = ")
             it.accept(this)
         }
+        variable.delegate?.let {
+            print("by ")
+            it.accept(this)
+        }
     }
 
     override fun visitProperty(property: FirProperty) {

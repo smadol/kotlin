@@ -21,11 +21,13 @@ class FirVariableImpl(
     name: Name,
     override var returnType: FirType,
     override val isVar: Boolean,
-    override var initializer: FirExpression?
+    override var initializer: FirExpression?,
+    override var delegate: FirExpression? = null
 ) : FirAbstractNamedAnnotatedDeclaration(session, psiElement, name), FirVariable {
     override fun <D> transformChildren(transformer: FirTransformer<D>, data: D): FirElement {
         returnType = returnType.transformSingle(transformer, data)
         initializer = initializer?.transformSingle(transformer, data)
+        delegate = delegate?.transformSingle(transformer, data)
 
         return super<FirAbstractNamedAnnotatedDeclaration>.transformChildren(transformer, data)
     }
