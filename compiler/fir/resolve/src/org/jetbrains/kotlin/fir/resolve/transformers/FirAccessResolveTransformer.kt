@@ -20,7 +20,6 @@ import org.jetbrains.kotlin.fir.scopes.ProcessorAction.NEXT
 import org.jetbrains.kotlin.fir.scopes.impl.*
 import org.jetbrains.kotlin.fir.symbols.ConeCallableSymbol
 import org.jetbrains.kotlin.fir.symbols.ConeTypeParameterSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FictitiousFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
 import org.jetbrains.kotlin.fir.types.ConeClassErrorType
 import org.jetbrains.kotlin.fir.types.ConeClassLikeType
@@ -55,7 +54,7 @@ class FirAccessResolveTransformer : FirAbstractTreeTransformerWithSuperTypes(rev
     private fun FirRegularClass.buildUseSiteScope(useSiteSession: FirSession = session): FirClassUseSiteScope {
         val superTypeScope = FirCompositeScope(mutableListOf())
         val declaredScope = FirClassDeclaredMemberScope(this, useSiteSession)
-        lookupSuperTypes(this, lookupInterfaces = true).asReversed()
+        lookupSuperTypes(this, lookupInterfaces = true, deep = false, useSiteSession = useSiteSession)
             .mapNotNullTo(superTypeScope.scopes) { useSiteSuperType ->
                 if (useSiteSuperType is ConeClassErrorType) return@mapNotNullTo null
                 val symbol = useSiteSuperType.symbol
