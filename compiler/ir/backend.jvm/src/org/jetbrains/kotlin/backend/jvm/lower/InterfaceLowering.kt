@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.backend.common.descriptors.WrappedSimpleFunctionDesc
 import org.jetbrains.kotlin.backend.common.ir.copyTo
 import org.jetbrains.kotlin.backend.common.ir.copyTypeParametersFrom
 import org.jetbrains.kotlin.backend.common.lower.InitializersLowering.Companion.clinitName
+import org.jetbrains.kotlin.backend.common.makeIrFilePhase
 import org.jetbrains.kotlin.backend.common.lower.VariableRemapper
 import org.jetbrains.kotlin.backend.jvm.JvmBackendContext
 import org.jetbrains.kotlin.descriptors.*
@@ -23,7 +24,13 @@ import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 import org.jetbrains.kotlin.name.Name
 
-class InterfaceLowering(val context: JvmBackendContext) : IrElementTransformerVoid(), ClassLoweringPass {
+internal val InterfacePhase = makeIrFilePhase(
+    ::InterfaceLowering,
+    name = "Interface",
+    description = "Move default implementations of interface members to DefaultImpls class"
+)
+
+private class InterfaceLowering(val context: JvmBackendContext) : IrElementTransformerVoid(), ClassLoweringPass {
 
     val state = context.state
 

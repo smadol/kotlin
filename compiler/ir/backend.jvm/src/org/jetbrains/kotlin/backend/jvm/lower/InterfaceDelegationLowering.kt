@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.backend.common.descriptors.WrappedSimpleFunctionDesc
 import org.jetbrains.kotlin.backend.common.ir.copyParameterDeclarationsFrom
 import org.jetbrains.kotlin.backend.common.lower.createIrBuilder
 import org.jetbrains.kotlin.backend.common.CodegenUtil
+import org.jetbrains.kotlin.backend.common.makeIrFilePhase
 import org.jetbrains.kotlin.backend.jvm.JvmBackendContext
 import org.jetbrains.kotlin.backend.jvm.JvmLoweredDeclarationOrigin
 import org.jetbrains.kotlin.backend.jvm.codegen.isJvmInterface
@@ -35,7 +36,13 @@ import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 import org.jetbrains.kotlin.name.Name
 
-class InterfaceDelegationLowering(val context: JvmBackendContext) : IrElementTransformerVoid(), ClassLoweringPass {
+internal val InterfaceDelegationPhase = makeIrFilePhase(
+    ::InterfaceDelegationLowering,
+    name = "InterfaceDelegation",
+    description = "Delegate calls to interface members with default implementations to DefaultImpls"
+)
+
+private class InterfaceDelegationLowering(val context: JvmBackendContext) : IrElementTransformerVoid(), ClassLoweringPass {
 
     val state: GenerationState = context.state
 
