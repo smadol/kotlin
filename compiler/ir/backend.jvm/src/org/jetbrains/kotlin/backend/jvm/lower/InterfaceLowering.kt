@@ -24,7 +24,7 @@ import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 import org.jetbrains.kotlin.name.Name
 
-internal val InterfacePhase = makeIrFilePhase(
+internal val interfacePhase = makeIrFilePhase(
     ::InterfaceLowering,
     name = "Interface",
     description = "Move default implementations of interface members to DefaultImpls class"

@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.ir.expressions.impl.IrElseBranchImpl
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 
-internal val JvmTypeOperatorLoweringPhase = makeIrFilePhase(
+internal val jvmTypeOperatorLoweringPhase = makeIrFilePhase(
     ::JvmTypeOperatorLowering,
     name = "JvmTypeOperatorLoweringPhase",
     description = "Handle JVM-specific type operator lowerings"

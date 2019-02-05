@@ -32,7 +32,7 @@ import org.jetbrains.kotlin.ir.util.isSubclassOf
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 
-val KCallableNamePropertyPhase = makeIrFilePhase(
+val kCallableNamePropertyPhase = makeIrFilePhase(
     ::KCallableNamePropertyLowering,
     name = "KCallableNameProperty",
     description = "Replace name references for callables with constants"

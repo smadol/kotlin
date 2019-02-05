@@ -36,7 +36,7 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.NameUtils
 import java.util.*
 
-val JvmLocalDeclarationsPhase = makeIrFilePhase(
+val jvmLocalDeclarationsPhase = makeIrFilePhase(
     { context ->
         LocalDeclarationsLowering(context, object : LocalNameProvider {
             override fun localName(declaration: IrDeclarationWithName): String =
@@ -45,7 +45,7 @@ val JvmLocalDeclarationsPhase = makeIrFilePhase(
     },
     name = "JvmLocalDeclarations",
     description = "Move local declarations to classes",
-    prerequisite = setOf(SharedVariablesPhase)
+    prerequisite = setOf(sharedVariablesPhase)
 )
 
 interface LocalNameProvider {

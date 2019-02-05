@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.ir.util.isTrueConst
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 
-internal val JvmBuiltinOptimizationLoweringPhase = makeIrFilePhase(
+internal val jvmBuiltinOptimizationLoweringPhase = makeIrFilePhase(
     ::JvmBuiltinOptimizationLowering,
     name = "JvmBuiltinOptimizationLowering",
     description = "Optimize builtin calls for JVM code generation"

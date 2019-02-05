@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 import org.jetbrains.kotlin.load.java.JvmAbi.JVM_FIELD_ANNOTATION_FQ_NAME
 
-internal val ConstAndJvmFieldPropertiesPhase = makeIrFilePhase(
+internal val constAndJvmFieldPropertiesPhase = makeIrFilePhase(
     ::ConstAndJvmFieldPropertiesLowering,
     name = "ConstAndJvmFieldProperties",
     description = "Substitute calls to const and Jvm>Field properties with const/field access"

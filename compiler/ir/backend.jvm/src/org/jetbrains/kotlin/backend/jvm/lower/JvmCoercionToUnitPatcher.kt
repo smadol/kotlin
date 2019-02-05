@@ -18,7 +18,7 @@ import org.jetbrains.kotlin.ir.util.coerceToUnitIfNeeded
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 import org.jetbrains.kotlin.psi2ir.transformations.InsertImplicitCasts
 
-internal val JvmCoercionToUnitPhase = makeIrFilePhase(
+internal val jvmCoercionToUnitPhase = makeIrFilePhase(
     ::JvmCoercionToUnitPatcher,
     name = "JvmCoercionToUnit",
     description = "Insert conversions to unit after IrCalls where needed"

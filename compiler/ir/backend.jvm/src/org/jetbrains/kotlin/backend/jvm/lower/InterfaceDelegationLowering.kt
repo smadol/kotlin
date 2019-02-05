@@ -36,7 +36,7 @@ import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 import org.jetbrains.kotlin.name.Name
 
-internal val InterfaceDelegationPhase = makeIrFilePhase(
+internal val interfaceDelegationPhase = makeIrFilePhase(
     ::InterfaceDelegationLowering,
     name = "InterfaceDelegation",
     description = "Delegate calls to interface members with default implementations to DefaultImpls"
