@@ -5,29 +5,110 @@
 
 package collections
 
-import java.lang.IllegalArgumentException
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class UArrayJVMTest {
     @Test
     fun fill() {
-        val array = UIntArray(5) { it.toUInt() }
-
-        assertFailsWith<ArrayIndexOutOfBoundsException> {
-            array.fill(0u, -1, array.size)
+        fun <A, E> testFailures(array: A, fill: A.(E, Int, Int) -> Unit, element: E, arraySize: Int) {
+            assertFailsWith<ArrayIndexOutOfBoundsException> {
+                array.fill(element, -1, arraySize)
+            }
+            assertFailsWith<ArrayIndexOutOfBoundsException> {
+                array.fill(element, 0, arraySize + 1)
+            }
+            assertFailsWith<IllegalArgumentException> {
+                array.fill(element, 1, 0)
+            }
         }
-        assertFailsWith<ArrayIndexOutOfBoundsException> {
-            array.fill(0u, 0, array.size + 1)
+
+        testFailures(UByteArray(5) { it.toUByte() }, UByteArray::fill, 0u, 5)
+        testFailures(UShortArray(5) { it.toUShort() }, UShortArray::fill, 0u, 5)
+        testFailures(UIntArray(5) { it.toUInt() }, UIntArray::fill, 0u, 5)
+        testFailures(ULongArray(5) { it.toULong() }, ULongArray::fill, 0u, 5)
+
+        fun <A, E> test(
+            array: A,
+            fill: A.(E, Int, Int) -> Unit,
+            elements: List<E>,
+            range: List<Pair<Int, Int>>,
+            expectedResults: List<A>,
+            contentEquals: A.(A) -> Boolean
+        ) {
+            for (i in elements.indices) {
+                val element = elements[i]
+                val (fromIndex, toIndex) = range[i]
+                val expectedResult = expectedResults[i]
+
+                array.fill(element, fromIndex, toIndex)
+                assertTrue(array.contentEquals(expectedResult))
+            }
         }
 
-        assertFailsWith<IllegalArgumentException> {
-            array.fill(0u, 2, 0)
-        }
+        val elements = listOf(5u, 1u, 2u, 3u)
+        val range = listOf(
+            1 to 4,
+            0 to 5,
+            0 to 3,
+            2 to 5
+        )
+        val originalArray = UIntArray(5) { it.toUInt() }
+        val expectedResults = listOf(
+            uintArrayOf(0u, 5u, 5u, 5u, 4u),
+            uintArrayOf(1u, 1u, 1u, 1u, 1u),
+            uintArrayOf(2u, 2u, 2u, 1u, 1u),
+            uintArrayOf(2u, 2u, 3u, 3u, 3u)
+        )
 
-        array.fill(5u, 1, array.size - 1)
-        assertEquals(array, uintArrayOf(0u, 5u, 5u, 5u, 4u))
+        test(
+            originalArray.toUByteArray(),
+            UByteArray::fill,
+            elements.map(UInt::toUByte),
+            range,
+            expectedResults.map(UIntArray::toUByteArray),
+            UByteArray::contentEquals
+        )
 
-        array.fill(1u)
-        assertEquals(array, UIntArray(5) { 1u })
+        test(
+            originalArray.toUShortArray(),
+            UShortArray::fill,
+            elements.map(UInt::toUShort),
+            range,
+            expectedResults.map(UIntArray::toUShortArray),
+            UShortArray::contentEquals
+        )
+
+        test(
+            originalArray.copyOf(),
+            UIntArray::fill,
+            elements,
+            range,
+            expectedResults,
+            UIntArray::contentEquals
+        )
+
+        test(
+            originalArray.toULongArray(),
+            ULongArray::fill,
+            elements.map(UInt::toULong),
+            range,
+            expectedResults.map(UIntArray::toULongArray),
+            ULongArray::contentEquals
+        )
     }
+}
+
+
+private fun UIntArray.toUByteArray(): UByteArray {
+    return UByteArray(size) { get(it).toUByte() }
+}
+
+private fun UIntArray.toUShortArray(): UShortArray {
+    return UShortArray(size) { get(it).toUShort() }
+}
+
+private fun UIntArray.toULongArray(): ULongArray {
+    return ULongArray(size) { get(it).toULong() }
 }
