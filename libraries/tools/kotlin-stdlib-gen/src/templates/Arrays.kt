@@ -1188,7 +1188,7 @@ object ArrayOps : TemplateGroupBase() {
 
                 while (low <= high) {
                     val mid = (low + high).ushr(1) // safe from overflows
-                    val midVal = storage.get(mid)
+                    val midVal = storage[mid]
                     val cmp = $compareFunction(midVal$midValConversion, signedElement)
 
                     if (cmp < 0)

@@ -34,7 +34,7 @@ public fun UIntArray.binarySearch(element: UInt, fromIndex: Int = 0, toIndex: In
     var high = toIndex - 1
     while (low <= high) {
         val mid = (low + high).ushr(1) // safe from overflows
-        val midVal = storage.get(mid)
+        val midVal = storage[mid]
         val cmp = uintCompare(midVal, signedElement)
         if (cmp < 0)
             low = mid + 1
@@ -66,7 +66,7 @@ public fun ULongArray.binarySearch(element: ULong, fromIndex: Int = 0, toIndex: 
     var high = toIndex - 1
     while (low <= high) {
         val mid = (low + high).ushr(1) // safe from overflows
-        val midVal = storage.get(mid)
+        val midVal = storage[mid]
         val cmp = ulongCompare(midVal, signedElement)
         if (cmp < 0)
             low = mid + 1
@@ -98,7 +98,7 @@ public fun UByteArray.binarySearch(element: UByte, fromIndex: Int = 0, toIndex: 
     var high = toIndex - 1
     while (low <= high) {
         val mid = (low + high).ushr(1) // safe from overflows
-        val midVal = storage.get(mid)
+        val midVal = storage[mid]
         val cmp = uintCompare(midVal.toInt(), signedElement)
         if (cmp < 0)
             low = mid + 1
@@ -130,7 +130,7 @@ public fun UShortArray.binarySearch(element: UShort, fromIndex: Int = 0, toIndex
     var high = toIndex - 1
     while (low <= high) {
         val mid = (low + high).ushr(1) // safe from overflows
-        val midVal = storage.get(mid)
+        val midVal = storage[mid]
         val cmp = uintCompare(midVal.toInt(), signedElement)
         if (cmp < 0)
             low = mid + 1

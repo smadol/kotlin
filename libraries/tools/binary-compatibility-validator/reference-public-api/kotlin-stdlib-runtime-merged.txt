@@ -662,7 +662,6 @@ public final class kotlin/collections/ArraysKt {
 	public static final fun any ([SLkotlin/jvm/functions/Function1;)Z
 	public static final fun any ([Z)Z
 	public static final fun any ([ZLkotlin/jvm/functions/Function1;)Z
-	public static final fun arrayRangeCheck (III)V
 	public static final fun asIterable ([B)Ljava/lang/Iterable;
 	public static final fun asIterable ([C)Ljava/lang/Iterable;
 	public static final fun asIterable ([D)Ljava/lang/Iterable;

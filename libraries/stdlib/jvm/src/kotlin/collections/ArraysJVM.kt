@@ -64,7 +64,6 @@ internal fun <T> Array<out T>.contentDeepHashCodeImpl(): Int =
  * Checks that `from` and `to` are in
  * the range of [0..size] and throws an appropriate exception, if they aren't.
  */
-@PublishedApi
 internal fun arrayRangeCheck(size: Int, fromIndex: Int, toIndex: Int) {
     when {
         fromIndex > toIndex -> throw IllegalArgumentException("fromIndex($fromIndex) > toIndex($toIndex)")

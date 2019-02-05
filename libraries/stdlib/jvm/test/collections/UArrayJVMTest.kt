@@ -5,48 +5,90 @@
 
 package test.collections
 
-import java.lang.IllegalArgumentException
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class UArrayJVMTest {
     @Test
     fun binarySearch() {
-        val ubyte = ubyteArrayOf(1u, 0u, 4u, 5u, 8u, 12u, 2u, 3u, 7u, 7u, 7u, 9u, 2u)
 
-        assertThrows(IllegalArgumentException::class.java) {
-            ubyte.binarySearch(5u, 6, 1)
+        fun <A, E> testFailures(array: A, binarySearch: A.(E, Int, Int) -> Int, element: E, arraySize: Int) {
+            assertFailsWith<IllegalArgumentException> {
+                array.binarySearch(element, 1, 0)
+            }
+            assertFailsWith<ArrayIndexOutOfBoundsException> {
+                array.binarySearch(element, 1, arraySize + 1)
+            }
+            assertFailsWith<ArrayIndexOutOfBoundsException> {
+                array.binarySearch(element, -1, 1)
+            }
         }
-        assertThrows(ArrayIndexOutOfBoundsException::class.java) {
-            ubyte.binarySearch(5u, 6, 15)
+
+        val array = uintArrayOf(1u, 0u, 4u, 5u, 8u, 12u, 2u, 3u, 7u, 7u, 7u, 9u, 2u)
+
+        testFailures(array.toUByteArray(), UByteArray::binarySearch, 0u, array.size)
+        testFailures(array.toUShortArray(), UShortArray::binarySearch, 0u, array.size)
+        testFailures(array, UIntArray::binarySearch, 0u, array.size)
+        testFailures(array.toULongArray(), ULongArray::binarySearch, 0u, array.size)
+
+        fun <A, E> test(
+            array: A,
+            binarySearch: A.(E, Int, Int) -> Int,
+            operations: List<OperationOnRange<UInt, Int>>,
+            transform: UInt.() -> E
+        ) {
+            operations.forEach { o ->
+                val result = array.binarySearch(o.element.transform(), o.fromIndex, o.toIndex)
+                assertTrue(o.isCorrectPredicate(result))
+            }
         }
-        assertThrows(ArrayIndexOutOfBoundsException::class.java) {
-            ubyte.binarySearch(5u, -6, 7)
-        }
 
-        assertEquals(1, ubyte.binarySearch(0u, 1, 6))
-        assertEquals(5, ubyte.binarySearch(12u, 1, 6))
-        assertEquals(4, ubyte.binarySearch(8u, 1, 6))
-        assertEquals(2, ubyte.binarySearch(4u, 1, 6))
-        assertEquals(3, ubyte.binarySearch(5u, 2, 6))
-        assertEquals(4, ubyte.binarySearch(8u, 2, 5))
-        assertEquals(3, ubyte.binarySearch(5u, 3, 4))
+        fun exactPredicate(expected: Int) = fun(result: Int) = result == expected
 
-        assertEquals(-4, ubyte.binarySearch(5u, 3, 3))
-        assertEquals(-5, ubyte.binarySearch(7u, 1, 6))
-        assertEquals(-12, ubyte.binarySearch(8u, 6, 12))
-        assertEquals(-9, ubyte.binarySearch(5u, 6, 12))
+        fun inRangePredicate(expected: IntRange) = fun(result: Int) = result in expected
 
-        assertTrue(ubyte.binarySearch(7u, 6, 12) in 8..10)
+        val operations = listOf(
+            OperationOnRange(0u, 1, 6, exactPredicate(1)),
+            OperationOnRange(12u, 1, 6, exactPredicate(5)),
+            OperationOnRange(8u, 1, 6, exactPredicate(4)),
+            OperationOnRange(4u, 1, 6, exactPredicate(2)),
+            OperationOnRange(5u, 2, 6, exactPredicate(3)),
+            OperationOnRange(8u, 2, 5, exactPredicate(4)),
+            OperationOnRange(5u, 3, 4, exactPredicate(3)),
+
+            OperationOnRange(5u, 3, 3, exactPredicate(-4)),
+            OperationOnRange(7u, 1, 6, exactPredicate(-5)),
+            OperationOnRange(8u, 6, 12, exactPredicate(-12)),
+            OperationOnRange(5u, 6, 12, exactPredicate(-9)),
+
+            OperationOnRange(7u, 6, 12, inRangePredicate(8..10))
+        )
+
+        test(array.toUByteArray(), UByteArray::binarySearch, operations, UInt::toUByte)
+        test(array.toUShortArray(), UShortArray::binarySearch, operations, UInt::toUShort)
+        test(array, UIntArray::binarySearch, operations, UInt::toUInt)
+        test(array.toULongArray(), ULongArray::binarySearch, operations, UInt::toULong)
     }
 }
 
-private fun assertThrows(exceptionClass: Class<*>, body: () -> Unit) {
-    try {
-        body()
-        fail("Expecting an exception of type ${exceptionClass.name}")
-    } catch (e: Throwable) {
-        if (!exceptionClass.isAssignableFrom(e.javaClass)) {
-            fail("Expecting an exception of type ${exceptionClass.name} but got ${e.javaClass.name}")
-        }
-    }
+
+private class OperationOnRange<E, R>(
+    val element: E,
+    val fromIndex: Int,
+    val toIndex: Int,
+    val isCorrectPredicate: (result: R) -> Boolean
+)
+
+
+private fun UIntArray.toUByteArray(): UByteArray {
+    return UByteArray(size) { get(it).toUByte() }
+}
+
+private fun UIntArray.toUShortArray(): UShortArray {
+    return UShortArray(size) { get(it).toUShort() }
+}
+
+private fun UIntArray.toULongArray(): ULongArray {
+    return ULongArray(size) { get(it).toULong() }
 }
