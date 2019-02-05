@@ -177,9 +177,9 @@ public inline class UByte @PublishedApi internal constructor(@PublishedApi inter
     public inline fun toULong(): ULong = ULong(data.toLong() and 0xFF)
 
     @kotlin.internal.InlineOnly
-    public inline fun toFloat(): Float = this.toLong().toFloat()
+    public inline fun toFloat(): Float = this.toInt().toFloat()
     @kotlin.internal.InlineOnly
-    public inline fun toDouble(): Double = this.toLong().toDouble()
+    public inline fun toDouble(): Double = this.toInt().toDouble()
 
     public override fun toString(): String = toInt().toString()
 

@@ -230,10 +230,10 @@ class UnsignedTypeGenerator(val type: UnsignedType, out: PrintWriter) : BuiltIns
             val otherName = otherType.capitalized
             out.println("    @kotlin.internal.InlineOnly")
             out.print("    public inline fun to$otherName(): $otherName = ")
-            if (type == UnsignedType.ULONG) {
-                out.println("ulongTo$otherName(data)")
-            } else {
-                out.println("this.toLong().to$otherName()")
+            when (type) {
+                UnsignedType.ULONG -> out.println("ulongTo$otherName(data)")
+                UnsignedType.UINT -> out.println("this.toLong().to$otherName()")
+                else -> out.println("this.toInt().to$otherName()")
             }
         }
         out.println()
