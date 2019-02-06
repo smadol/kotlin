@@ -28,7 +28,7 @@ package kotlin.collections
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public fun UIntArray.binarySearch(element: UInt, fromIndex: Int = 0, toIndex: Int = size): Int {
-    arrayRangeCheck(size, fromIndex, toIndex)
+    AbstractList.checkRangeIndexes(fromIndex, toIndex, size)
     val signedElement = element.toInt()
     var low = fromIndex
     var high = toIndex - 1
@@ -60,7 +60,7 @@ public fun UIntArray.binarySearch(element: UInt, fromIndex: Int = 0, toIndex: In
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public fun ULongArray.binarySearch(element: ULong, fromIndex: Int = 0, toIndex: Int = size): Int {
-    arrayRangeCheck(size, fromIndex, toIndex)
+    AbstractList.checkRangeIndexes(fromIndex, toIndex, size)
     val signedElement = element.toLong()
     var low = fromIndex
     var high = toIndex - 1
@@ -92,7 +92,7 @@ public fun ULongArray.binarySearch(element: ULong, fromIndex: Int = 0, toIndex: 
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public fun UByteArray.binarySearch(element: UByte, fromIndex: Int = 0, toIndex: Int = size): Int {
-    arrayRangeCheck(size, fromIndex, toIndex)
+    AbstractList.checkRangeIndexes(fromIndex, toIndex, size)
     val signedElement = element.toInt()
     var low = fromIndex
     var high = toIndex - 1
@@ -124,7 +124,7 @@ public fun UByteArray.binarySearch(element: UByte, fromIndex: Int = 0, toIndex: 
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public fun UShortArray.binarySearch(element: UShort, fromIndex: Int = 0, toIndex: Int = size): Int {
-    arrayRangeCheck(size, fromIndex, toIndex)
+    AbstractList.checkRangeIndexes(fromIndex, toIndex, size)
     val signedElement = element.toInt()
     var low = fromIndex
     var high = toIndex - 1

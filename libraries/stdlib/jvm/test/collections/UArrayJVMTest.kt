@@ -6,8 +6,8 @@
 package test.collections
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 class UArrayJVMTest {
     @Test
@@ -17,10 +17,10 @@ class UArrayJVMTest {
             assertFailsWith<IllegalArgumentException> {
                 array.binarySearch(element, 1, 0)
             }
-            assertFailsWith<ArrayIndexOutOfBoundsException> {
+            assertFailsWith<IndexOutOfBoundsException> {
                 array.binarySearch(element, 1, arraySize + 1)
             }
-            assertFailsWith<ArrayIndexOutOfBoundsException> {
+            assertFailsWith<IndexOutOfBoundsException> {
                 array.binarySearch(element, -1, 1)
             }
         }
@@ -40,29 +40,25 @@ class UArrayJVMTest {
         ) {
             operations.forEach { o ->
                 val result = array.binarySearch(o.element.transform(), o.fromIndex, o.toIndex)
-                assertTrue(o.isCorrectPredicate(result))
+                assertEquals(o.expectedResult, result)
             }
         }
 
-        fun exactPredicate(expected: Int) = fun(result: Int) = result == expected
-
-        fun inRangePredicate(expected: IntRange) = fun(result: Int) = result in expected
-
         val operations = listOf(
-            OperationOnRange(0u, 1, 6, exactPredicate(1)),
-            OperationOnRange(12u, 1, 6, exactPredicate(5)),
-            OperationOnRange(8u, 1, 6, exactPredicate(4)),
-            OperationOnRange(4u, 1, 6, exactPredicate(2)),
-            OperationOnRange(5u, 2, 6, exactPredicate(3)),
-            OperationOnRange(8u, 2, 5, exactPredicate(4)),
-            OperationOnRange(5u, 3, 4, exactPredicate(3)),
+            OperationOnRange(0u, 1, 6, 1),
+            OperationOnRange(12u, 1, 6, 5),
+            OperationOnRange(8u, 1, 6, 4),
+            OperationOnRange(4u, 1, 6, 2),
+            OperationOnRange(5u, 2, 6, 3),
+            OperationOnRange(8u, 2, 5, 4),
+            OperationOnRange(5u, 3, 4, 3),
 
-            OperationOnRange(5u, 3, 3, exactPredicate(-4)),
-            OperationOnRange(7u, 1, 6, exactPredicate(-5)),
-            OperationOnRange(8u, 6, 12, exactPredicate(-12)),
-            OperationOnRange(5u, 6, 12, exactPredicate(-9)),
+            OperationOnRange(5u, 3, 3, -4),
+            OperationOnRange(7u, 1, 6, -5),
+            OperationOnRange(8u, 6, 12, -12),
+            OperationOnRange(5u, 6, 12, -9),
 
-            OperationOnRange(7u, 6, 12, inRangePredicate(8..10))
+            OperationOnRange(7u, 6, 12, 8)
         )
 
         test(array.toUByteArray(), UByteArray::binarySearch, operations, UInt::toUByte)
@@ -77,7 +73,7 @@ private class OperationOnRange<E, R>(
     val element: E,
     val fromIndex: Int,
     val toIndex: Int,
-    val isCorrectPredicate: (result: R) -> Boolean
+    val expectedResult: R
 )
 
 

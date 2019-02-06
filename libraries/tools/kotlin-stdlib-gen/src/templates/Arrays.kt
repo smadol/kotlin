@@ -1180,7 +1180,7 @@ object ArrayOps : TemplateGroupBase() {
 
             body {
                 """
-                arrayRangeCheck(size, fromIndex, toIndex)
+                AbstractList.checkRangeIndexes(fromIndex, toIndex, size)
 
                 val signedElement = element$elementConversion
                 var low = fromIndex
