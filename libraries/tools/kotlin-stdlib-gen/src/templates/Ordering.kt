@@ -37,10 +37,13 @@ object Ordering : TemplateGroupBase() {
             }
             """
         }
-        body(ArraysOfUnsigned) {
-            """
-            storage.reverse()
-            """
+        specialFor(ArraysOfUnsigned) {
+            inlineOnly()
+            body {
+                """
+                storage.reverse()
+                """
+            }
         }
         specialFor(Lists) {
             receiver("MutableList<T>")
@@ -108,10 +111,13 @@ object Ordering : TemplateGroupBase() {
             return result
             """
         }
-        body(ArraysOfUnsigned) {
-            """
-            return SELF(storage.reversedArray())
-            """
+        specialFor(ArraysOfUnsigned) {
+            inlineOnly()
+            body {
+                """
+                return SELF(storage.reversedArray())
+                """
+            }
         }
     }
 
