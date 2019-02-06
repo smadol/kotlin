@@ -24,6 +24,8 @@ fun assertArrayNotSameButEquals(expected: FloatArray, actual: FloatArray, messag
 fun assertArrayNotSameButEquals(expected: CharArray, actual: CharArray, message: String = "") {           assertTrue(expected !== actual && expected contentEquals actual, message) }
 fun assertArrayNotSameButEquals(expected: BooleanArray, actual: BooleanArray, message: String = "") {     assertTrue(expected !== actual && expected contentEquals actual, message) }
 
+fun assertArrayContentEquals(expected: UIntArray, actual: UIntArray, message: String = "") { assertTrue(expected contentEquals actual, message) }
+
 
 class ArraysTest {
 
@@ -99,7 +101,7 @@ class ArraysTest {
         assertEquals(0.toShort(), arr[0])
         assertEquals(1.toShort(), arr[1])
     }
-    
+
     @Test fun intArray() {
         val arr = IntArray(2)
 
@@ -107,7 +109,7 @@ class ArraysTest {
         assertEquals(0, arr[0])
         assertEquals(0, arr[1])
     }
-    
+
     @Test fun intArrayInit() {
         val arr = IntArray(2) { it.toInt() }
 
@@ -115,7 +117,7 @@ class ArraysTest {
         assertEquals(0.toInt(), arr[0])
         assertEquals(1.toInt(), arr[1])
     }
-    
+
     @Test fun longArray() {
         val arr = LongArray(2)
 
@@ -141,7 +143,7 @@ class ArraysTest {
         assertEquals(expected, arr[0])
         assertEquals(expected, arr[1])
     }
-    
+
     @Test fun floatArrayInit() {
         val arr = FloatArray(2) { it.toFloat() }
 
@@ -610,6 +612,9 @@ class ArraysTest {
         assertArrayNotSameButEquals(intArrayOf(1, 2, 3), intArrayOf(1, 2) + 3)
         assertArrayNotSameButEquals(intArrayOf(1, 2, 3, 4), intArrayOf(1, 2) + listOf(3, 4))
         assertArrayNotSameButEquals(intArrayOf(1, 2, 3, 4), intArrayOf(1, 2) + intArrayOf(3, 4))
+        assertArrayContentEquals(uintArrayOf(1u, 2u, 3u), uintArrayOf(1u, 2u) + 3u)
+        assertArrayContentEquals(uintArrayOf(1u, 2u, 3u, 4u), uintArrayOf(1u, 2u) + listOf(3u, 4u))
+        assertArrayContentEquals(uintArrayOf(1u, 2u, 3u, 4u), uintArrayOf(1u, 2u) + uintArrayOf(3u, 4u))
     }
 
     @Test fun plusVararg() {
@@ -916,7 +921,7 @@ class ArraysTest {
             byteArrayOf(1, 2, 3), byteArrayOf(4, 5, 6),
             byteArrayOf(5, 6, 3), byteArrayOf(6, 3, 3), byteArrayOf(6, 6, 3)
         )
-        
+
         doTest(
             CharArray::copyInto, ::assertArrayNotSameButEquals, CharArray::contentToString,
             charArrayOf('a', 'b', 'c'), charArrayOf('e', 'f', 'g'),

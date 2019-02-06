@@ -454,51 +454,62 @@ object ArrayOps : TemplateGroupBase() {
     }
 
     val f_plus = fn("plus(element: T)") {
-        include(InvariantArraysOfObjects, ArraysOfPrimitives)
+        include(InvariantArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned)
     } builderWith { primitive ->
         doc { "Returns an array containing all elements of the original array and then the given [element]." }
         operator()
         returns("SELF")
 
-        on(Platform.JVM) {
+        specialFor(ArraysOfUnsigned) {
+            val signedPrimitiveName = primitive!!.name.drop(1)
             body {
                 """
-                val index = size
-                val result = java.util.Arrays.copyOf(this, index + 1)
-                result[index] = element
-                return result
+                return SELF(storage + element.to$signedPrimitiveName())
                 """
             }
         }
 
-        on(Platform.JS) {
-            inline(suppressWarning = true)
-            specialFor(InvariantArraysOfObjects) {
-                family = ArraysOfObjects
-                suppress("ACTUAL_WITHOUT_EXPECT") // TODO: KT-21937
-                returns("Array<T>")
+        specialFor(InvariantArraysOfObjects, ArraysOfPrimitives) {
+            on(Platform.JVM) {
+                body {
+                    """
+                    val index = size
+                    val result = java.util.Arrays.copyOf(this, index + 1)
+                    result[index] = element
+                    return result
+                    """
+                }
             }
 
-            body {
-                if (primitive == null)
-                    "return this.asDynamic().concat(arrayOf(element))"
-                else
-                    "return plus(${primitive.name.toLowerCase()}ArrayOf(element))"
+            on(Platform.JS) {
+                inline(suppressWarning = true)
+                specialFor(InvariantArraysOfObjects) {
+                    family = ArraysOfObjects
+                    suppress("ACTUAL_WITHOUT_EXPECT") // TODO: KT-21937
+                    returns("Array<T>")
+                }
+
+                body {
+                    if (primitive == null)
+                        "return this.asDynamic().concat(arrayOf(element))"
+                    else
+                        "return plus(${primitive.name.toLowerCase()}ArrayOf(element))"
+                }
             }
-        }
-        on(Platform.Native) {
-            body {
-                """
-                val index = size
-                val result = copyOfUninitializedElements(index + 1)
-                result[index] = element
-                return result
-                """
+            on(Platform.Native) {
+                body {
+                    """
+                    val index = size
+                    val result = copyOfUninitializedElements(index + 1)
+                    result[index] = element
+                    return result
+                    """
+                }
             }
-        }
-        on(Platform.Common) {
-            specialFor(InvariantArraysOfObjects) {
-                suppress("NO_ACTUAL_FOR_EXPECT") // TODO: KT-21937
+            on(Platform.Common) {
+                specialFor(InvariantArraysOfObjects) {
+                    suppress("NO_ACTUAL_FOR_EXPECT") // TODO: KT-21937
+                }
             }
         }
     }

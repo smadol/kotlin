@@ -576,6 +576,42 @@ public inline fun UShortArray.copyOfRange(fromIndex: Int, toIndex: Int): UShortA
 }
 
 /**
+ * Returns an array containing all elements of the original array and then the given [element].
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public operator fun UIntArray.plus(element: UInt): UIntArray {
+    return UIntArray(storage + element.toInt())
+}
+
+/**
+ * Returns an array containing all elements of the original array and then the given [element].
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public operator fun ULongArray.plus(element: ULong): ULongArray {
+    return ULongArray(storage + element.toLong())
+}
+
+/**
+ * Returns an array containing all elements of the original array and then the given [element].
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public operator fun UByteArray.plus(element: UByte): UByteArray {
+    return UByteArray(storage + element.toByte())
+}
+
+/**
+ * Returns an array containing all elements of the original array and then the given [element].
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public operator fun UShortArray.plus(element: UShort): UShortArray {
+    return UShortArray(storage + element.toShort())
+}
+
+/**
  * Returns an array containing all elements of the original array and then all elements of the given [elements] collection.
  */
 @SinceKotlin("1.3")
