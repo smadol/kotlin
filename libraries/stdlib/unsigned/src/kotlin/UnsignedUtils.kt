@@ -82,7 +82,8 @@ internal fun doubleToUInt(v: Double): UInt = when {
     v.isNaN() -> 0u
     v <= UInt.MIN_VALUE.toDouble() -> UInt.MIN_VALUE
     v >= UInt.MAX_VALUE.toDouble() -> UInt.MAX_VALUE
-    else -> v.toLong().toUInt()
+    v <= Int.MAX_VALUE -> v.toInt().toUInt()
+    else -> (v - Int.MAX_VALUE).toInt().toUInt() + Int.MAX_VALUE.toUInt()      // Int.MAX_VALUE < v < UInt.MAX_VALUE
 }
 @PublishedApi
 internal fun doubleToULong(v: Double): ULong = when {
@@ -93,6 +94,11 @@ internal fun doubleToULong(v: Double): ULong = when {
     else -> (v - Long.MAX_VALUE).toLong().toULong() + Long.MAX_VALUE.toULong()      // Long.MAX_VALUE < v < ULong.MAX_VALUE
 }
 
+
+@PublishedApi
+internal fun uintToFloat(v: Int): Float = (v ushr 1).toFloat() * 2 + (v and 1)
+@PublishedApi
+internal fun uintToDouble(v: Int): Double = (v ushr 1).toDouble() * 2 + (v and 1)
 
 @PublishedApi
 internal fun ulongToFloat(v: Long): Float = (v ushr 1).toFloat() * 2 + (v and 1)

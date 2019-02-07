@@ -232,7 +232,7 @@ class UnsignedTypeGenerator(val type: UnsignedType, out: PrintWriter) : BuiltIns
             out.print("    public inline fun to$otherName(): $otherName = ")
             when (type) {
                 UnsignedType.ULONG -> out.println("ulongTo$otherName(data)")
-                UnsignedType.UINT -> out.println("this.toLong().to$otherName()")
+                UnsignedType.UINT -> out.println("uintTo$otherName(data)")
                 else -> out.println("this.toInt().to$otherName()")
             }
         }

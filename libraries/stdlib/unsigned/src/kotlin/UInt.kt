@@ -183,9 +183,9 @@ public inline class UInt @PublishedApi internal constructor(@PublishedApi intern
     public inline fun toULong(): ULong = ULong(data.toLong() and 0xFFFF_FFFF)
 
     @kotlin.internal.InlineOnly
-    public inline fun toFloat(): Float = this.toLong().toFloat()
+    public inline fun toFloat(): Float = uintToFloat(data)
     @kotlin.internal.InlineOnly
-    public inline fun toDouble(): Double = this.toLong().toDouble()
+    public inline fun toDouble(): Double = uintToDouble(data)
 
     public override fun toString(): String = toLong().toString()
 
