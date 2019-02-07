@@ -5,7 +5,10 @@
 
 package org.jetbrains.kotlin.fir
 
+import com.intellij.openapi.extensions.Extensions
+import com.intellij.psi.PsiElementFinder
 import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.kotlin.asJava.finder.JavaElementFinder
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.cli.jvm.compiler.TopDownAnalyzerFacadeForJVM
 import org.jetbrains.kotlin.fir.resolve.transformers.FirTotalResolveTransformer
