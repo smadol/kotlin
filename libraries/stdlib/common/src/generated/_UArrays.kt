@@ -660,11 +660,9 @@ public fun UShortArray.toTypedArray(): Array<UShort> {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun Array<out UByte>.toUByteArray(): UByteArray {
-    val result = UByteArray(size)
-    for (index in indices)
-        result[index] = this[index]
-    return result
+@kotlin.internal.InlineOnly
+public inline fun Array<out UByte>.toUByteArray(): UByteArray {
+    return UByteArray(size) { index -> this[index] }
 }
 
 /**
@@ -696,11 +694,9 @@ public inline fun ByteArray.toUByteArray(): UByteArray {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun Array<out UInt>.toUIntArray(): UIntArray {
-    val result = UIntArray(size)
-    for (index in indices)
-        result[index] = this[index]
-    return result
+@kotlin.internal.InlineOnly
+public inline fun Array<out UInt>.toUIntArray(): UIntArray {
+    return UIntArray(size) { index -> this[index] }
 }
 
 /**
@@ -732,11 +728,9 @@ public inline fun IntArray.toUIntArray(): UIntArray {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun Array<out ULong>.toULongArray(): ULongArray {
-    val result = ULongArray(size)
-    for (index in indices)
-        result[index] = this[index]
-    return result
+@kotlin.internal.InlineOnly
+public inline fun Array<out ULong>.toULongArray(): ULongArray {
+    return ULongArray(size) { index -> this[index] }
 }
 
 /**
@@ -768,11 +762,9 @@ public inline fun LongArray.toULongArray(): ULongArray {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun Array<out UShort>.toUShortArray(): UShortArray {
-    val result = UShortArray(size)
-    for (index in indices)
-        result[index] = this[index]
-    return result
+@kotlin.internal.InlineOnly
+public inline fun Array<out UShort>.toUShortArray(): UShortArray {
+    return UShortArray(size) { index -> this[index] }
 }
 
 /**

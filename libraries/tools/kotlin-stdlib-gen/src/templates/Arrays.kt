@@ -331,12 +331,10 @@ object ArrayOps : TemplateGroupBase() {
         // TODO: Use different implementations for JS
         specialFor(ArraysOfObjects) {
             doc { "Returns an array of ${primitive.name} containing all of the elements of this generic array." }
+            inlineOnly()
             body {
                 """
-                val result = $arrayType(size)
-                for (index in indices)
-                    result[index] = this[index]
-                return result
+                return $arrayType(size) { index -> this[index] }
                 """
             }
         }
