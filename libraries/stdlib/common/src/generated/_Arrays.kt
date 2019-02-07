@@ -9944,7 +9944,7 @@ public inline fun CharArray.all(predicate: (Char) -> Boolean): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.any
  */
-public fun <T> Array<out T>.any(): Boolean {
+public inline fun <T> Array<out T>.any(): Boolean {
     return !isEmpty()
 }
 
@@ -9953,7 +9953,7 @@ public fun <T> Array<out T>.any(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.any
  */
-public fun ByteArray.any(): Boolean {
+public inline fun ByteArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -9962,7 +9962,7 @@ public fun ByteArray.any(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.any
  */
-public fun ShortArray.any(): Boolean {
+public inline fun ShortArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -9971,7 +9971,7 @@ public fun ShortArray.any(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.any
  */
-public fun IntArray.any(): Boolean {
+public inline fun IntArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -9980,7 +9980,7 @@ public fun IntArray.any(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.any
  */
-public fun LongArray.any(): Boolean {
+public inline fun LongArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -9989,7 +9989,7 @@ public fun LongArray.any(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.any
  */
-public fun FloatArray.any(): Boolean {
+public inline fun FloatArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -9998,7 +9998,7 @@ public fun FloatArray.any(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.any
  */
-public fun DoubleArray.any(): Boolean {
+public inline fun DoubleArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -10007,7 +10007,7 @@ public fun DoubleArray.any(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.any
  */
-public fun BooleanArray.any(): Boolean {
+public inline fun BooleanArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -10016,7 +10016,7 @@ public fun BooleanArray.any(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.any
  */
-public fun CharArray.any(): Boolean {
+public inline fun CharArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -11761,7 +11761,7 @@ public fun CharArray.minWith(comparator: Comparator<in Char>): Char? {
  * 
  * @sample samples.collections.Collections.Aggregates.none
  */
-public fun <T> Array<out T>.none(): Boolean {
+public inline fun <T> Array<out T>.none(): Boolean {
     return isEmpty()
 }
 
@@ -11770,7 +11770,7 @@ public fun <T> Array<out T>.none(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.none
  */
-public fun ByteArray.none(): Boolean {
+public inline fun ByteArray.none(): Boolean {
     return isEmpty()
 }
 
@@ -11779,7 +11779,7 @@ public fun ByteArray.none(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.none
  */
-public fun ShortArray.none(): Boolean {
+public inline fun ShortArray.none(): Boolean {
     return isEmpty()
 }
 
@@ -11788,7 +11788,7 @@ public fun ShortArray.none(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.none
  */
-public fun IntArray.none(): Boolean {
+public inline fun IntArray.none(): Boolean {
     return isEmpty()
 }
 
@@ -11797,7 +11797,7 @@ public fun IntArray.none(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.none
  */
-public fun LongArray.none(): Boolean {
+public inline fun LongArray.none(): Boolean {
     return isEmpty()
 }
 
@@ -11806,7 +11806,7 @@ public fun LongArray.none(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.none
  */
-public fun FloatArray.none(): Boolean {
+public inline fun FloatArray.none(): Boolean {
     return isEmpty()
 }
 
@@ -11815,7 +11815,7 @@ public fun FloatArray.none(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.none
  */
-public fun DoubleArray.none(): Boolean {
+public inline fun DoubleArray.none(): Boolean {
     return isEmpty()
 }
 
@@ -11824,7 +11824,7 @@ public fun DoubleArray.none(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.none
  */
-public fun BooleanArray.none(): Boolean {
+public inline fun BooleanArray.none(): Boolean {
     return isEmpty()
 }
 
@@ -11833,7 +11833,7 @@ public fun BooleanArray.none(): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.none
  */
-public fun CharArray.none(): Boolean {
+public inline fun CharArray.none(): Boolean {
     return isEmpty()
 }
 

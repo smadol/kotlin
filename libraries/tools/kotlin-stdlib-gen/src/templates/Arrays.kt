@@ -51,8 +51,9 @@ object ArrayOps : TemplateGroupBase() {
         body {
             "get() = size - 1"
         }
-        body(ArraysOfUnsigned) {
-            "get() = storage.lastIndex"
+        specialFor(ArraysOfUnsigned) {
+            inlineOnly()
+            body { "get() = storage.lastIndex" }
         }
     }
 

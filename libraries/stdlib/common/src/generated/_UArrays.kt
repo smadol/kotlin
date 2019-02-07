@@ -580,7 +580,8 @@ public inline fun UShortArray.copyOfRange(fromIndex: Int, toIndex: Int): UShortA
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public val UIntArray.lastIndex: Int
+@kotlin.internal.InlineOnly
+public inline val UIntArray.lastIndex: Int
     get() = storage.lastIndex
 
 /**
@@ -588,7 +589,8 @@ public val UIntArray.lastIndex: Int
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public val ULongArray.lastIndex: Int
+@kotlin.internal.InlineOnly
+public inline val ULongArray.lastIndex: Int
     get() = storage.lastIndex
 
 /**
@@ -596,7 +598,8 @@ public val ULongArray.lastIndex: Int
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public val UByteArray.lastIndex: Int
+@kotlin.internal.InlineOnly
+public inline val UByteArray.lastIndex: Int
     get() = storage.lastIndex
 
 /**
@@ -604,7 +607,8 @@ public val UByteArray.lastIndex: Int
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public val UShortArray.lastIndex: Int
+@kotlin.internal.InlineOnly
+public inline val UShortArray.lastIndex: Int
     get() = storage.lastIndex
 
 /**
@@ -739,10 +743,7 @@ public inline fun ShortArray.toUShortArray(): UShortArray {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun UIntArray.all(predicate: (UInt) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (!predicate(element)) return false
-    }
+    for (element in this) if (!predicate(element)) return false
     return true
 }
 
@@ -754,10 +755,7 @@ public inline fun UIntArray.all(predicate: (UInt) -> Boolean): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun ULongArray.all(predicate: (ULong) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (!predicate(element)) return false
-    }
+    for (element in this) if (!predicate(element)) return false
     return true
 }
 
@@ -769,10 +767,7 @@ public inline fun ULongArray.all(predicate: (ULong) -> Boolean): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun UByteArray.all(predicate: (UByte) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (!predicate(element)) return false
-    }
+    for (element in this) if (!predicate(element)) return false
     return true
 }
 
@@ -784,10 +779,7 @@ public inline fun UByteArray.all(predicate: (UByte) -> Boolean): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun UShortArray.all(predicate: (UShort) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (!predicate(element)) return false
-    }
+    for (element in this) if (!predicate(element)) return false
     return true
 }
 
@@ -798,7 +790,7 @@ public inline fun UShortArray.all(predicate: (UShort) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UIntArray.any(): Boolean {
+public inline fun UIntArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -809,7 +801,7 @@ public fun UIntArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun ULongArray.any(): Boolean {
+public inline fun ULongArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -820,7 +812,7 @@ public fun ULongArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UByteArray.any(): Boolean {
+public inline fun UByteArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -831,7 +823,7 @@ public fun UByteArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UShortArray.any(): Boolean {
+public inline fun UShortArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -843,10 +835,7 @@ public fun UShortArray.any(): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun UIntArray.any(predicate: (UInt) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return true
-    }
+    for (element in this) if (predicate(element)) return true
     return false
 }
 
@@ -858,10 +847,7 @@ public inline fun UIntArray.any(predicate: (UInt) -> Boolean): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun ULongArray.any(predicate: (ULong) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return true
-    }
+    for (element in this) if (predicate(element)) return true
     return false
 }
 
@@ -873,10 +859,7 @@ public inline fun ULongArray.any(predicate: (ULong) -> Boolean): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun UByteArray.any(predicate: (UByte) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return true
-    }
+    for (element in this) if (predicate(element)) return true
     return false
 }
 
@@ -888,10 +871,7 @@ public inline fun UByteArray.any(predicate: (UByte) -> Boolean): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun UShortArray.any(predicate: (UShort) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return true
-    }
+    for (element in this) if (predicate(element)) return true
     return false
 }
 
@@ -902,10 +882,7 @@ public inline fun UShortArray.any(predicate: (UShort) -> Boolean): Boolean {
 @ExperimentalUnsignedTypes
 public inline fun UIntArray.count(predicate: (UInt) -> Boolean): Int {
     var count = 0
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) ++count
-    }
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -916,10 +893,7 @@ public inline fun UIntArray.count(predicate: (UInt) -> Boolean): Int {
 @ExperimentalUnsignedTypes
 public inline fun ULongArray.count(predicate: (ULong) -> Boolean): Int {
     var count = 0
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) ++count
-    }
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -930,10 +904,7 @@ public inline fun ULongArray.count(predicate: (ULong) -> Boolean): Int {
 @ExperimentalUnsignedTypes
 public inline fun UByteArray.count(predicate: (UByte) -> Boolean): Int {
     var count = 0
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) ++count
-    }
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -944,10 +915,7 @@ public inline fun UByteArray.count(predicate: (UByte) -> Boolean): Int {
 @ExperimentalUnsignedTypes
 public inline fun UShortArray.count(predicate: (UShort) -> Boolean): Int {
     var count = 0
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) ++count
-    }
+    for (element in this) if (predicate(element)) ++count
     return count
 }
 
@@ -958,7 +926,7 @@ public inline fun UShortArray.count(predicate: (UShort) -> Boolean): Int {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UIntArray.none(): Boolean {
+public inline fun UIntArray.none(): Boolean {
     return isEmpty()
 }
 
@@ -969,7 +937,7 @@ public fun UIntArray.none(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun ULongArray.none(): Boolean {
+public inline fun ULongArray.none(): Boolean {
     return isEmpty()
 }
 
@@ -980,7 +948,7 @@ public fun ULongArray.none(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UByteArray.none(): Boolean {
+public inline fun UByteArray.none(): Boolean {
     return isEmpty()
 }
 
@@ -991,7 +959,7 @@ public fun UByteArray.none(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UShortArray.none(): Boolean {
+public inline fun UShortArray.none(): Boolean {
     return isEmpty()
 }
 
@@ -1003,10 +971,7 @@ public fun UShortArray.none(): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun UIntArray.none(predicate: (UInt) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return false
-    }
+    for (element in this) if (predicate(element)) return false
     return true
 }
 
@@ -1018,10 +983,7 @@ public inline fun UIntArray.none(predicate: (UInt) -> Boolean): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun ULongArray.none(predicate: (ULong) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return false
-    }
+    for (element in this) if (predicate(element)) return false
     return true
 }
 
@@ -1033,10 +995,7 @@ public inline fun ULongArray.none(predicate: (ULong) -> Boolean): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun UByteArray.none(predicate: (UByte) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return false
-    }
+    for (element in this) if (predicate(element)) return false
     return true
 }
 
@@ -1048,10 +1007,7 @@ public inline fun UByteArray.none(predicate: (UByte) -> Boolean): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 public inline fun UShortArray.none(predicate: (UShort) -> Boolean): Boolean {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return false
-    }
+    for (element in this) if (predicate(element)) return false
     return true
 }
 
@@ -1062,8 +1018,7 @@ public inline fun UShortArray.none(predicate: (UShort) -> Boolean): Boolean {
 @ExperimentalUnsignedTypes
 public inline fun UIntArray.sumBy(selector: (UInt) -> Int): Int {
     var sum: Int = 0
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         sum += selector(element)
     }
     return sum
@@ -1076,8 +1031,7 @@ public inline fun UIntArray.sumBy(selector: (UInt) -> Int): Int {
 @ExperimentalUnsignedTypes
 public inline fun ULongArray.sumBy(selector: (ULong) -> Int): Int {
     var sum: Int = 0
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         sum += selector(element)
     }
     return sum
@@ -1090,8 +1044,7 @@ public inline fun ULongArray.sumBy(selector: (ULong) -> Int): Int {
 @ExperimentalUnsignedTypes
 public inline fun UByteArray.sumBy(selector: (UByte) -> Int): Int {
     var sum: Int = 0
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         sum += selector(element)
     }
     return sum
@@ -1104,8 +1057,7 @@ public inline fun UByteArray.sumBy(selector: (UByte) -> Int): Int {
 @ExperimentalUnsignedTypes
 public inline fun UShortArray.sumBy(selector: (UShort) -> Int): Int {
     var sum: Int = 0
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         sum += selector(element)
     }
     return sum
@@ -1118,8 +1070,7 @@ public inline fun UShortArray.sumBy(selector: (UShort) -> Int): Int {
 @ExperimentalUnsignedTypes
 public inline fun UIntArray.sumByDouble(selector: (UInt) -> Double): Double {
     var sum: Double = 0.0
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         sum += selector(element)
     }
     return sum
@@ -1132,8 +1083,7 @@ public inline fun UIntArray.sumByDouble(selector: (UInt) -> Double): Double {
 @ExperimentalUnsignedTypes
 public inline fun ULongArray.sumByDouble(selector: (ULong) -> Double): Double {
     var sum: Double = 0.0
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         sum += selector(element)
     }
     return sum
@@ -1146,8 +1096,7 @@ public inline fun ULongArray.sumByDouble(selector: (ULong) -> Double): Double {
 @ExperimentalUnsignedTypes
 public inline fun UByteArray.sumByDouble(selector: (UByte) -> Double): Double {
     var sum: Double = 0.0
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         sum += selector(element)
     }
     return sum
@@ -1160,8 +1109,7 @@ public inline fun UByteArray.sumByDouble(selector: (UByte) -> Double): Double {
 @ExperimentalUnsignedTypes
 public inline fun UShortArray.sumByDouble(selector: (UShort) -> Double): Double {
     var sum: Double = 0.0
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         sum += selector(element)
     }
     return sum

@@ -2306,10 +2306,6 @@ public final class kotlin/collections/UArraysKt {
 	public static final fun count-MShoTSo ([JLkotlin/jvm/functions/Function1;)I
 	public static final fun count-jgv0xPQ ([ILkotlin/jvm/functions/Function1;)I
 	public static final fun count-xTcfx_M ([SLkotlin/jvm/functions/Function1;)I
-	public static final fun getLastIndex--ajY-9A ([I)I
-	public static final fun getLastIndex-GBYM_sE ([B)I
-	public static final fun getLastIndex-QwZRm1k ([J)I
-	public static final fun getLastIndex-rL5Bavg ([S)I
 	public static final fun none--ajY-9A ([I)Z
 	public static final fun none-GBYM_sE ([B)Z
 	public static final fun none-JOV_ifY ([BLkotlin/jvm/functions/Function1;)Z

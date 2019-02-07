@@ -45,15 +45,6 @@ object Aggregates : TemplateGroupBase() {
             return true
             """
         }
-        body(ArraysOfUnsigned) {
-            """
-            for (index in 0..lastIndex) {
-                val element = get(index)
-                if (!predicate(element)) return false
-            }
-            return true
-            """
-        }
     }
 
     val f_none_predicate = fn("none(predicate: (T) -> Boolean)") {
@@ -77,15 +68,6 @@ object Aggregates : TemplateGroupBase() {
                 else -> ""
             }}
             for (element in this) if (predicate(element)) return false
-            return true
-            """
-        }
-        body(ArraysOfUnsigned) {
-            """
-            for (index in 0..lastIndex) {
-                val element = get(index)
-                if (predicate(element)) return false
-            }
             return true
             """
         }
@@ -114,6 +96,7 @@ object Aggregates : TemplateGroupBase() {
             }
         }
         specialFor(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
+            inline()
             body { "return isEmpty()" }
         }
     }
@@ -142,15 +125,6 @@ object Aggregates : TemplateGroupBase() {
             return false
             """
         }
-        body(ArraysOfUnsigned) {
-            """
-            for (index in 0..lastIndex) {
-                val element = get(index)
-                if (predicate(element)) return true
-            }
-            return false
-            """
-        }
     }
 
     val f_any = fn("any()") {
@@ -173,7 +147,10 @@ object Aggregates : TemplateGroupBase() {
             return iterator().hasNext()
             """
         }
-        body(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) { "return !isEmpty()" }
+        specialFor(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
+            inline()
+            body { "return !isEmpty()" }
+        }
     }
 
 
@@ -195,16 +172,6 @@ object Aggregates : TemplateGroupBase() {
             }}
             var count = 0
             for (element in this) if (predicate(element)) ${checkOverflow("++count")}
-            return count
-            """
-        }
-        body(ArraysOfUnsigned) {
-            """
-            var count = 0
-            for (index in 0..lastIndex) {
-                val element = get(index)
-                if (predicate(element)) ++count
-            }
             return count
             """
         }
@@ -242,20 +209,10 @@ object Aggregates : TemplateGroupBase() {
         inline()
         doc { "Returns the sum of all values produced by [selector] function applied to each ${f.element} in the ${f.collection}." }
         returns("Int")
-
-        val iterationExpression = if (f == ArraysOfUnsigned)
-            """
-            for (index in 0..lastIndex) {
-                val element = get(index)
-            """
-        else
-            """
-            for (element in this) {
-            """
         body {
             """
             var sum: Int = 0
-            $iterationExpression
+            for (element in this) {
                 sum += selector(element)
             }
             return sum
@@ -270,20 +227,10 @@ object Aggregates : TemplateGroupBase() {
         inline()
         doc { "Returns the sum of all values produced by [selector] function applied to each ${f.element} in the ${f.collection}." }
         returns("Double")
-
-        val iterationExpression = if (f == ArraysOfUnsigned)
-            """
-            for (index in 0..lastIndex) {
-                val element = get(index)
-            """
-        else
-            """
-            for (element in this) {
-            """
         body {
             """
             var sum: Double = 0.0
-            $iterationExpression
+            for (element in this) {
                 sum += selector(element)
             }
             return sum
