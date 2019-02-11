@@ -60,9 +60,9 @@ abstract class FirAbstractTreeTransformerWithSuperTypes(reversedScopePriority: B
             this
         } else when (this) {
             is ConeClassTypeImpl ->
-                ConeClassTypeImpl(useSiteSymbol, typeArguments)
+                ConeClassTypeImpl(useSiteSymbol, typeArguments, nullability.isNullable)
             is ConeAbbreviatedTypeImpl ->
-                ConeAbbreviatedTypeImpl(useSiteSymbol, typeArguments, directExpansion)
+                ConeAbbreviatedTypeImpl(useSiteSymbol, typeArguments, directExpansion, nullability.isNullable)
             else ->
                 this
         }
