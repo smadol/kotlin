@@ -97,3 +97,8 @@ abstract class ConeFunctionType : ConeKotlinType() {
     abstract val parameterTypes: List<ConeKotlinType>
     abstract val returnType: ConeKotlinType
 }
+
+class ConeFlexibleType(val lowerBound: ConeKotlinType, val upperBound: ConeKotlinType) : ConeKotlinType() {
+    override val typeArguments: Array<out ConeKotlinTypeProjection>
+        get() = emptyArray()
+}

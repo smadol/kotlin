@@ -651,6 +651,15 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
                     append(returnType.asString())
                 }
             }
+            is ConeFlexibleType -> {
+                buildString {
+                    append("ft<")
+                    append(lowerBound.asString())
+                    append(", ")
+                    append(upperBound.asString())
+                    append(">")
+                }
+            }
         }
     }
 

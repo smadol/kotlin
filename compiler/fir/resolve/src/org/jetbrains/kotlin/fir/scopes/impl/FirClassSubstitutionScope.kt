@@ -72,6 +72,7 @@ class FirClassSubstitutionScope(
                 )
                 is ConeFunctionType -> TODO("Substitute function type properly")
                 is ConeClassLikeType -> error("Unknown class-like type to substitute: $this, ${this::class}")
+                is ConeFlexibleType -> error("Trying to substitute arguments for flexible type")
             }
         }
         return null
