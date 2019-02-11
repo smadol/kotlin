@@ -70,6 +70,7 @@ internal fun doubleToUByte(v: Double): UByte = when {
     v >= UByte.MAX_VALUE.toDouble() -> UByte.MAX_VALUE
     else -> v.toInt().toUByte()
 }
+
 @PublishedApi
 internal fun doubleToUShort(v: Double): UShort = when {
     v.isNaN() -> 0u
@@ -77,6 +78,7 @@ internal fun doubleToUShort(v: Double): UShort = when {
     v >= UShort.MAX_VALUE.toDouble() -> UShort.MAX_VALUE
     else -> v.toInt().toUShort()
 }
+
 @PublishedApi
 internal fun doubleToUInt(v: Double): UInt = when {
     v.isNaN() -> 0u
@@ -85,6 +87,7 @@ internal fun doubleToUInt(v: Double): UInt = when {
     v <= Int.MAX_VALUE -> v.toInt().toUInt()
     else -> (v - Int.MAX_VALUE).toInt().toUInt() + Int.MAX_VALUE.toUInt()      // Int.MAX_VALUE < v < UInt.MAX_VALUE
 }
+
 @PublishedApi
 internal fun doubleToULong(v: Double): ULong = when {
     v.isNaN() -> 0u
