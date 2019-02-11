@@ -51,7 +51,7 @@ class JavaSymbolFactory(val session: FirSession) {
     private fun JavaClassifierType.toFirResolvedType(): FirResolvedType {
         val coneType = when (val classifier = classifier) {
             is JavaClass -> {
-                val symbol = symbolProvider.getSymbolByFqName(classifier.classId!!) as ConeClassSymbol
+                val symbol = symbolProvider.getClassLikeSymbolByFqName(classifier.classId!!) as ConeClassSymbol
                 ConeClassTypeImpl(symbol, typeArguments = typeArguments.map { it.toConeProjection() }.toTypedArray())
             }
             is JavaTypeParameter -> {

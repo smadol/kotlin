@@ -53,7 +53,7 @@ abstract class FirAbstractTreeTransformerWithSuperTypes(reversedScopePriority: B
         if (declaredSymbol is FirBasedSymbol<*> && declaredSymbol.fir.session.moduleInfo == useSiteSession.moduleInfo) {
             return this
         }
-        val useSiteSymbol = symbolProvider.getSymbolByFqName(declaredSymbol.classId)
+        val useSiteSymbol = symbolProvider.getClassLikeSymbolByFqName(declaredSymbol.classId)
         return if (useSiteSymbol !is ConeClassLikeSymbol || useSiteSymbol == declaredSymbol) {
             this
         } else when (this) {
