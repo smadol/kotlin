@@ -16,7 +16,8 @@ import org.jetbrains.kotlin.fir.resolve.FirProvider
 import org.jetbrains.kotlin.fir.resolve.impl.FirProviderImpl
 import org.jetbrains.kotlin.fir.service
 import org.jetbrains.kotlin.fir.symbols.CallableId
-import org.jetbrains.kotlin.fir.symbols.ConeSymbol
+import org.jetbrains.kotlin.fir.symbols.ConeCallableSymbol
+import org.jetbrains.kotlin.fir.symbols.ConeClassLikeSymbol
 import org.jetbrains.kotlin.idea.caches.project.ModuleSourceInfo
 import org.jetbrains.kotlin.idea.caches.project.getModuleInfo
 import org.jetbrains.kotlin.idea.stubindex.KotlinFullClassNameIndex
@@ -33,7 +34,7 @@ class IdeFirDependenciesSymbolProvider(
     val project: Project,
     private val sessionProvider: FirProjectSessionProvider
 ) : AbstractFirSymbolProvider() {
-    override fun getCallableSymbols(callableId: CallableId): List<ConeSymbol> {
+    override fun getCallableSymbols(callableId: CallableId): List<ConeCallableSymbol> {
         return emptyList()
     }
 
@@ -43,7 +44,7 @@ class IdeFirDependenciesSymbolProvider(
     private val javaSymbolProvider by lazy { JavaSymbolProvider(sessionProvider.getSession(moduleInfo)!!, project, depScope) }
 
 
-    private fun buildKotlinClassOnRequest(file: KtFile, classId: ClassId, session: FirSession): ConeSymbol? {
+    private fun buildKotlinClassOnRequest(file: KtFile, classId: ClassId, session: FirSession): ConeClassLikeSymbol? {
         val impl = FirProvider.getInstance(session) as FirProviderImpl
         val classifier = impl.getClassLikeSymbolByFqName(classId)
         if (classifier != null) {
@@ -65,7 +66,7 @@ class IdeFirDependenciesSymbolProvider(
         }
     }
 
-    private fun tryKotlin(classId: ClassId): ConeSymbol? {
+    private fun tryKotlin(classId: ClassId): ConeClassLikeSymbol? {
         return classCache.lookupCacheOrCalculate(classId) {
             val index = KotlinFullClassNameIndex.getInstance()
 
@@ -87,11 +88,11 @@ class IdeFirDependenciesSymbolProvider(
         }
     }
 
-    private fun tryJava(classId: ClassId): ConeSymbol? {
+    private fun tryJava(classId: ClassId): ConeClassLikeSymbol? {
         return javaSymbolProvider.getClassLikeSymbolByFqName(classId)
     }
 
-    override fun getClassLikeSymbolByFqName(classId: ClassId): ConeSymbol? {
+    override fun getClassLikeSymbolByFqName(classId: ClassId): ConeClassLikeSymbol? {
         return tryKotlin(classId) ?: tryJava(classId)
     }
 

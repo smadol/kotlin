@@ -58,4 +58,9 @@ public class FirMultiModuleResolveTestGenerated extends AbstractFirMultiModuleRe
     public void testMppSuperTypes() throws Exception {
         runTest("idea/testData/fir/multiModule/mppSuperTypes/");
     }
+
+    @TestMetadata("overrideWithJava")
+    public void testOverrideWithJava() throws Exception {
+        runTest("idea/testData/fir/multiModule/overrideWithJava/");
+    }
 }
