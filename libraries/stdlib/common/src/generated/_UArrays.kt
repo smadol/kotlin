@@ -742,6 +742,7 @@ public inline fun ShortArray.toUShortArray(): UShortArray {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.all(predicate: (UInt) -> Boolean): Boolean {
     for (element in this) if (!predicate(element)) return false
     return true
@@ -754,6 +755,7 @@ public inline fun UIntArray.all(predicate: (UInt) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.all(predicate: (ULong) -> Boolean): Boolean {
     for (element in this) if (!predicate(element)) return false
     return true
@@ -766,6 +768,7 @@ public inline fun ULongArray.all(predicate: (ULong) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.all(predicate: (UByte) -> Boolean): Boolean {
     for (element in this) if (!predicate(element)) return false
     return true
@@ -778,6 +781,7 @@ public inline fun UByteArray.all(predicate: (UByte) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.all(predicate: (UShort) -> Boolean): Boolean {
     for (element in this) if (!predicate(element)) return false
     return true
@@ -790,6 +794,7 @@ public inline fun UShortArray.all(predicate: (UShort) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.any(): Boolean {
     return !isEmpty()
 }
@@ -801,6 +806,7 @@ public inline fun UIntArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.any(): Boolean {
     return !isEmpty()
 }
@@ -812,6 +818,7 @@ public inline fun ULongArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.any(): Boolean {
     return !isEmpty()
 }
@@ -823,6 +830,7 @@ public inline fun UByteArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.any(): Boolean {
     return !isEmpty()
 }
@@ -834,6 +842,7 @@ public inline fun UShortArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.any(predicate: (UInt) -> Boolean): Boolean {
     for (element in this) if (predicate(element)) return true
     return false
@@ -846,6 +855,7 @@ public inline fun UIntArray.any(predicate: (UInt) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.any(predicate: (ULong) -> Boolean): Boolean {
     for (element in this) if (predicate(element)) return true
     return false
@@ -858,6 +868,7 @@ public inline fun ULongArray.any(predicate: (ULong) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.any(predicate: (UByte) -> Boolean): Boolean {
     for (element in this) if (predicate(element)) return true
     return false
@@ -870,6 +881,7 @@ public inline fun UByteArray.any(predicate: (UByte) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.any(predicate: (UShort) -> Boolean): Boolean {
     for (element in this) if (predicate(element)) return true
     return false
@@ -880,6 +892,7 @@ public inline fun UShortArray.any(predicate: (UShort) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.count(predicate: (UInt) -> Boolean): Int {
     var count = 0
     for (element in this) if (predicate(element)) ++count
@@ -891,6 +904,7 @@ public inline fun UIntArray.count(predicate: (UInt) -> Boolean): Int {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.count(predicate: (ULong) -> Boolean): Int {
     var count = 0
     for (element in this) if (predicate(element)) ++count
@@ -902,6 +916,7 @@ public inline fun ULongArray.count(predicate: (ULong) -> Boolean): Int {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.count(predicate: (UByte) -> Boolean): Int {
     var count = 0
     for (element in this) if (predicate(element)) ++count
@@ -913,6 +928,7 @@ public inline fun UByteArray.count(predicate: (UByte) -> Boolean): Int {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.count(predicate: (UShort) -> Boolean): Int {
     var count = 0
     for (element in this) if (predicate(element)) ++count
@@ -926,6 +942,7 @@ public inline fun UShortArray.count(predicate: (UShort) -> Boolean): Int {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.none(): Boolean {
     return isEmpty()
 }
@@ -937,6 +954,7 @@ public inline fun UIntArray.none(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.none(): Boolean {
     return isEmpty()
 }
@@ -948,6 +966,7 @@ public inline fun ULongArray.none(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.none(): Boolean {
     return isEmpty()
 }
@@ -959,6 +978,7 @@ public inline fun UByteArray.none(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.none(): Boolean {
     return isEmpty()
 }
@@ -970,6 +990,7 @@ public inline fun UShortArray.none(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.none(predicate: (UInt) -> Boolean): Boolean {
     for (element in this) if (predicate(element)) return false
     return true
@@ -982,6 +1003,7 @@ public inline fun UIntArray.none(predicate: (UInt) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.none(predicate: (ULong) -> Boolean): Boolean {
     for (element in this) if (predicate(element)) return false
     return true
@@ -994,6 +1016,7 @@ public inline fun ULongArray.none(predicate: (ULong) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.none(predicate: (UByte) -> Boolean): Boolean {
     for (element in this) if (predicate(element)) return false
     return true
@@ -1006,6 +1029,7 @@ public inline fun UByteArray.none(predicate: (UByte) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.none(predicate: (UShort) -> Boolean): Boolean {
     for (element in this) if (predicate(element)) return false
     return true
@@ -1016,6 +1040,7 @@ public inline fun UShortArray.none(predicate: (UShort) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.sumBy(selector: (UInt) -> Int): Int {
     var sum: Int = 0
     for (element in this) {
@@ -1029,6 +1054,7 @@ public inline fun UIntArray.sumBy(selector: (UInt) -> Int): Int {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.sumBy(selector: (ULong) -> Int): Int {
     var sum: Int = 0
     for (element in this) {
@@ -1042,6 +1068,7 @@ public inline fun ULongArray.sumBy(selector: (ULong) -> Int): Int {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.sumBy(selector: (UByte) -> Int): Int {
     var sum: Int = 0
     for (element in this) {
@@ -1055,6 +1082,7 @@ public inline fun UByteArray.sumBy(selector: (UByte) -> Int): Int {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.sumBy(selector: (UShort) -> Int): Int {
     var sum: Int = 0
     for (element in this) {
@@ -1068,6 +1096,7 @@ public inline fun UShortArray.sumBy(selector: (UShort) -> Int): Int {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.sumByDouble(selector: (UInt) -> Double): Double {
     var sum: Double = 0.0
     for (element in this) {
@@ -1081,6 +1110,7 @@ public inline fun UIntArray.sumByDouble(selector: (UInt) -> Double): Double {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.sumByDouble(selector: (ULong) -> Double): Double {
     var sum: Double = 0.0
     for (element in this) {
@@ -1094,6 +1124,7 @@ public inline fun ULongArray.sumByDouble(selector: (ULong) -> Double): Double {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.sumByDouble(selector: (UByte) -> Double): Double {
     var sum: Double = 0.0
     for (element in this) {
@@ -1107,6 +1138,7 @@ public inline fun UByteArray.sumByDouble(selector: (UByte) -> Double): Double {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.sumByDouble(selector: (UShort) -> Double): Double {
     var sum: Double = 0.0
     for (element in this) {

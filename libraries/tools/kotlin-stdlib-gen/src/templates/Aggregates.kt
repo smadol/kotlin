@@ -27,6 +27,8 @@ object Aggregates : TemplateGroupBase() {
         include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
+
         doc {
             """
             Returns `true` if all ${f.element.pluralize()} match the given [predicate].
@@ -52,6 +54,7 @@ object Aggregates : TemplateGroupBase() {
         include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
 
         doc {
             """
@@ -95,9 +98,12 @@ object Aggregates : TemplateGroupBase() {
                 """
             }
         }
-        specialFor(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
-            inline()
-            body { "return isEmpty()" }
+
+        specialFor(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives) { inline() }
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
+
+        body(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
+            "return isEmpty()"
         }
     }
 
@@ -106,6 +112,7 @@ object Aggregates : TemplateGroupBase() {
         include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
 
         doc {
             """
@@ -147,9 +154,12 @@ object Aggregates : TemplateGroupBase() {
             return iterator().hasNext()
             """
         }
-        specialFor(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
-            inline()
-            body { "return !isEmpty()" }
+
+        specialFor(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives) { inline() }
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
+
+        body(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
+            "return !isEmpty()"
         }
     }
 
@@ -159,6 +169,7 @@ object Aggregates : TemplateGroupBase() {
         include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
 
         doc { "Returns the number of ${f.element.pluralize()} matching the given [predicate]." }
         returns("Int")
@@ -192,13 +203,15 @@ object Aggregates : TemplateGroupBase() {
             return count
             """
         }
+
         specialFor(CharSequences, Maps, Collections, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) { inlineOnly() }
+
         specialFor(CharSequences) {
             doc { "Returns the length of this char sequence." }
             body { "return length" }
         }
-        specialFor(Maps, Collections, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
-            body { "return size" }
+        body(Maps, Collections, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
+            "return size"
         }
     }
 
@@ -207,6 +220,8 @@ object Aggregates : TemplateGroupBase() {
         include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
+
         doc { "Returns the sum of all values produced by [selector] function applied to each ${f.element} in the ${f.collection}." }
         returns("Int")
         body {
@@ -225,6 +240,8 @@ object Aggregates : TemplateGroupBase() {
         include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
+
         doc { "Returns the sum of all values produced by [selector] function applied to each ${f.element} in the ${f.collection}." }
         returns("Double")
         body {
