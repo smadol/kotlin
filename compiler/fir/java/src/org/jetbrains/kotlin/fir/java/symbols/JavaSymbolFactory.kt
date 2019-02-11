@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
 import org.jetbrains.kotlin.fir.expressions.FirExpression
 import org.jetbrains.kotlin.fir.expressions.impl.*
 import org.jetbrains.kotlin.fir.resolve.FirSymbolProvider
+import org.jetbrains.kotlin.fir.resolve.getOrPut
 import org.jetbrains.kotlin.fir.service
 import org.jetbrains.kotlin.fir.symbols.ConeClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
@@ -26,12 +27,15 @@ import org.jetbrains.kotlin.fir.types.impl.ConeTypeParameterTypeImpl
 import org.jetbrains.kotlin.fir.types.impl.FirResolvedTypeImpl
 import org.jetbrains.kotlin.ir.expressions.IrConstKind
 import org.jetbrains.kotlin.load.java.structure.*
+import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.types.Variance
 
 class JavaSymbolFactory(val session: FirSession) {
 
     private val symbolProvider: FirSymbolProvider get() = session.service()
+
+    val symbols = mutableMapOf<ClassId, ConeClassSymbol>()
 
     private val JavaClass.modality: Modality
         get() = when {
@@ -117,25 +121,28 @@ class JavaSymbolFactory(val session: FirSession) {
 
     fun createClassSymbol(javaClass: JavaClass): ConeClassSymbol {
         val classId = javaClass.classId ?: error("!")
-        val firSymbol = FirClassSymbol(classId)
-        FirClassImpl(
-            session, null, firSymbol, javaClass.name,
-            javaClass.visibility, javaClass.modality,
-            isExpect = false, isActual = false,
-            classKind = javaClass.classKind,
-            isInner = !javaClass.isStatic, isCompanion = false,
-            isData = false, isInline = false
-        ).apply {
-            for (typeParameter in javaClass.typeParameters) {
-                typeParameters += createTypeParameterSymbol(typeParameter.name).fir
+
+        return symbols.getOrPut(classId, {
+            FirClassSymbol(classId)
+        }) { firSymbol ->
+            FirClassImpl(
+                session, null, firSymbol, javaClass.name,
+                javaClass.visibility, javaClass.modality,
+                isExpect = false, isActual = false,
+                classKind = javaClass.classKind,
+                isInner = !javaClass.isStatic, isCompanion = false,
+                isData = false, isInline = false
+            ).apply {
+                for (typeParameter in javaClass.typeParameters) {
+                    typeParameters += createTypeParameterSymbol(typeParameter.name).fir
+                }
+                addAnnotationsFrom(javaClass)
+                for (supertype in javaClass.supertypes) {
+                    superTypes += supertype.toFirResolvedType()
+                }
+                // TODO: declarations (probably should be done later)
             }
-            addAnnotationsFrom(javaClass)
-            for (supertype in javaClass.supertypes) {
-                superTypes += supertype.toFirResolvedType()
-            }
-            // TODO: declarations (probably should be done later)
         }
-        return firSymbol
     }
 
     private fun FirAbstractAnnotatedElement.addAnnotationsFrom(javaClass: JavaAnnotationOwner) {
