@@ -300,44 +300,44 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitTargetElement(labeledElement, null)
     }
 
-    open fun visitType(type: FirType) {
-        visitElement(type, null)
+    open fun visitTypeRef(typeRef: FirTypeRef) {
+        visitElement(typeRef, null)
     }
 
-    open fun visitDelegatedType(delegatedType: FirDelegatedType) {
-        visitType(delegatedType, null)
+    open fun visitDelegatedTypeRef(delegatedTypeRef: FirDelegatedTypeRef) {
+        visitTypeRef(delegatedTypeRef, null)
     }
 
-    open fun visitErrorType(errorType: FirErrorType) {
-        visitType(errorType, null)
+    open fun visitErrorTypeRef(errorTypeRef: FirErrorTypeRef) {
+        visitTypeRef(errorTypeRef, null)
     }
 
-    open fun visitImplicitType(implicitType: FirImplicitType) {
-        visitType(implicitType, null)
+    open fun visitImplicitTypeRef(implicitTypeRef: FirImplicitTypeRef) {
+        visitTypeRef(implicitTypeRef, null)
     }
 
-    open fun visitTypeWithNullability(typeWithNullability: FirTypeWithNullability) {
-        visitType(typeWithNullability, null)
+    open fun visitTypeRefWithNullability(typeRefWithNullability: FirTypeRefWithNullability) {
+        visitTypeRef(typeRefWithNullability, null)
     }
 
-    open fun visitDynamicType(dynamicType: FirDynamicType) {
-        visitTypeWithNullability(dynamicType, null)
+    open fun visitDynamicTypeRef(dynamicTypeRef: FirDynamicTypeRef) {
+        visitTypeRefWithNullability(dynamicTypeRef, null)
     }
 
-    open fun visitFunctionType(functionType: FirFunctionType) {
-        visitTypeWithNullability(functionType, null)
+    open fun visitFunctionTypeRef(functionTypeRef: FirFunctionTypeRef) {
+        visitTypeRefWithNullability(functionTypeRef, null)
     }
 
-    open fun visitResolvedType(resolvedType: FirResolvedType) {
-        visitTypeWithNullability(resolvedType, null)
+    open fun visitResolvedTypeRef(resolvedTypeRef: FirResolvedTypeRef) {
+        visitTypeRefWithNullability(resolvedTypeRef, null)
     }
 
-    open fun visitResolvedFunctionType(resolvedFunctionType: FirResolvedFunctionType) {
-        visitResolvedType(resolvedFunctionType, null)
+    open fun visitResolvedFunctionTypeRef(resolvedFunctionTypeRef: FirResolvedFunctionTypeRef) {
+        visitResolvedTypeRef(resolvedFunctionTypeRef, null)
     }
 
-    open fun visitUserType(userType: FirUserType) {
-        visitTypeWithNullability(userType, null)
+    open fun visitUserTypeRef(userTypeRef: FirUserTypeRef) {
+        visitTypeRefWithNullability(userTypeRef, null)
     }
 
     open fun visitTypeProjection(typeProjection: FirTypeProjection) {
@@ -448,16 +448,16 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitDelegatedConstructorCall(delegatedConstructorCall)
     }
 
-    final override fun visitDelegatedType(delegatedType: FirDelegatedType, data: Nothing?) {
-        visitDelegatedType(delegatedType)
+    final override fun visitDelegatedTypeRef(delegatedTypeRef: FirDelegatedTypeRef, data: Nothing?) {
+        visitDelegatedTypeRef(delegatedTypeRef)
     }
 
     final override fun visitDoWhileLoop(doWhileLoop: FirDoWhileLoop, data: Nothing?) {
         visitDoWhileLoop(doWhileLoop)
     }
 
-    final override fun visitDynamicType(dynamicType: FirDynamicType, data: Nothing?) {
-        visitDynamicType(dynamicType)
+    final override fun visitDynamicTypeRef(dynamicTypeRef: FirDynamicTypeRef, data: Nothing?) {
+        visitDynamicTypeRef(dynamicTypeRef)
     }
 
     final override fun visitEnumEntry(enumEntry: FirEnumEntry, data: Nothing?) {
@@ -472,8 +472,8 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitErrorExpression(errorExpression)
     }
 
-    final override fun visitErrorType(errorType: FirErrorType, data: Nothing?) {
-        visitErrorType(errorType)
+    final override fun visitErrorTypeRef(errorTypeRef: FirErrorTypeRef, data: Nothing?) {
+        visitErrorTypeRef(errorTypeRef)
     }
 
     final override fun visitExpression(expression: FirExpression, data: Nothing?) {
@@ -492,16 +492,16 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitFunctionCall(functionCall)
     }
 
-    final override fun visitFunctionType(functionType: FirFunctionType, data: Nothing?) {
-        visitFunctionType(functionType)
+    final override fun visitFunctionTypeRef(functionTypeRef: FirFunctionTypeRef, data: Nothing?) {
+        visitFunctionTypeRef(functionTypeRef)
     }
 
     final override fun visitGetClassCall(getClassCall: FirGetClassCall, data: Nothing?) {
         visitGetClassCall(getClassCall)
     }
 
-    final override fun visitImplicitType(implicitType: FirImplicitType, data: Nothing?) {
-        visitImplicitType(implicitType)
+    final override fun visitImplicitTypeRef(implicitTypeRef: FirImplicitTypeRef, data: Nothing?) {
+        visitImplicitTypeRef(implicitTypeRef)
     }
 
     final override fun visitImport(import: FirImport, data: Nothing?) {
@@ -592,16 +592,16 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitResolvedDeclarationStatus(resolvedDeclarationStatus)
     }
 
-    final override fun visitResolvedFunctionType(resolvedFunctionType: FirResolvedFunctionType, data: Nothing?) {
-        visitResolvedFunctionType(resolvedFunctionType)
+    final override fun visitResolvedFunctionTypeRef(resolvedFunctionTypeRef: FirResolvedFunctionTypeRef, data: Nothing?) {
+        visitResolvedFunctionTypeRef(resolvedFunctionTypeRef)
     }
 
     final override fun visitResolvedImport(resolvedImport: FirResolvedImport, data: Nothing?) {
         visitResolvedImport(resolvedImport)
     }
 
-    final override fun visitResolvedType(resolvedType: FirResolvedType, data: Nothing?) {
-        visitResolvedType(resolvedType)
+    final override fun visitResolvedTypeRef(resolvedTypeRef: FirResolvedTypeRef, data: Nothing?) {
+        visitResolvedTypeRef(resolvedTypeRef)
     }
 
     final override fun visitReturnExpression(returnExpression: FirReturnExpression, data: Nothing?) {
@@ -636,8 +636,8 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitTryExpression(tryExpression)
     }
 
-    final override fun visitType(type: FirType, data: Nothing?) {
-        visitType(type)
+    final override fun visitTypeRef(typeRef: FirTypeRef, data: Nothing?) {
+        visitTypeRef(typeRef)
     }
 
     final override fun visitTypeAlias(typeAlias: FirTypeAlias, data: Nothing?) {
@@ -660,16 +660,16 @@ abstract class FirVisitorVoid : FirVisitor<Unit, Nothing?>() {
         visitTypeProjectionWithVariance(typeProjectionWithVariance)
     }
 
-    final override fun visitTypeWithNullability(typeWithNullability: FirTypeWithNullability, data: Nothing?) {
-        visitTypeWithNullability(typeWithNullability)
+    final override fun visitTypeRefWithNullability(typeRefWithNullability: FirTypeRefWithNullability, data: Nothing?) {
+        visitTypeRefWithNullability(typeRefWithNullability)
     }
 
     final override fun visitTypedDeclaration(typedDeclaration: FirTypedDeclaration, data: Nothing?) {
         visitTypedDeclaration(typedDeclaration)
     }
 
-    final override fun visitUserType(userType: FirUserType, data: Nothing?) {
-        visitUserType(userType)
+    final override fun visitUserTypeRef(userTypeRef: FirUserTypeRef, data: Nothing?) {
+        visitUserTypeRef(userTypeRef)
     }
 
     final override fun visitValueParameter(valueParameter: FirValueParameter, data: Nothing?) {
