@@ -5,7 +5,6 @@
 
 package test.unsigned
 
-import kotlin.math.abs
 import kotlin.math.sign
 import kotlin.random.Random
 import kotlin.test.*
@@ -102,18 +101,29 @@ class UIntTest {
 
     @Test
     fun convertToFloat() {
-        fun testEpsEquals(v1: Float, v2: UInt) {
-            val eps = 1e-3
-            assertTrue(abs(v1 - v2.toFloat()) < eps)
-        }
+        fun testEquals(v1: Float, v2: UInt) = assertEquals(v1, v2.toFloat())
 
-        testEpsEquals(0.0f, zero)
-        testEpsEquals(1.0f, one)
-        testEpsEquals(0xFFFF_FFFF.toFloat(), max)
+        testEquals(0.0f, zero)
+        testEquals(1.0f, one)
+        testEquals(0xFFFF_FFFF.toFloat(), max)
 
         repeat(100) {
-            val v = Random.nextLong(0, 0xFFFF_FFFF)
-            testEpsEquals(v.toFloat(), v.toUInt())
+            val long = Random.nextLong(0, 0xFFFF_FFFF)
+            testEquals(long.toFloat(), long.toUInt())
+        }
+    }
+
+    @Test
+    fun convertToDouble() {
+        fun testEquals(v1: Double, v2: UInt) = assertEquals(v1, v2.toDouble())
+
+        testEquals(0.0, zero)
+        testEquals(1.0, one)
+        testEquals(0xFFFF_FFFF.toDouble(), max)
+
+        repeat(100) {
+            val long = Random.nextLong(0, 0xFFFF_FFFF)
+            testEquals(long.toDouble(), long.toUInt())
         }
     }
 

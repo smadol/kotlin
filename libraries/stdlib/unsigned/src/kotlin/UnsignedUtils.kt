@@ -99,14 +99,14 @@ internal fun doubleToULong(v: Double): ULong = when {
 
 
 @PublishedApi
-internal fun uintToFloat(v: Int): Float = (v ushr 1).toFloat() * 2 + (v and 1)
+internal fun uintToFloat(v: Int): Float = (v ushr 10 shl 9).toFloat() * 2 + (v and (1 shl 10) - 1)
 @PublishedApi
 internal fun uintToDouble(v: Int): Double = (v ushr 1).toDouble() * 2 + (v and 1)
 
 @PublishedApi
 internal fun ulongToFloat(v: Long): Float = (v ushr 1).toFloat() * 2 + (v and 1)
 @PublishedApi
-internal fun ulongToDouble(v: Long): Double = (v ushr 1).toDouble() * 2 + (v and 1)
+internal fun ulongToDouble(v: Long): Double = (v ushr 13 shl 12).toDouble() * 2 + (v and (1 shl 13) - 1)
 
 
 internal fun ulongToString(v: Long): String = ulongToString(v, 10)

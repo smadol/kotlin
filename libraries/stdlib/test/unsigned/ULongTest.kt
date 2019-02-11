@@ -102,30 +102,52 @@ class ULongTest {
 
 
     @Test
+    fun convertToFloat() {
+        fun testEquals(v1: Float, v2: ULong) = assertEquals(v1, v2.toFloat())
+
+        testEquals(0.0f, zero)
+        testEquals(1.0f, one)
+
+        testEquals(2.0f.pow(ULong.SIZE_BITS) - 1, max)
+        testEquals(2.0f * Long.MAX_VALUE + 1, max)
+
+        repeat(100) {
+            val long = Random.nextLong(from = 0, until = Long.MAX_VALUE)
+            testEquals(long.toFloat(), long.toULong())
+        }
+
+        repeat(100) {
+            val long = Random.nextLong(from = 0, until = Long.MAX_VALUE)
+            val float = Long.MAX_VALUE.toFloat() + long.toFloat()    // We lose accuracy here, hence `eps` is used.
+            val ulong = Long.MAX_VALUE.toULong() + long.toULong()
+
+            val eps = 1e+13
+            assertTrue(abs(float - ulong.toFloat()) < eps)
+        }
+    }
+
+    @Test
     fun convertToDouble() {
-        assertEquals(0.0, zero.toDouble())
-        assertEquals(1.0, one.toDouble())
+        fun testEquals(v1: Double, v2: ULong) = assertEquals(v1, v2.toDouble())
 
-        fun testEpsEquals(v1: Double, v2: ULong) {
+        testEquals(0.0, zero)
+        testEquals(1.0, one)
+
+        testEquals(2.0.pow(ULong.SIZE_BITS) - 1, max)
+        testEquals(2.0 * Long.MAX_VALUE + 1, max)
+
+        repeat(100) {
+            val long = Random.nextLong(from = 0, until = Long.MAX_VALUE)
+            testEquals(long.toDouble(), long.toULong())
+        }
+
+        repeat(100) {
+            val long = Random.nextLong(from = 0, until = Long.MAX_VALUE)
+            val double = Long.MAX_VALUE.toDouble() + long.toDouble()    // We lose accuracy here, hence `eps` is used.
+            val ulong = Long.MAX_VALUE.toULong() + long.toULong()
+
             val eps = 1e+4
-            assertTrue(abs(v1 - v2.toDouble()) < eps)
-        }
-
-        testEpsEquals(2.0.pow(ULong.SIZE_BITS) - 1, max)
-        testEpsEquals(2.0 * Long.MAX_VALUE + 1, max)
-
-        repeat(100) {
-            val rand = Random.nextLong(from = 0, until = Long.MAX_VALUE)
-            val d = rand.toDouble()
-            val ul = rand.toULong()
-            testEpsEquals(d, ul)
-        }
-
-        repeat(100) {
-            val rand = Random.nextLong(from = 0, until = Long.MAX_VALUE)
-            val d = Long.MAX_VALUE.toDouble() + rand.toDouble()
-            val ul = Long.MAX_VALUE.toULong() + rand.toULong()
-            testEpsEquals(d, ul)
+            assertTrue(abs(double - ulong.toDouble()) < eps)
         }
     }
 
