@@ -120,7 +120,7 @@ open class FirTypeResolveTransformer(
         return FirResolvedFunctionTypeImpl(
             functionType.psi,
             functionType.session,
-            functionType.isNullable,
+            functionType.isMarkedNullable,
             functionType.annotations as MutableList<FirAnnotationCall>,
             functionType.receiverType,
             functionType.valueParameters as MutableList<FirValueParameter>,
