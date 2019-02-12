@@ -26,14 +26,6 @@ abstract class AbstractFirResolveTestCase : AbstractFirResolveWithSessionTestCas
         return createEnvironmentWithMockJdk(ConfigurationKind.JDK_NO_RUNTIME)
     }
 
-    override fun setUp() {
-        super.setUp()
-
-        Extensions.getArea(project)
-            .getExtensionPoint(PsiElementFinder.EP_NAME)
-            .unregisterExtension(JavaElementFinder::class.java)
-    }
-
     private fun doCreateAndProcessFir(ktFiles: List<KtFile>): List<FirFile> {
 
         val scope = GlobalSearchScope.filesScope(project, ktFiles.mapNotNull { it.virtualFile })
