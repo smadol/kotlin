@@ -245,10 +245,9 @@ public inline fun UShortArray.findLast(predicate: (UShort) -> Boolean): UShort? 
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UIntArray.first(): UInt {
-    if (isEmpty())
-        throw NoSuchElementException("Array is empty.")
-    return this[0]
+@kotlin.internal.InlineOnly
+public inline fun UIntArray.first(): UInt {
+    return storage.first().toUInt()
 }
 
 /**
@@ -257,10 +256,9 @@ public fun UIntArray.first(): UInt {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun ULongArray.first(): ULong {
-    if (isEmpty())
-        throw NoSuchElementException("Array is empty.")
-    return this[0]
+@kotlin.internal.InlineOnly
+public inline fun ULongArray.first(): ULong {
+    return storage.first().toULong()
 }
 
 /**
@@ -269,10 +267,9 @@ public fun ULongArray.first(): ULong {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UByteArray.first(): UByte {
-    if (isEmpty())
-        throw NoSuchElementException("Array is empty.")
-    return this[0]
+@kotlin.internal.InlineOnly
+public inline fun UByteArray.first(): UByte {
+    return storage.first().toUByte()
 }
 
 /**
@@ -281,10 +278,9 @@ public fun UByteArray.first(): UByte {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UShortArray.first(): UShort {
-    if (isEmpty())
-        throw NoSuchElementException("Array is empty.")
-    return this[0]
+@kotlin.internal.InlineOnly
+public inline fun UShortArray.first(): UShort {
+    return storage.first().toUShort()
 }
 
 /**
@@ -497,10 +493,9 @@ public fun UShortArray.getOrNull(index: Int): UShort? {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UIntArray.last(): UInt {
-    if (isEmpty())
-        throw NoSuchElementException("Array is empty.")
-    return this[lastIndex]
+@kotlin.internal.InlineOnly
+public inline fun UIntArray.last(): UInt {
+    return storage.last().toUInt()
 }
 
 /**
@@ -509,10 +504,9 @@ public fun UIntArray.last(): UInt {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun ULongArray.last(): ULong {
-    if (isEmpty())
-        throw NoSuchElementException("Array is empty.")
-    return this[lastIndex]
+@kotlin.internal.InlineOnly
+public inline fun ULongArray.last(): ULong {
+    return storage.last().toULong()
 }
 
 /**
@@ -521,10 +515,9 @@ public fun ULongArray.last(): ULong {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UByteArray.last(): UByte {
-    if (isEmpty())
-        throw NoSuchElementException("Array is empty.")
-    return this[lastIndex]
+@kotlin.internal.InlineOnly
+public inline fun UByteArray.last(): UByte {
+    return storage.last().toUByte()
 }
 
 /**
@@ -533,10 +526,9 @@ public fun UByteArray.last(): UByte {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UShortArray.last(): UShort {
-    if (isEmpty())
-        throw NoSuchElementException("Array is empty.")
-    return this[lastIndex]
+@kotlin.internal.InlineOnly
+public inline fun UShortArray.last(): UShort {
+    return storage.last().toUShort()
 }
 
 /**
@@ -796,12 +788,9 @@ public fun UShortArray.random(random: Random): UShort {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UIntArray.single(): UInt {
-    return when (size) {
-        0 -> throw NoSuchElementException("Array is empty.")
-        1 -> this[0]
-        else -> throw IllegalArgumentException("Array has more than one element.")
-    }
+@kotlin.internal.InlineOnly
+public inline fun UIntArray.single(): UInt {
+    return storage.single().toUInt()
 }
 
 /**
@@ -809,12 +798,9 @@ public fun UIntArray.single(): UInt {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun ULongArray.single(): ULong {
-    return when (size) {
-        0 -> throw NoSuchElementException("Array is empty.")
-        1 -> this[0]
-        else -> throw IllegalArgumentException("Array has more than one element.")
-    }
+@kotlin.internal.InlineOnly
+public inline fun ULongArray.single(): ULong {
+    return storage.single().toULong()
 }
 
 /**
@@ -822,12 +808,9 @@ public fun ULongArray.single(): ULong {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UByteArray.single(): UByte {
-    return when (size) {
-        0 -> throw NoSuchElementException("Array is empty.")
-        1 -> this[0]
-        else -> throw IllegalArgumentException("Array has more than one element.")
-    }
+@kotlin.internal.InlineOnly
+public inline fun UByteArray.single(): UByte {
+    return storage.single().toUByte()
 }
 
 /**
@@ -835,12 +818,9 @@ public fun UByteArray.single(): UByte {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UShortArray.single(): UShort {
-    return when (size) {
-        0 -> throw NoSuchElementException("Array is empty.")
-        1 -> this[0]
-        else -> throw IllegalArgumentException("Array has more than one element.")
-    }
+@kotlin.internal.InlineOnly
+public inline fun UShortArray.single(): UShort {
+    return storage.single().toUShort()
 }
 
 /**

@@ -400,7 +400,7 @@ object Elements : TemplateGroupBase() {
             }
             """
         }
-        body(CharSequences, Lists, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
+        body(CharSequences, Lists, ArraysOfObjects, ArraysOfPrimitives) {
             """
             if (isEmpty())
                 throw NoSuchElementException("${f.doc.collection.capitalize()} is empty.")
@@ -414,6 +414,11 @@ object Elements : TemplateGroupBase() {
                 throw NoSuchElementException("Sequence is empty.")
             return iterator.next()
             """
+        }
+
+        specialFor(ArraysOfUnsigned) {
+            inlineOnly()
+            body { "return storage.first().to${primitive!!.name}()" }
         }
     }
 
@@ -537,12 +542,17 @@ object Elements : TemplateGroupBase() {
             return last
             """
         }
-        body(CharSequences, Lists, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
+        body(CharSequences, Lists, ArraysOfObjects, ArraysOfPrimitives) {
             """
             if (isEmpty())
                 throw NoSuchElementException("${f.doc.collection.capitalize()} is empty.")
             return this[lastIndex]
             """
+        }
+
+        specialFor(ArraysOfUnsigned) {
+            inlineOnly()
+            body { "return storage.last().to${primitive!!.name}()" }
         }
     }
 
@@ -724,7 +734,7 @@ object Elements : TemplateGroupBase() {
             return single
             """
         }
-        body(CharSequences, Lists, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
+        body(CharSequences, Lists, ArraysOfObjects, ArraysOfPrimitives) {
             """
             return when (${f.code.size}) {
                 0 -> throw NoSuchElementException("${f.doc.collection.capitalize()} is empty.")
@@ -732,6 +742,11 @@ object Elements : TemplateGroupBase() {
                 else -> throw IllegalArgumentException("${f.doc.collection.capitalize()} has more than one element.")
             }
             """
+        }
+
+        specialFor(ArraysOfUnsigned) {
+            inlineOnly()
+            body { "return storage.single().to${primitive!!.name}()" }
         }
     }
 
