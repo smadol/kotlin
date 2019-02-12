@@ -580,7 +580,8 @@ public inline fun UShortArray.copyOfRange(fromIndex: Int, toIndex: Int): UShortA
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public operator fun UIntArray.plus(element: UInt): UIntArray {
+@kotlin.internal.InlineOnly
+public inline operator fun UIntArray.plus(element: UInt): UIntArray {
     return UIntArray(storage + element.toInt())
 }
 
@@ -589,7 +590,8 @@ public operator fun UIntArray.plus(element: UInt): UIntArray {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public operator fun ULongArray.plus(element: ULong): ULongArray {
+@kotlin.internal.InlineOnly
+public inline operator fun ULongArray.plus(element: ULong): ULongArray {
     return ULongArray(storage + element.toLong())
 }
 
@@ -598,7 +600,8 @@ public operator fun ULongArray.plus(element: ULong): ULongArray {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public operator fun UByteArray.plus(element: UByte): UByteArray {
+@kotlin.internal.InlineOnly
+public inline operator fun UByteArray.plus(element: UByte): UByteArray {
     return UByteArray(storage + element.toByte())
 }
 
@@ -607,7 +610,8 @@ public operator fun UByteArray.plus(element: UByte): UByteArray {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public operator fun UShortArray.plus(element: UShort): UShortArray {
+@kotlin.internal.InlineOnly
+public inline operator fun UShortArray.plus(element: UShort): UShortArray {
     return UShortArray(storage + element.toShort())
 }
 
@@ -664,7 +668,8 @@ public operator fun UShortArray.plus(elements: Collection<UShort>): UShortArray 
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public operator fun UIntArray.plus(elements: UIntArray): UIntArray {
+@kotlin.internal.InlineOnly
+public inline operator fun UIntArray.plus(elements: UIntArray): UIntArray {
     return UIntArray(storage + elements.storage)
 }
 
@@ -673,7 +678,8 @@ public operator fun UIntArray.plus(elements: UIntArray): UIntArray {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public operator fun ULongArray.plus(elements: ULongArray): ULongArray {
+@kotlin.internal.InlineOnly
+public inline operator fun ULongArray.plus(elements: ULongArray): ULongArray {
     return ULongArray(storage + elements.storage)
 }
 
@@ -682,7 +688,8 @@ public operator fun ULongArray.plus(elements: ULongArray): ULongArray {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public operator fun UByteArray.plus(elements: UByteArray): UByteArray {
+@kotlin.internal.InlineOnly
+public inline operator fun UByteArray.plus(elements: UByteArray): UByteArray {
     return UByteArray(storage + elements.storage)
 }
 
@@ -691,7 +698,8 @@ public operator fun UByteArray.plus(elements: UByteArray): UByteArray {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public operator fun UShortArray.plus(elements: UShortArray): UShortArray {
+@kotlin.internal.InlineOnly
+public inline operator fun UShortArray.plus(elements: UShortArray): UShortArray {
     return UShortArray(storage + elements.storage)
 }
 

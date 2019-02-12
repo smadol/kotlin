@@ -461,6 +461,7 @@ object ArrayOps : TemplateGroupBase() {
         returns("SELF")
 
         specialFor(ArraysOfUnsigned) {
+            inlineOnly()
             val signedPrimitiveName = primitive!!.name.drop(1)
             body {
                 """
@@ -604,6 +605,7 @@ object ArrayOps : TemplateGroupBase() {
         returns("SELF")
 
         specialFor(ArraysOfUnsigned) {
+            inlineOnly()
             body { "return SELF(storage + elements.storage)" }
         }
         specialFor(InvariantArraysOfObjects, ArraysOfPrimitives) {
