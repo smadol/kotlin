@@ -293,11 +293,9 @@ public fun UShortArray.first(): UShort {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.first(predicate: (UInt) -> Boolean): UInt {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return element
-    }
+    for (element in this) if (predicate(element)) return element
     throw NoSuchElementException("Array contains no element matching the predicate.")
 }
 
@@ -307,11 +305,9 @@ public inline fun UIntArray.first(predicate: (UInt) -> Boolean): UInt {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.first(predicate: (ULong) -> Boolean): ULong {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return element
-    }
+    for (element in this) if (predicate(element)) return element
     throw NoSuchElementException("Array contains no element matching the predicate.")
 }
 
@@ -321,11 +317,9 @@ public inline fun ULongArray.first(predicate: (ULong) -> Boolean): ULong {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.first(predicate: (UByte) -> Boolean): UByte {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return element
-    }
+    for (element in this) if (predicate(element)) return element
     throw NoSuchElementException("Array contains no element matching the predicate.")
 }
 
@@ -335,11 +329,9 @@ public inline fun UByteArray.first(predicate: (UByte) -> Boolean): UByte {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.first(predicate: (UShort) -> Boolean): UShort {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return element
-    }
+    for (element in this) if (predicate(element)) return element
     throw NoSuchElementException("Array contains no element matching the predicate.")
 }
 
@@ -384,11 +376,9 @@ public fun UShortArray.firstOrNull(): UShort? {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.firstOrNull(predicate: (UInt) -> Boolean): UInt? {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return element
-    }
+    for (element in this) if (predicate(element)) return element
     return null
 }
 
@@ -397,11 +387,9 @@ public inline fun UIntArray.firstOrNull(predicate: (UInt) -> Boolean): UInt? {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.firstOrNull(predicate: (ULong) -> Boolean): ULong? {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return element
-    }
+    for (element in this) if (predicate(element)) return element
     return null
 }
 
@@ -410,11 +398,9 @@ public inline fun ULongArray.firstOrNull(predicate: (ULong) -> Boolean): ULong? 
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.firstOrNull(predicate: (UByte) -> Boolean): UByte? {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return element
-    }
+    for (element in this) if (predicate(element)) return element
     return null
 }
 
@@ -423,11 +409,9 @@ public inline fun UByteArray.firstOrNull(predicate: (UByte) -> Boolean): UByte? 
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.firstOrNull(predicate: (UShort) -> Boolean): UShort? {
-    for (index in 0..lastIndex) {
-        val element = get(index)
-        if (predicate(element)) return element
-    }
+    for (element in this) if (predicate(element)) return element
     return null
 }
 
@@ -561,6 +545,7 @@ public fun UShortArray.last(): UShort {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.last(predicate: (UInt) -> Boolean): UInt {
     for (index in this.indices.reversed()) {
         val element = this[index]
@@ -575,6 +560,7 @@ public inline fun UIntArray.last(predicate: (UInt) -> Boolean): UInt {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.last(predicate: (ULong) -> Boolean): ULong {
     for (index in this.indices.reversed()) {
         val element = this[index]
@@ -589,6 +575,7 @@ public inline fun ULongArray.last(predicate: (ULong) -> Boolean): ULong {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.last(predicate: (UByte) -> Boolean): UByte {
     for (index in this.indices.reversed()) {
         val element = this[index]
@@ -603,6 +590,7 @@ public inline fun UByteArray.last(predicate: (UByte) -> Boolean): UByte {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.last(predicate: (UShort) -> Boolean): UShort {
     for (index in this.indices.reversed()) {
         val element = this[index]
@@ -652,6 +640,7 @@ public fun UShortArray.lastOrNull(): UShort? {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.lastOrNull(predicate: (UInt) -> Boolean): UInt? {
     for (index in this.indices.reversed()) {
         val element = this[index]
@@ -665,6 +654,7 @@ public inline fun UIntArray.lastOrNull(predicate: (UInt) -> Boolean): UInt? {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.lastOrNull(predicate: (ULong) -> Boolean): ULong? {
     for (index in this.indices.reversed()) {
         val element = this[index]
@@ -678,6 +668,7 @@ public inline fun ULongArray.lastOrNull(predicate: (ULong) -> Boolean): ULong? {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.lastOrNull(predicate: (UByte) -> Boolean): UByte? {
     for (index in this.indices.reversed()) {
         val element = this[index]
@@ -691,6 +682,7 @@ public inline fun UByteArray.lastOrNull(predicate: (UByte) -> Boolean): UByte? {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.lastOrNull(predicate: (UShort) -> Boolean): UShort? {
     for (index in this.indices.reversed()) {
         val element = this[index]
@@ -856,11 +848,11 @@ public fun UShortArray.single(): UShort {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.single(predicate: (UInt) -> Boolean): UInt {
     var single: UInt? = null
     var found = false
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         if (predicate(element)) {
             if (found) throw IllegalArgumentException("Array contains more than one matching element.")
             single = element
@@ -877,11 +869,11 @@ public inline fun UIntArray.single(predicate: (UInt) -> Boolean): UInt {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.single(predicate: (ULong) -> Boolean): ULong {
     var single: ULong? = null
     var found = false
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         if (predicate(element)) {
             if (found) throw IllegalArgumentException("Array contains more than one matching element.")
             single = element
@@ -898,11 +890,11 @@ public inline fun ULongArray.single(predicate: (ULong) -> Boolean): ULong {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.single(predicate: (UByte) -> Boolean): UByte {
     var single: UByte? = null
     var found = false
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         if (predicate(element)) {
             if (found) throw IllegalArgumentException("Array contains more than one matching element.")
             single = element
@@ -919,11 +911,11 @@ public inline fun UByteArray.single(predicate: (UByte) -> Boolean): UByte {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.single(predicate: (UShort) -> Boolean): UShort {
     var single: UShort? = null
     var found = false
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         if (predicate(element)) {
             if (found) throw IllegalArgumentException("Array contains more than one matching element.")
             single = element
@@ -976,11 +968,11 @@ public fun UShortArray.singleOrNull(): UShort? {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UIntArray.singleOrNull(predicate: (UInt) -> Boolean): UInt? {
     var single: UInt? = null
     var found = false
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         if (predicate(element)) {
             if (found) return null
             single = element
@@ -996,11 +988,11 @@ public inline fun UIntArray.singleOrNull(predicate: (UInt) -> Boolean): UInt? {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun ULongArray.singleOrNull(predicate: (ULong) -> Boolean): ULong? {
     var single: ULong? = null
     var found = false
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         if (predicate(element)) {
             if (found) return null
             single = element
@@ -1016,11 +1008,11 @@ public inline fun ULongArray.singleOrNull(predicate: (ULong) -> Boolean): ULong?
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UByteArray.singleOrNull(predicate: (UByte) -> Boolean): UByte? {
     var single: UByte? = null
     var found = false
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         if (predicate(element)) {
             if (found) return null
             single = element
@@ -1036,11 +1028,11 @@ public inline fun UByteArray.singleOrNull(predicate: (UByte) -> Boolean): UByte?
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
+@kotlin.internal.InlineOnly
 public inline fun UShortArray.singleOrNull(predicate: (UShort) -> Boolean): UShort? {
     var single: UShort? = null
     var found = false
-    for (index in 0..lastIndex) {
-        val element = get(index)
+    for (element in this) {
         if (predicate(element)) {
             if (found) return null
             single = element
@@ -1516,7 +1508,8 @@ public inline fun UShortArray.copyOfRange(fromIndex: Int, toIndex: Int): UShortA
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public val UIntArray.lastIndex: Int
+@kotlin.internal.InlineOnly
+public inline val UIntArray.lastIndex: Int
     get() = storage.lastIndex
 
 /**
@@ -1524,7 +1517,8 @@ public val UIntArray.lastIndex: Int
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public val ULongArray.lastIndex: Int
+@kotlin.internal.InlineOnly
+public inline val ULongArray.lastIndex: Int
     get() = storage.lastIndex
 
 /**
@@ -1532,7 +1526,8 @@ public val ULongArray.lastIndex: Int
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public val UByteArray.lastIndex: Int
+@kotlin.internal.InlineOnly
+public inline val UByteArray.lastIndex: Int
     get() = storage.lastIndex
 
 /**
@@ -1540,7 +1535,8 @@ public val UByteArray.lastIndex: Int
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public val UShortArray.lastIndex: Int
+@kotlin.internal.InlineOnly
+public inline val UShortArray.lastIndex: Int
     get() = storage.lastIndex
 
 /**

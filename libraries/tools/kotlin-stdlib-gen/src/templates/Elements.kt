@@ -461,25 +461,16 @@ object Elements : TemplateGroupBase() {
         include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
+
         doc { """Returns the first ${f.element} matching the given [predicate].
         @throws [NoSuchElementException] if no such ${f.element} is found.""" }
         returns("T")
 
-        val throwNoSuchElementException =
-            "throw NoSuchElementException(\"${f.doc.collection.capitalize()} contains no ${f.doc.element} matching the predicate.\")"
         body {
             """
             for (element in this) if (predicate(element)) return element
-            $throwNoSuchElementException
-            """
-        }
-        body(ArraysOfUnsigned) {
-            """
-            for (index in 0..lastIndex) {
-                val element = get(index)
-                if (predicate(element)) return element
-            }
-            $throwNoSuchElementException
+            throw NoSuchElementException("${f.doc.collection.capitalize()} contains no ${f.doc.element} matching the predicate.")
             """
         }
     }
@@ -489,21 +480,13 @@ object Elements : TemplateGroupBase() {
         include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
 
         doc { "Returns the first ${f.element} matching the given [predicate], or `null` if ${f.element} was not found." }
         returns("T?")
         body {
             """
             for (element in this) if (predicate(element)) return element
-            return null
-            """
-        }
-        body(ArraysOfUnsigned) {
-            """
-            for (index in 0..lastIndex) {
-                val element = get(index)
-                if (predicate(element)) return element
-            }
             return null
             """
         }
@@ -613,6 +596,7 @@ object Elements : TemplateGroupBase() {
         include(Lists, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
 
         doc { """Returns the last ${f.element} matching the given [predicate].
         @throws [NoSuchElementException] if no such ${f.element} is found.""" }
@@ -659,6 +643,8 @@ object Elements : TemplateGroupBase() {
         include(Lists, CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
+
         doc { "Returns the last ${f.element} matching the given [predicate], or `null` if no such ${f.element} was found." }
         returns("T?")
         body {
@@ -799,23 +785,16 @@ object Elements : TemplateGroupBase() {
         include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
+
         doc { "Returns the single ${f.element} matching the given [predicate], or throws exception if there is no or more than one matching ${f.element}." }
         returns("T")
 
-        val iterationExpression = if (f == ArraysOfUnsigned)
-            """
-            for (index in 0..lastIndex) {
-                val element = get(index)
-            """
-        else
-            """
-            for (element in this) {
-            """
         body {
             """
             var single: T? = null
             var found = false
-            $iterationExpression
+            for (element in this) {
                 if (predicate(element)) {
                     if (found) throw IllegalArgumentException("${f.doc.collection.capitalize()} contains more than one matching element.")
                     single = element
@@ -834,23 +813,16 @@ object Elements : TemplateGroupBase() {
         include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
+
         doc { "Returns the single ${f.element} matching the given [predicate], or `null` if ${f.element} was not found or more than one ${f.element} was found." }
         returns("T?")
 
-        val iterationExpression = if (f == ArraysOfUnsigned)
-            """
-            for (index in 0..lastIndex) {
-                val element = get(index)
-            """
-        else
-            """
-            for (element in this) {
-            """
         body {
             """
             var single: T? = null
             var found = false
-            $iterationExpression
+            for (element in this) {
                 if (predicate(element)) {
                     if (found) return null
                     single = element
