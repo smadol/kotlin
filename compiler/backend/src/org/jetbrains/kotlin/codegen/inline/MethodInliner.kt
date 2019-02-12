@@ -547,7 +547,8 @@ class MethodInliner(
 
                             recordTransformation(
                                 buildConstructorInvocation(
-                                    owner, cur.desc, lambdaMapping, awaitClassReification, capturesAnonymousObjectThatMustBeRegenerated
+                                    owner, cur.desc, lambdaMapping, awaitClassReification, capturesAnonymousObjectThatMustBeRegenerated,
+                                    inliningContext.state.globalInlineContext.acceptsCrossinlineSuspend()
                                 )
                             )
                             awaitClassReification = false
@@ -814,7 +815,8 @@ class MethodInliner(
         desc: String,
         lambdaMapping: Map<Int, LambdaInfo>,
         needReification: Boolean,
-        capturesAnonymousObjectThatMustBeRegenerated: Boolean
+        capturesAnonymousObjectThatMustBeRegenerated: Boolean,
+        isSuspendLambdaThatMustBeRegenerated: Boolean
     ): AnonymousObjectTransformationInfo {
 
         val info = AnonymousObjectTransformationInfo(
@@ -824,7 +826,8 @@ class MethodInliner(
             desc,
             false,
             inliningContext.nameGenerator,
-            capturesAnonymousObjectThatMustBeRegenerated
+            capturesAnonymousObjectThatMustBeRegenerated,
+            isSuspendLambdaThatMustBeRegenerated
         )
 
         val memoizeAnonymousObject = inliningContext.findAnonymousObjectTransformationInfo(anonymousType)

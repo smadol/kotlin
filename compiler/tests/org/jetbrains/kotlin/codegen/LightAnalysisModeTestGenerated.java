@@ -8052,6 +8052,36 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
                 runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/crossinline.kt", "kotlin.coroutines");
             }
 
+            @TestMetadata("decoratedLocalLambda.kt")
+            public void testDecoratedLocalLambda_1_2() throws Exception {
+                runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/decoratedLocalLambda.kt", "kotlin.coroutines.experimental");
+            }
+
+            @TestMetadata("decoratedLocalLambda.kt")
+            public void testDecoratedLocalLambda_1_3() throws Exception {
+                runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/decoratedLocalLambda.kt", "kotlin.coroutines");
+            }
+
+            @TestMetadata("decoratedNoSuspend.kt")
+            public void testDecoratedNoSuspend_1_2() throws Exception {
+                runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/decoratedNoSuspend.kt", "kotlin.coroutines.experimental");
+            }
+
+            @TestMetadata("decoratedNoSuspend.kt")
+            public void testDecoratedNoSuspend_1_3() throws Exception {
+                runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/decoratedNoSuspend.kt", "kotlin.coroutines");
+            }
+
+            @TestMetadata("decorated.kt")
+            public void testDecorated_1_2() throws Exception {
+                runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/decorated.kt", "kotlin.coroutines.experimental");
+            }
+
+            @TestMetadata("decorated.kt")
+            public void testDecorated_1_3() throws Exception {
+                runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/decorated.kt", "kotlin.coroutines");
+            }
+
             @TestMetadata("epam.kt")
             public void testEpam_1_2() throws Exception {
                 runTestWithPackageReplacement("compiler/testData/codegen/box/coroutines/tailCallOptimizations/epam.kt", "kotlin.coroutines.experimental");

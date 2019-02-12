@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.codegen.inline
 
 import org.jetbrains.kotlin.codegen.InlineCycleReporter
+import org.jetbrains.kotlin.coroutines.hasSuspendFunctionType
 import org.jetbrains.kotlin.diagnostics.DiagnosticSink
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import java.util.*
@@ -16,12 +17,17 @@ class GlobalInlineContext(diagnostics: DiagnosticSink) {
 
     private val typesUsedInInlineFunctions = LinkedList<MutableSet<String>>()
 
-    fun enterIntoInlining(call: ResolvedCall<*>?) =
-        inlineCycleReporter.enterIntoInlining(call).also {
+    private val acceptsCrossinlineSuspend = Stack<Boolean>()
+
+    fun enterIntoInlining(call: ResolvedCall<*>?): Boolean {
+        acceptsCrossinlineSuspend.push(call?.resultingDescriptor?.valueParameters?.any { it.isCrossinline && it.hasSuspendFunctionType } == true)
+        return inlineCycleReporter.enterIntoInlining(call).also {
             if (it) typesUsedInInlineFunctions.push(hashSetOf())
         }
+    }
 
     fun exitFromInliningOf(call: ResolvedCall<*>?) {
+        acceptsCrossinlineSuspend.pop()
         inlineCycleReporter.exitFromInliningOf(call)
         val pop = typesUsedInInlineFunctions.pop()
         typesUsedInInlineFunctions.peek()?.addAll(pop)
@@ -30,4 +36,6 @@ class GlobalInlineContext(diagnostics: DiagnosticSink) {
     fun recordTypeFromInlineFunction(type: String) = typesUsedInInlineFunctions.peek().add(type)
 
     fun isTypeFromInlineFunction(type: String) = typesUsedInInlineFunctions.peek().contains(type)
+
+    fun acceptsCrossinlineSuspend() = acceptsCrossinlineSuspend.isNotEmpty() && acceptsCrossinlineSuspend.peek()
 }
