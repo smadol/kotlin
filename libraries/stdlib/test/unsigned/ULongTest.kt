@@ -5,9 +5,7 @@
 
 package test.unsigned
 
-import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.sign
+import kotlin.math.*
 import kotlin.random.Random
 import kotlin.test.*
 
@@ -197,5 +195,27 @@ class ULongTest {
             assertTrue(d / ul.toDouble() < 1 + eps)
             assertTrue(d / ul.toDouble() > 1 - eps)
         }
+
+        fun testRounding(from: ULong, count: UInt) {
+            for (x in from..(from + count)) {
+                val double = x.toDouble()
+                val v = double.toULong()
+                val down = double.nextDown().toULong()
+                val up = double.nextUp().toULong()
+
+                assertTrue(down <= x && down <= v)
+                assertTrue(up >= x && up >= v)
+
+                if (v > x) {
+                    assertTrue(v - x <= x - down)
+                } else {
+                    assertTrue(x - v <= up - x)
+                }
+            }
+        }
+
+        testRounding(0u, 100u)
+        testRounding(Long.MAX_VALUE.toULong() - 520u, 100u)
+        testRounding(ULong.MAX_VALUE - 1040u, 100u)
     }
 }
