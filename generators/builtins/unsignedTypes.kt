@@ -231,9 +231,10 @@ class UnsignedTypeGenerator(val type: UnsignedType, out: PrintWriter) : BuiltIns
             out.println("    @kotlin.internal.InlineOnly")
             out.print("    public inline fun to$otherName(): $otherName = ")
             when (type) {
-                UnsignedType.ULONG -> out.println("ulongTo$otherName(data)")
-                UnsignedType.UINT -> out.println("uintTo$otherName(data)")
-                else -> out.println("this.toInt().to$otherName()")
+                UnsignedType.UINT, UnsignedType.ULONG ->
+                    out.println(if (otherType == PrimitiveType.FLOAT) "this.toDouble().toFloat()" else className.toLowerCase() + "ToDouble(data)")
+                else ->
+                    out.println("this.toInt().to$otherName()")
             }
         }
         out.println()

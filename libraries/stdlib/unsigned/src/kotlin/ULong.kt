@@ -183,7 +183,7 @@ public inline class ULong @PublishedApi internal constructor(@PublishedApi inter
     public inline fun toULong(): ULong = this
 
     @kotlin.internal.InlineOnly
-    public inline fun toFloat(): Float = ulongToFloat(data)
+    public inline fun toFloat(): Float = this.toDouble().toFloat()
     @kotlin.internal.InlineOnly
     public inline fun toDouble(): Double = ulongToDouble(data)
 
