@@ -323,7 +323,6 @@ object ArrayOps : TemplateGroupBase() {
         returns(arrayType)
 
         if (primitive in PrimitiveType.unsignedPrimitives) {
-            sourceFile(SourceFile.UArrays)
             since("1.3")
             annotation("@ExperimentalUnsignedTypes")
         }
@@ -331,7 +330,6 @@ object ArrayOps : TemplateGroupBase() {
         // TODO: Use different implementations for JS
         specialFor(ArraysOfObjects) {
             doc { "Returns an array of ${primitive.name} containing all of the elements of this generic array." }
-            inlineOnly()
             body {
                 """
                 return $arrayType(size) { index -> this[index] }

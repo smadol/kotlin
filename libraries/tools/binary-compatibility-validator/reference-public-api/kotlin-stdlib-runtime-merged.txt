@@ -1708,6 +1708,9 @@ public final class kotlin/collections/ArraysKt {
 	public static final fun takeWhile ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun takeWhile ([SLkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun takeWhile ([ZLkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun toBooleanArray ([Ljava/lang/Boolean;)[Z
+	public static final fun toByteArray ([Ljava/lang/Byte;)[B
+	public static final fun toCharArray ([Ljava/lang/Character;)[C
 	public static final fun toCollection ([BLjava/util/Collection;)Ljava/util/Collection;
 	public static final fun toCollection ([CLjava/util/Collection;)Ljava/util/Collection;
 	public static final fun toCollection ([DLjava/util/Collection;)Ljava/util/Collection;
@@ -1717,6 +1720,8 @@ public final class kotlin/collections/ArraysKt {
 	public static final fun toCollection ([Ljava/lang/Object;Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun toCollection ([SLjava/util/Collection;)Ljava/util/Collection;
 	public static final fun toCollection ([ZLjava/util/Collection;)Ljava/util/Collection;
+	public static final fun toDoubleArray ([Ljava/lang/Double;)[D
+	public static final fun toFloatArray ([Ljava/lang/Float;)[F
 	public static final fun toHashSet ([B)Ljava/util/HashSet;
 	public static final fun toHashSet ([C)Ljava/util/HashSet;
 	public static final fun toHashSet ([D)Ljava/util/HashSet;
@@ -1726,6 +1731,7 @@ public final class kotlin/collections/ArraysKt {
 	public static final fun toHashSet ([Ljava/lang/Object;)Ljava/util/HashSet;
 	public static final fun toHashSet ([S)Ljava/util/HashSet;
 	public static final fun toHashSet ([Z)Ljava/util/HashSet;
+	public static final fun toIntArray ([Ljava/lang/Integer;)[I
 	public static final fun toList ([B)Ljava/util/List;
 	public static final fun toList ([C)Ljava/util/List;
 	public static final fun toList ([D)Ljava/util/List;
@@ -1735,6 +1741,7 @@ public final class kotlin/collections/ArraysKt {
 	public static final fun toList ([Ljava/lang/Object;)Ljava/util/List;
 	public static final fun toList ([S)Ljava/util/List;
 	public static final fun toList ([Z)Ljava/util/List;
+	public static final fun toLongArray ([Ljava/lang/Long;)[J
 	public static final fun toMutableList ([B)Ljava/util/List;
 	public static final fun toMutableList ([C)Ljava/util/List;
 	public static final fun toMutableList ([D)Ljava/util/List;
@@ -1762,6 +1769,7 @@ public final class kotlin/collections/ArraysKt {
 	public static final fun toSet ([Ljava/lang/Object;)Ljava/util/Set;
 	public static final fun toSet ([S)Ljava/util/Set;
 	public static final fun toSet ([Z)Ljava/util/Set;
+	public static final fun toShortArray ([Ljava/lang/Short;)[S
 	public static final fun toSortedSet ([B)Ljava/util/SortedSet;
 	public static final fun toSortedSet ([C)Ljava/util/SortedSet;
 	public static final fun toSortedSet ([D)Ljava/util/SortedSet;
@@ -1780,6 +1788,10 @@ public final class kotlin/collections/ArraysKt {
 	public static final fun toTypedArray ([J)[Ljava/lang/Long;
 	public static final fun toTypedArray ([S)[Ljava/lang/Short;
 	public static final fun toTypedArray ([Z)[Ljava/lang/Boolean;
+	public static final fun toUByteArray ([Lkotlin/UByte;)[B
+	public static final fun toUIntArray ([Lkotlin/UInt;)[I
+	public static final fun toULongArray ([Lkotlin/ULong;)[J
+	public static final fun toUShortArray ([Lkotlin/UShort;)[S
 	public static final fun union ([BLjava/lang/Iterable;)Ljava/util/Set;
 	public static final fun union ([CLjava/lang/Iterable;)Ljava/util/Set;
 	public static final fun union ([DLjava/lang/Iterable;)Ljava/util/Set;
@@ -2095,6 +2107,10 @@ public final class kotlin/collections/CollectionsKt {
 	public static final fun toShortArray (Ljava/util/Collection;)[S
 	public static final fun toSortedSet (Ljava/lang/Iterable;)Ljava/util/SortedSet;
 	public static final fun toSortedSet (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/util/SortedSet;
+	public static final fun toUByteArray (Ljava/util/Collection;)[B
+	public static final fun toUIntArray (Ljava/util/Collection;)[I
+	public static final fun toULongArray (Ljava/util/Collection;)[J
+	public static final fun toUShortArray (Ljava/util/Collection;)[S
 	public static final fun union (Ljava/lang/Iterable;Ljava/lang/Iterable;)Ljava/util/Set;
 	public static final fun unzip (Ljava/lang/Iterable;)Lkotlin/Pair;
 	public static final fun windowed (Ljava/lang/Iterable;IIZ)Ljava/util/List;
@@ -2290,10 +2306,6 @@ public final class kotlin/collections/UArraysKt {
 	public static final fun toTypedArray-GBYM_sE ([B)[Lkotlin/UByte;
 	public static final fun toTypedArray-QwZRm1k ([J)[Lkotlin/ULong;
 	public static final fun toTypedArray-rL5Bavg ([S)[Lkotlin/UShort;
-	public static final fun toUByteArray (Ljava/util/Collection;)[B
-	public static final fun toUIntArray (Ljava/util/Collection;)[I
-	public static final fun toULongArray (Ljava/util/Collection;)[J
-	public static final fun toUShortArray (Ljava/util/Collection;)[S
 }
 
 public abstract class kotlin/collections/UByteIterator : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {

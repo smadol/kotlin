@@ -6739,64 +6739,56 @@ public expect fun <T> Array<out T>.sortWith(comparator: Comparator<in T>): Unit
 /**
  * Returns an array of Boolean containing all of the elements of this generic array.
  */
-@kotlin.internal.InlineOnly
-public inline fun Array<out Boolean>.toBooleanArray(): BooleanArray {
+public fun Array<out Boolean>.toBooleanArray(): BooleanArray {
     return BooleanArray(size) { index -> this[index] }
 }
 
 /**
  * Returns an array of Byte containing all of the elements of this generic array.
  */
-@kotlin.internal.InlineOnly
-public inline fun Array<out Byte>.toByteArray(): ByteArray {
+public fun Array<out Byte>.toByteArray(): ByteArray {
     return ByteArray(size) { index -> this[index] }
 }
 
 /**
  * Returns an array of Char containing all of the elements of this generic array.
  */
-@kotlin.internal.InlineOnly
-public inline fun Array<out Char>.toCharArray(): CharArray {
+public fun Array<out Char>.toCharArray(): CharArray {
     return CharArray(size) { index -> this[index] }
 }
 
 /**
  * Returns an array of Double containing all of the elements of this generic array.
  */
-@kotlin.internal.InlineOnly
-public inline fun Array<out Double>.toDoubleArray(): DoubleArray {
+public fun Array<out Double>.toDoubleArray(): DoubleArray {
     return DoubleArray(size) { index -> this[index] }
 }
 
 /**
  * Returns an array of Float containing all of the elements of this generic array.
  */
-@kotlin.internal.InlineOnly
-public inline fun Array<out Float>.toFloatArray(): FloatArray {
+public fun Array<out Float>.toFloatArray(): FloatArray {
     return FloatArray(size) { index -> this[index] }
 }
 
 /**
  * Returns an array of Int containing all of the elements of this generic array.
  */
-@kotlin.internal.InlineOnly
-public inline fun Array<out Int>.toIntArray(): IntArray {
+public fun Array<out Int>.toIntArray(): IntArray {
     return IntArray(size) { index -> this[index] }
 }
 
 /**
  * Returns an array of Long containing all of the elements of this generic array.
  */
-@kotlin.internal.InlineOnly
-public inline fun Array<out Long>.toLongArray(): LongArray {
+public fun Array<out Long>.toLongArray(): LongArray {
     return LongArray(size) { index -> this[index] }
 }
 
 /**
  * Returns an array of Short containing all of the elements of this generic array.
  */
-@kotlin.internal.InlineOnly
-public inline fun Array<out Short>.toShortArray(): ShortArray {
+public fun Array<out Short>.toShortArray(): ShortArray {
     return ShortArray(size) { index -> this[index] }
 }
 
@@ -6839,6 +6831,42 @@ public expect fun BooleanArray.toTypedArray(): Array<Boolean>
  * Returns a *typed* object array containing all of the elements of this primitive array.
  */
 public expect fun CharArray.toTypedArray(): Array<Char>
+
+/**
+ * Returns an array of UByte containing all of the elements of this generic array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun Array<out UByte>.toUByteArray(): UByteArray {
+    return UByteArray(size) { index -> this[index] }
+}
+
+/**
+ * Returns an array of UInt containing all of the elements of this generic array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun Array<out UInt>.toUIntArray(): UIntArray {
+    return UIntArray(size) { index -> this[index] }
+}
+
+/**
+ * Returns an array of ULong containing all of the elements of this generic array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun Array<out ULong>.toULongArray(): ULongArray {
+    return ULongArray(size) { index -> this[index] }
+}
+
+/**
+ * Returns an array of UShort containing all of the elements of this generic array.
+ */
+@SinceKotlin("1.3")
+@ExperimentalUnsignedTypes
+public fun Array<out UShort>.toUShortArray(): UShortArray {
+    return UShortArray(size) { index -> this[index] }
+}
 
 /**
  * Returns a [Map] containing key-value pairs provided by [transform] function
