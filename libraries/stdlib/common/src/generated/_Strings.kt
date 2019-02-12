@@ -913,7 +913,7 @@ public inline fun CharSequence.all(predicate: (Char) -> Boolean): Boolean {
  * 
  * @sample samples.collections.Collections.Aggregates.any
  */
-public inline fun CharSequence.any(): Boolean {
+public fun CharSequence.any(): Boolean {
     return !isEmpty()
 }
 
@@ -1108,7 +1108,7 @@ public fun CharSequence.minWith(comparator: Comparator<in Char>): Char? {
  * 
  * @sample samples.collections.Collections.Aggregates.none
  */
-public inline fun CharSequence.none(): Boolean {
+public fun CharSequence.none(): Boolean {
     return isEmpty()
 }
 

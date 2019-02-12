@@ -104,7 +104,7 @@ public inline fun <K, V> Map<out K, V>.all(predicate: (Map.Entry<K, V>) -> Boole
  * 
  * @sample samples.collections.Collections.Aggregates.any
  */
-public inline fun <K, V> Map<out K, V>.any(): Boolean {
+public fun <K, V> Map<out K, V>.any(): Boolean {
     return !isEmpty()
 }
 
@@ -184,7 +184,7 @@ public fun <K, V> Map<out K, V>.minWith(comparator: Comparator<in Map.Entry<K, V
  * 
  * @sample samples.collections.Collections.Aggregates.none
  */
-public inline fun <K, V> Map<out K, V>.none(): Boolean {
+public fun <K, V> Map<out K, V>.none(): Boolean {
     return isEmpty()
 }
 

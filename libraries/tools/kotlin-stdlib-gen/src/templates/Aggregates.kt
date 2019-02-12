@@ -80,6 +80,8 @@ object Aggregates : TemplateGroupBase() {
         includeDefault()
         include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
+
         doc {
             """
             Returns `true` if the ${f.collection} has no ${f.element.pluralize()}.
@@ -98,9 +100,6 @@ object Aggregates : TemplateGroupBase() {
                 """
             }
         }
-
-        specialFor(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives) { inline() }
-        specialFor(ArraysOfUnsigned) { inlineOnly() }
 
         body(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             "return isEmpty()"
@@ -138,6 +137,8 @@ object Aggregates : TemplateGroupBase() {
         includeDefault()
         include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
+        specialFor(ArraysOfUnsigned) { inlineOnly() }
+
         doc {
             """
             Returns `true` if ${f.collection} has at least one ${f.element}.
@@ -154,10 +155,6 @@ object Aggregates : TemplateGroupBase() {
             return iterator().hasNext()
             """
         }
-
-        specialFor(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives) { inline() }
-        specialFor(ArraysOfUnsigned) { inlineOnly() }
-
         body(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
             "return !isEmpty()"
         }
