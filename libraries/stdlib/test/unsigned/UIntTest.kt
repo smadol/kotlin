@@ -127,6 +127,28 @@ class UIntTest {
             val long = Random.nextLong(0, 0xFFFF_FFFF)
             testEquals(long.toDouble(), long.toUInt())
         }
+
+        fun testRounding(from: UInt, count: UInt) {
+            for (x in from..(from + count)) {
+                val double = x.toDouble()
+                val v = double.toUInt()
+                val down = double.nextDown().toUInt()
+                val up = double.nextUp().toUInt()
+
+                assertTrue(down <= x && down <= v)
+                assertTrue(up >= x && up >= v)
+
+                if (v > x) {
+                    assertTrue(v - x <= x - down)
+                } else {
+                    assertTrue(x - v <= up - x)
+                }
+            }
+        }
+
+        testRounding(0u, 100u)
+        testRounding(Int.MAX_VALUE.toUInt() - 10u, 100u)
+        testRounding(UInt.MAX_VALUE - 100u, 100u)
     }
 
     @Test
@@ -164,27 +186,5 @@ class UIntTest {
             val v = Random.nextDouble() * 0xFFFF_FFFF
             testEquals(v, v.toLong().toUInt())
         }
-
-        fun testRounding(from: UInt, count: UInt) {
-            for (x in from..(from + count)) {
-                val double = x.toDouble()
-                val v = double.toUInt()
-                val down = double.nextDown().toUInt()
-                val up = double.nextUp().toUInt()
-
-                assertTrue(down <= x && down <= v)
-                assertTrue(up >= x && up >= v)
-
-                if (v > x) {
-                    assertTrue(v - x <= x - down)
-                } else {
-                    assertTrue(x - v <= up - x)
-                }
-            }
-        }
-
-        testRounding(0u, 100u)
-        testRounding(Int.MAX_VALUE.toUInt() - 10u, 100u)
-        testRounding(UInt.MAX_VALUE - 10u, 100u)
     }
 }

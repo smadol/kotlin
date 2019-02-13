@@ -93,8 +93,10 @@ internal fun doubleToULong(v: Double): ULong = when {
     v.isNaN() -> 0u
     v <= ULong.MIN_VALUE.toDouble() -> ULong.MIN_VALUE
     v >= ULong.MAX_VALUE.toDouble() -> ULong.MAX_VALUE
-    v <= Long.MAX_VALUE -> v.toLong().toULong()
-    else -> (v - Long.MAX_VALUE).toLong().toULong() + Long.MAX_VALUE.toULong()      // Long.MAX_VALUE < v < ULong.MAX_VALUE
+    v < Long.MAX_VALUE -> v.toLong().toULong()
+
+    // Real values from Long.MAX_VALUE to (Long.MAX_VALUE + 1) are not representable in Double, so don't handle them.
+    else -> (v - 9223372036854775808.0).toLong().toULong() + 9223372036854775808uL      // Long.MAX_VALUE + 1 < v < ULong.MAX_VALUE
 }
 
 

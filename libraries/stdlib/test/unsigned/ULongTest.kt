@@ -147,6 +147,28 @@ class ULongTest {
             val eps = 1e+4
             assertTrue(abs(double - ulong.toDouble()) < eps)
         }
+
+        fun testRounding(from: ULong, count: UInt) {
+            for (x in from..(from + count)) {
+                val double = x.toDouble()
+                val v = double.toULong()
+                val down = double.nextDown().toULong()
+                val up = double.nextUp().toULong()
+
+                assertTrue(down <= x && down <= v)
+                assertTrue(up >= x && up >= v)
+
+                if (v > x) {
+                    assertTrue(v - x <= x - down)
+                } else {
+                    assertTrue(x - v <= up - x)
+                }
+            }
+        }
+
+        testRounding(0u, 100u)
+        testRounding(Long.MAX_VALUE.toULong() - 520u, 100u)
+        testRounding(ULong.MAX_VALUE - 1040u, 100u)
     }
 
     @Test
@@ -196,26 +218,27 @@ class ULongTest {
             assertTrue(d / ul.toDouble() > 1 - eps)
         }
 
-        fun testRounding(from: ULong, count: UInt) {
-            for (x in from..(from + count)) {
-                val double = x.toDouble()
-                val v = double.toULong()
-                val down = double.nextDown().toULong()
-                val up = double.nextUp().toULong()
-
-                assertTrue(down <= x && down <= v)
-                assertTrue(up >= x && up >= v)
-
-                if (v > x) {
-                    assertTrue(v - x <= x - down)
-                } else {
-                    assertTrue(x - v <= up - x)
-                }
-            }
+        fun testTrailingBits(v: Double, count: Int) {
+            val mask = (1uL shl count) - 1uL
+            assertEquals(0uL, v.toULong() and mask)
         }
 
-        testRounding(0u, 100u)
-        testRounding(Long.MAX_VALUE.toULong() - 520u, 100u)
-        testRounding(ULong.MAX_VALUE - 1040u, 100u)
+        var withTrailingZeros = 2.0.pow(64)
+        repeat(10) {
+            withTrailingZeros = withTrailingZeros.nextDown()
+            testTrailingBits(withTrailingZeros, 11)
+        }
+
+        withTrailingZeros = 2.0.pow(63)
+        repeat(10) {
+            testTrailingBits(withTrailingZeros, 11)
+            withTrailingZeros = withTrailingZeros.nextUp()
+        }
+
+        repeat(100) {
+            val msb = Random.nextInt(53, 64)
+            val v = 2.0.pow(msb) * (1.0 + Random.nextDouble())
+            testTrailingBits(v, msb - 52)
+        }
     }
 }
