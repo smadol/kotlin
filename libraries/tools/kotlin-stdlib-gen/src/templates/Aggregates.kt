@@ -137,8 +137,6 @@ object Aggregates : TemplateGroupBase() {
         includeDefault()
         include(Maps, CharSequences, ArraysOfUnsigned)
     } builder {
-        specialFor(ArraysOfUnsigned) { inlineOnly() }
-
         doc {
             """
             Returns `true` if ${f.collection} has at least one ${f.element}.
@@ -155,9 +153,7 @@ object Aggregates : TemplateGroupBase() {
             return iterator().hasNext()
             """
         }
-        body(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) {
-            "return !isEmpty()"
-        }
+        body(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) { "return !isEmpty()" }
     }
 
 

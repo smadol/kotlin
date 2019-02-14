@@ -794,8 +794,7 @@ public inline fun UShortArray.all(predicate: (UShort) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-@kotlin.internal.InlineOnly
-public inline fun UIntArray.any(): Boolean {
+public fun UIntArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -806,8 +805,7 @@ public inline fun UIntArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-@kotlin.internal.InlineOnly
-public inline fun ULongArray.any(): Boolean {
+public fun ULongArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -818,8 +816,7 @@ public inline fun ULongArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-@kotlin.internal.InlineOnly
-public inline fun UByteArray.any(): Boolean {
+public fun UByteArray.any(): Boolean {
     return !isEmpty()
 }
 
@@ -830,8 +827,7 @@ public inline fun UByteArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-@kotlin.internal.InlineOnly
-public inline fun UShortArray.any(): Boolean {
+public fun UShortArray.any(): Boolean {
     return !isEmpty()
 }
 
