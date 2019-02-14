@@ -14,6 +14,8 @@ import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
 import org.jetbrains.kotlin.fir.expressions.FirArrayOfCall
 import org.jetbrains.kotlin.fir.expressions.FirExpression
 import org.jetbrains.kotlin.fir.expressions.impl.*
+import org.jetbrains.kotlin.fir.references.FirErrorNamedReference
+import org.jetbrains.kotlin.fir.references.FirResolvedCallableReferenceImpl
 import org.jetbrains.kotlin.fir.resolve.AbstractFirSymbolProvider
 import org.jetbrains.kotlin.fir.resolve.FirSymbolProvider
 import org.jetbrains.kotlin.fir.service
@@ -110,8 +112,20 @@ class JavaSymbolProvider(
                     arguments += element.toFirExpression()
                 }
             }
-            // TODO
-            //is JavaEnumValueAnnotationArgument -> {}
+            is JavaEnumValueAnnotationArgument -> {
+                FirFunctionCallImpl(session, null).apply {
+                    val classId = this@toFirExpression.enumClassId
+                    val entryName = this@toFirExpression.entryName
+                    calleeReference = if (classId != null && entryName != null) FirResolvedCallableReferenceImpl(
+                        session, null, entryName,
+                        session.service<FirSymbolProvider>().getCallableSymbols(
+                            CallableId(classId.packageFqName, classId.relativeClassName, entryName)
+                        ).first()
+                    ) else {
+                        FirErrorNamedReference(session, null, "Strange Java enum value: ${this@toFirExpression}")
+                    }
+                }
+            }
             is JavaClassObjectAnnotationArgument -> FirGetClassCallImpl(session, null).apply {
                 val referencedType = getReferencedType()
                 arguments += when (referencedType) {
