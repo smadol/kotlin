@@ -17,122 +17,47 @@
 package org.jetbrains.kotlin.types.checker
 
 import org.jetbrains.kotlin.types.*
-import org.jetbrains.kotlin.utils.SmartSet
-import java.util.*
+import org.jetbrains.kotlin.types.checker.NewKotlinTypeChecker.transformAndIsSubTypeOf
+import org.jetbrains.kotlin.types.model.KotlinTypeMarker
+import org.jetbrains.kotlin.types.model.SimpleTypeMarker
+import org.jetbrains.kotlin.types.model.TypeConstructorMarker
 
-open class TypeCheckerContext(val errorTypeEqualsToAnything: Boolean, val allowedTypeVariable: Boolean = true) {
-    protected var argumentsDepth = 0
+open class TypeCheckerContext(val errorTypeEqualsToAnything: Boolean, val allowedTypeVariable: Boolean = true) : ClassicTypeSystemContext, AbstractTypeCheckerContext() {
+    override fun intersectTypes(types: List<KotlinTypeMarker>): KotlinTypeMarker {
+        @Suppress("UNCHECKED_CAST")
+        return org.jetbrains.kotlin.types.checker.intersectTypes(types as List<UnwrappedType>)
+    }
 
-    private var supertypesLocked = false
-    private var supertypesDeque: ArrayDeque<SimpleType>? = null
-    private var supertypesSet: MutableSet<SimpleType>? = null
+    override fun enterIsSubTypeOf(subType: KotlinTypeMarker, superType: KotlinTypeMarker): Boolean {
+        return transformAndIsSubTypeOf((subType as KotlinType).unwrap(), (superType as KotlinType).unwrap())
+    }
 
-    open fun addSubtypeConstraint(subType: UnwrappedType, superType: UnwrappedType): Boolean? = null
+    override val isErrorTypeEqualsToAnything: Boolean
+        get() = errorTypeEqualsToAnything
+
+    override fun areEqualTypeConstructors(a: TypeConstructorMarker, b: TypeConstructorMarker): Boolean {
+        require(a is TypeConstructor)
+        require(b is TypeConstructor)
+        return areEqualTypeConstructors(a, b)
+    }
 
     open fun areEqualTypeConstructors(a: TypeConstructor, b: TypeConstructor): Boolean {
         return a == b
     }
 
-    open fun getLowerCapturedTypePolicy(subType: SimpleType, superType: NewCapturedType) = LowerCapturedTypePolicy.CHECK_SUBTYPE_AND_LOWER
-    open val sameConstructorPolicy get() = SeveralSupertypesWithSameConstructorPolicy.INTERSECT_ARGUMENTS_AND_CHECK_AGAIN
+    override fun substitutionSupertypePolicy(type: SimpleTypeMarker): SupertypesPolicy.DoCustomTransform {
+        val substitutor = TypeConstructorSubstitution.create(type as SimpleType).buildSubstitutor()
 
-    internal inline fun <T> runWithArgumentsSettings(subArgument: UnwrappedType, f: TypeCheckerContext.() -> T): T {
-        if (argumentsDepth > 100) {
-            error("Arguments depth is too high. Some related argument: $subArgument")
-        }
-
-        argumentsDepth++
-        val result = f()
-        argumentsDepth--
-        return result
-    }
-
-    private fun initialize() {
-        assert(!supertypesLocked)
-        supertypesLocked = true
-
-        if (supertypesDeque == null) {
-            supertypesDeque = ArrayDeque(4)
-        }
-        if (supertypesSet == null) {
-            supertypesSet = SmartSet.create()
-        }
-    }
-
-    private fun clear() {
-        supertypesDeque!!.clear()
-        supertypesSet!!.clear()
-        supertypesLocked = false
-    }
-
-    internal inline fun anySupertype(
-            start: SimpleType,
-            predicate: (SimpleType) -> Boolean,
-            supertypesPolicy: (SimpleType) -> SupertypesPolicy
-    ): Boolean {
-        if (predicate(start)) return true
-
-        initialize()
-
-        val deque = supertypesDeque!!
-        val visitedSupertypes = supertypesSet!!
-
-        deque.push(start)
-        while (deque.isNotEmpty()) {
-            if (visitedSupertypes.size > 1000) {
-                error("Too many supertypes for type: $start. Supertypes = ${visitedSupertypes.joinToString()}")
-            }
-            val current = deque.pop()
-            if (!visitedSupertypes.add(current)) continue
-
-            val policy = supertypesPolicy(current).takeIf { it != SupertypesPolicy.None } ?: continue
-            for (supertype in current.constructor.supertypes) {
-                val newType = policy.transformType(supertype)
-                if (predicate(newType)) {
-                    clear()
-                    return true
-                }
-                deque.add(newType)
+        return object : SupertypesPolicy.DoCustomTransform() {
+            override fun transformType(context: AbstractTypeCheckerContext, type: KotlinTypeMarker): SimpleTypeMarker {
+                return substitutor.safeSubstitute(
+                    type.lowerBoundIfFlexible() as KotlinType,
+                    Variance.INVARIANT
+                ).asSimpleType()!!
             }
         }
-
-        clear()
-        return false
     }
 
-    internal sealed class SupertypesPolicy {
-        abstract fun transformType(type: KotlinType): SimpleType
-
-        object None : SupertypesPolicy() {
-            override fun transformType(type: KotlinType) = throw UnsupportedOperationException("Should not be called")
-        }
-
-        object UpperIfFlexible : SupertypesPolicy() {
-            override fun transformType(type: KotlinType) = type.upperIfFlexible()
-        }
-
-        object LowerIfFlexible : SupertypesPolicy() {
-            override fun transformType(type: KotlinType) = type.lowerIfFlexible()
-        }
-
-        class LowerIfFlexibleWithCustomSubstitutor(val substitutor: TypeSubstitutor): SupertypesPolicy() {
-            override fun transformType(type: KotlinType) =
-                    substitutor.safeSubstitute(type.lowerIfFlexible(), Variance.INVARIANT).asSimpleType()
-        }
-    }
-
-    enum class SeveralSupertypesWithSameConstructorPolicy {
-        TAKE_FIRST_FOR_SUBTYPING,
-        FORCE_NOT_SUBTYPE,
-        CHECK_ANY_OF_THEM,
-        INTERSECT_ARGUMENTS_AND_CHECK_AGAIN
-    }
-
-    enum class LowerCapturedTypePolicy {
-        CHECK_ONLY_LOWER,
-        CHECK_SUBTYPE_AND_LOWER,
-        SKIP_LOWER
-    }
 
     val UnwrappedType.isAllowedTypeVariable: Boolean get() = allowedTypeVariable && constructor is NewTypeVariableConstructor
 }
