@@ -856,11 +856,6 @@ public class FirDiagnosticsSmokeTestGenerated extends AbstractFirDiagnosticsSmok
             runTest("compiler/testData/diagnostics/tests/annotations/ConstructorCall.kt");
         }
 
-        @TestMetadata("DanglingInScript.kt")
-        public void testDanglingInScript() throws Exception {
-            runTest("compiler/testData/diagnostics/tests/annotations/DanglingInScript.kt");
-        }
-
         @TestMetadata("DanglingMixed.kt")
         public void testDanglingMixed() throws Exception {
             runTest("compiler/testData/diagnostics/tests/annotations/DanglingMixed.kt");
@@ -2914,6 +2909,11 @@ public class FirDiagnosticsSmokeTestGenerated extends AbstractFirDiagnosticsSmok
         @TestMetadata("SpreadVarargs.kt")
         public void testSpreadVarargs() throws Exception {
             runTest("compiler/testData/diagnostics/tests/checkArguments/SpreadVarargs.kt");
+        }
+
+        @TestMetadata("twoLambdasFunction.kt")
+        public void testTwoLambdasFunction() throws Exception {
+            runTest("compiler/testData/diagnostics/tests/checkArguments/twoLambdasFunction.kt");
         }
     }
 
@@ -9478,6 +9478,11 @@ public class FirDiagnosticsSmokeTestGenerated extends AbstractFirDiagnosticsSmok
             runTest("compiler/testData/diagnostics/tests/inference/kt1293.kt");
         }
 
+        @TestMetadata("kt28598.kt")
+        public void testKt28598() throws Exception {
+            runTest("compiler/testData/diagnostics/tests/inference/kt28598.kt");
+        }
+
         @TestMetadata("kt3184.kt")
         public void testKt3184() throws Exception {
             runTest("compiler/testData/diagnostics/tests/inference/kt3184.kt");
@@ -11963,6 +11968,34 @@ public class FirDiagnosticsSmokeTestGenerated extends AbstractFirDiagnosticsSmok
             @TestMetadata("sizeFromKotlinOverriddenInJava.kt")
             public void testSizeFromKotlinOverriddenInJava() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/j+k/collectionOverrides/sizeFromKotlinOverriddenInJava.kt");
+            }
+        }
+
+        @TestMetadata("compiler/testData/diagnostics/tests/j+k/deprecations")
+        @TestDataPath("$PROJECT_ROOT")
+        @RunWith(JUnit3RunnerWithInners.class)
+        public static class Deprecations extends AbstractFirDiagnosticsSmokeTest {
+            private void runTest(String testDataFilePath) throws Exception {
+                KotlinTestUtils.runTest(this::doTest, TargetBackend.ANY, testDataFilePath);
+            }
+
+            public void testAllFilesPresentInDeprecations() throws Exception {
+                KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/diagnostics/tests/j+k/deprecations"), Pattern.compile("^(.+)\\.kt$"), TargetBackend.ANY, true);
+            }
+
+            @TestMetadata("forFakeOverrides.kt")
+            public void testForFakeOverrides() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/j+k/deprecations/forFakeOverrides.kt");
+            }
+
+            @TestMetadata("forMixedOverride.kt")
+            public void testForMixedOverride() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/j+k/deprecations/forMixedOverride.kt");
+            }
+
+            @TestMetadata("forOverrides.kt")
+            public void testForOverrides() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/j+k/deprecations/forOverrides.kt");
             }
         }
 
@@ -16160,11 +16193,6 @@ public class FirDiagnosticsSmokeTestGenerated extends AbstractFirDiagnosticsSmok
             runTest("compiler/testData/diagnostics/tests/redeclarations/RedeclaringPrivateToFile.kt");
         }
 
-        @TestMetadata("ScriptAndClassConflict.kt")
-        public void testScriptAndClassConflict() throws Exception {
-            runTest("compiler/testData/diagnostics/tests/redeclarations/ScriptAndClassConflict.kt");
-        }
-
         @TestMetadata("SingletonAndFunctionSameName.kt")
         public void testSingletonAndFunctionSameName() throws Exception {
             runTest("compiler/testData/diagnostics/tests/redeclarations/SingletonAndFunctionSameName.kt");
@@ -18437,11 +18465,6 @@ public class FirDiagnosticsSmokeTestGenerated extends AbstractFirDiagnosticsSmok
         public void testAllFilesPresentInScript() throws Exception {
             KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/diagnostics/tests/script"), Pattern.compile("^(.+)\\.kt$"), TargetBackend.ANY, true);
         }
-
-        @TestMetadata("varInScript.kt")
-        public void testVarInScript() throws Exception {
-            runTest("compiler/testData/diagnostics/tests/script/varInScript.kt");
-        }
     }
 
     @TestMetadata("compiler/testData/diagnostics/tests/sealed")
@@ -19769,6 +19792,11 @@ public class FirDiagnosticsSmokeTestGenerated extends AbstractFirDiagnosticsSmok
                 runTest("compiler/testData/diagnostics/tests/smartCasts/inference/kt1355.kt");
             }
 
+            @TestMetadata("kt25432.kt")
+            public void testKt25432() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/smartCasts/inference/kt25432.kt");
+            }
+
             @TestMetadata("kt2746.kt")
             public void testKt2746() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/smartCasts/inference/kt2746.kt");
@@ -20902,11 +20930,6 @@ public class FirDiagnosticsSmokeTestGenerated extends AbstractFirDiagnosticsSmok
         @TestMetadata("noLocalDelegatedProperty.kt")
         public void testNoLocalDelegatedProperty() throws Exception {
             runTest("compiler/testData/diagnostics/tests/sourceCompatibility/noLocalDelegatedProperty.kt");
-        }
-
-        @TestMetadata("noLocalDelegatedPropertyInScript.kt")
-        public void testNoLocalDelegatedPropertyInScript() throws Exception {
-            runTest("compiler/testData/diagnostics/tests/sourceCompatibility/noLocalDelegatedPropertyInScript.kt");
         }
 
         @TestMetadata("noMultiplatformProjects.kt")
