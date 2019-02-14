@@ -7,17 +7,18 @@ package org.jetbrains.kotlin.fir.resolve
 
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.service
-import org.jetbrains.kotlin.fir.symbols.CallableId
-import org.jetbrains.kotlin.fir.symbols.ConeCallableSymbol
-import org.jetbrains.kotlin.fir.symbols.ConeClassLikeSymbol
+import org.jetbrains.kotlin.fir.symbols.*
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 
 interface FirSymbolProvider {
 
     fun getClassLikeSymbolByFqName(classId: ClassId): ConeClassLikeSymbol?
 
     fun getCallableSymbols(callableId: CallableId): List<ConeCallableSymbol>
+
+    fun getTypeParameterSymbol(owner: ConeSymbol, name: Name): ConeTypeParameterSymbol?
 
     fun getPackage(fqName: FqName): FqName? // TODO: Replace to symbol sometime
 

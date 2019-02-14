@@ -5,15 +5,15 @@
 
 package org.jetbrains.kotlin.fir.resolve
 
-import org.jetbrains.kotlin.fir.symbols.CallableId
-import org.jetbrains.kotlin.fir.symbols.ConeCallableSymbol
-import org.jetbrains.kotlin.fir.symbols.ConeClassLikeSymbol
+import org.jetbrains.kotlin.fir.symbols.*
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 
 abstract class AbstractFirSymbolProvider : FirSymbolProvider {
     protected val classCache = mutableMapOf<ClassId, ConeClassLikeSymbol?>()
     protected val callableCache = mutableMapOf<CallableId, List<ConeCallableSymbol>>()
+    protected val typeParameterCache = mutableMapOf<Pair<ConeSymbol, Name>, ConeTypeParameterSymbol?>()
     protected val packageCache = mutableMapOf<FqName, FqName?>()
 
     protected inline fun <K, V : Any?> MutableMap<K, V>.lookupCacheOrCalculate(key: K, crossinline l: (K) -> V): V? {

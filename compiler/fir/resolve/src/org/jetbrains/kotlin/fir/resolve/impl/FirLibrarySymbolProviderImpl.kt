@@ -37,6 +37,11 @@ import org.jetbrains.kotlin.utils.addToStdlib.firstNotNullResult
 import java.io.InputStream
 
 class FirLibrarySymbolProviderImpl(val session: FirSession) : FirSymbolProvider {
+    override fun getTypeParameterSymbol(owner: ConeSymbol, name: Name): ConeTypeParameterSymbol? {
+        // TODO
+        return null
+    }
+
     override fun getCallableSymbols(callableId: CallableId): List<ConeCallableSymbol> {
         // TODO
         return emptyList()

@@ -6,11 +6,10 @@
 package org.jetbrains.kotlin.fir.resolve.impl
 
 import org.jetbrains.kotlin.fir.resolve.FirSymbolProvider
-import org.jetbrains.kotlin.fir.symbols.CallableId
-import org.jetbrains.kotlin.fir.symbols.ConeCallableSymbol
-import org.jetbrains.kotlin.fir.symbols.ConeClassLikeSymbol
+import org.jetbrains.kotlin.fir.symbols.*
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.utils.addToStdlib.firstNotNullResult
 
 class FirCompositeSymbolProvider(val providers: List<FirSymbolProvider>) : FirSymbolProvider {
@@ -20,6 +19,10 @@ class FirCompositeSymbolProvider(val providers: List<FirSymbolProvider>) : FirSy
             if (symbols.isNotEmpty()) return symbols
         }
         return emptyList()
+    }
+
+    override fun getTypeParameterSymbol(owner: ConeSymbol, name: Name): ConeTypeParameterSymbol? {
+        return providers.firstNotNullResult { it.getTypeParameterSymbol(owner, name) }
     }
 
     override fun getPackage(fqName: FqName): FqName? {
