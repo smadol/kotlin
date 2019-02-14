@@ -619,6 +619,7 @@ class FirRenderer(builder: StringBuilder) : FirVisitorVoid() {
     private fun ConeKotlinType.asString(): String {
         return when (this) {
             is ConeKotlinErrorType -> "error: $reason"
+            is ConeClassErrorType -> "cls-error: $reason"
             is ConeClassLikeType -> {
                 val sb = StringBuilder()
                 sb.append(symbol.classId.asString())
