@@ -2278,10 +2278,6 @@ public abstract class kotlin/collections/ShortIterator : java/util/Iterator, kot
 }
 
 public final class kotlin/collections/UArraysKt {
-	public static final fun any--ajY-9A ([I)Z
-	public static final fun any-GBYM_sE ([B)Z
-	public static final fun any-QwZRm1k ([J)Z
-	public static final fun any-rL5Bavg ([S)Z
 	public static final fun contentEquals-ctEhBpI ([I[I)Z
 	public static final fun contentEquals-kdPth3s ([B[B)Z
 	public static final fun contentEquals-mazbYpA ([S[S)Z

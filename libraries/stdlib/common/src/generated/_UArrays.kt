@@ -794,8 +794,9 @@ public inline fun UShortArray.all(predicate: (UShort) -> Boolean): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UIntArray.any(): Boolean {
-    return !isEmpty()
+@kotlin.internal.InlineOnly
+public inline fun UIntArray.any(): Boolean {
+    return storage.any()
 }
 
 /**
@@ -805,8 +806,9 @@ public fun UIntArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun ULongArray.any(): Boolean {
-    return !isEmpty()
+@kotlin.internal.InlineOnly
+public inline fun ULongArray.any(): Boolean {
+    return storage.any()
 }
 
 /**
@@ -816,8 +818,9 @@ public fun ULongArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UByteArray.any(): Boolean {
-    return !isEmpty()
+@kotlin.internal.InlineOnly
+public inline fun UByteArray.any(): Boolean {
+    return storage.any()
 }
 
 /**
@@ -827,8 +830,9 @@ public fun UByteArray.any(): Boolean {
  */
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-public fun UShortArray.any(): Boolean {
-    return !isEmpty()
+@kotlin.internal.InlineOnly
+public inline fun UShortArray.any(): Boolean {
+    return storage.any()
 }
 
 /**
@@ -1037,8 +1041,8 @@ public inline fun UShortArray.none(predicate: (UShort) -> Boolean): Boolean {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
-public inline fun UIntArray.sumBy(selector: (UInt) -> Int): Int {
-    var sum: Int = 0
+public inline fun UIntArray.sumBy(selector: (UInt) -> UInt): UInt {
+    var sum: UInt = 0u
     for (element in this) {
         sum += selector(element)
     }
@@ -1051,8 +1055,8 @@ public inline fun UIntArray.sumBy(selector: (UInt) -> Int): Int {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
-public inline fun ULongArray.sumBy(selector: (ULong) -> Int): Int {
-    var sum: Int = 0
+public inline fun ULongArray.sumBy(selector: (ULong) -> UInt): UInt {
+    var sum: UInt = 0u
     for (element in this) {
         sum += selector(element)
     }
@@ -1065,8 +1069,8 @@ public inline fun ULongArray.sumBy(selector: (ULong) -> Int): Int {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
-public inline fun UByteArray.sumBy(selector: (UByte) -> Int): Int {
-    var sum: Int = 0
+public inline fun UByteArray.sumBy(selector: (UByte) -> UInt): UInt {
+    var sum: UInt = 0u
     for (element in this) {
         sum += selector(element)
     }
@@ -1079,8 +1083,8 @@ public inline fun UByteArray.sumBy(selector: (UByte) -> Int): Int {
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
 @kotlin.internal.InlineOnly
-public inline fun UShortArray.sumBy(selector: (UShort) -> Int): Int {
-    var sum: Int = 0
+public inline fun UShortArray.sumBy(selector: (UShort) -> UInt): UInt {
+    var sum: UInt = 0u
     for (element in this) {
         sum += selector(element)
     }

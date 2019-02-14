@@ -253,10 +253,10 @@ class UnsignedArraysTest {
 
     @Test
     fun sumBy() {
-        assertEquals(3, ubyteArrayOf(0, 1, 2).sumBy { it.toInt() })
-        assertEquals(1, ushortArrayOf(0, 1, 2).sumBy { (it % 2u).toInt() })
-        assertEquals(0, uintArrayOf(0, 2, 4).sumBy { (it % 2u).toInt() })
-        assertEquals(6, ulongArrayOf(2, 3, 4).sumBy { (it - 1u).toInt() })
+        assertEquals(3u, ubyteArrayOf(0, 1, 2).sumBy { it.toUInt() })
+        assertEquals(1u, ushortArrayOf(0, 1, 2).sumBy { it % 2u })
+        assertEquals(0u, uintArrayOf(0, 2, 4).sumBy { it % 2u })
+        assertEquals(6u, ulongArrayOf(2, 3, 4).sumBy { (it - 1u).toUInt() })
     }
 
     @Test

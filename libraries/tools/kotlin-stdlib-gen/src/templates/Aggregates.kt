@@ -153,7 +153,12 @@ object Aggregates : TemplateGroupBase() {
             return iterator().hasNext()
             """
         }
-        body(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives, ArraysOfUnsigned) { "return !isEmpty()" }
+        body(Maps, CharSequences, ArraysOfObjects, ArraysOfPrimitives) { "return !isEmpty()" }
+
+        specialFor(ArraysOfUnsigned) {
+            inlineOnly()
+            body { "return storage.any()" }
+        }
     }
 
 
@@ -213,8 +218,6 @@ object Aggregates : TemplateGroupBase() {
         include(CharSequences, ArraysOfUnsigned)
     } builder {
         inline()
-        specialFor(ArraysOfUnsigned) { inlineOnly() }
-
         doc { "Returns the sum of all values produced by [selector] function applied to each ${f.element} in the ${f.collection}." }
         returns("Int")
         body {
@@ -225,6 +228,21 @@ object Aggregates : TemplateGroupBase() {
             }
             return sum
             """
+        }
+
+        specialFor(ArraysOfUnsigned) {
+            inlineOnly()
+            signature("sumBy(selector: (T) -> UInt)")
+            returns("UInt")
+            body {
+                """
+                var sum: UInt = 0u
+                for (element in this) {
+                    sum += selector(element)
+                }
+                return sum
+                """
+            }
         }
     }
 
