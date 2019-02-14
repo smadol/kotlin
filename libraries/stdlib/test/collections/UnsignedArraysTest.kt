@@ -219,4 +219,12 @@ class UnsignedArraysTest {
         }
     }
 
+    @Test
+    fun toUnsignedArray() {
+        val uintList = listOf(1u, 2u, 3u)
+        val uintArray: UIntArray = uintList.toUIntArray()
+        expect(3) { uintArray.size }
+        assertEquals(uintList, uintArray.toList())
+    }
+
 }

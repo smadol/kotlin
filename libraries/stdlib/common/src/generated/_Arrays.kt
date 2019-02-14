@@ -6833,42 +6833,6 @@ public expect fun BooleanArray.toTypedArray(): Array<Boolean>
 public expect fun CharArray.toTypedArray(): Array<Char>
 
 /**
- * Returns an array of UByte containing all of the elements of this generic array.
- */
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-public fun Array<out UByte>.toUByteArray(): UByteArray {
-    return UByteArray(size) { index -> this[index] }
-}
-
-/**
- * Returns an array of UInt containing all of the elements of this generic array.
- */
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-public fun Array<out UInt>.toUIntArray(): UIntArray {
-    return UIntArray(size) { index -> this[index] }
-}
-
-/**
- * Returns an array of ULong containing all of the elements of this generic array.
- */
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-public fun Array<out ULong>.toULongArray(): ULongArray {
-    return ULongArray(size) { index -> this[index] }
-}
-
-/**
- * Returns an array of UShort containing all of the elements of this generic array.
- */
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-public fun Array<out UShort>.toUShortArray(): UShortArray {
-    return UShortArray(size) { index -> this[index] }
-}
-
-/**
  * Returns a [Map] containing key-value pairs provided by [transform] function
  * applied to elements of the given array.
  * 

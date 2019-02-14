@@ -787,10 +787,6 @@ class ArraysTest {
         expect(3) { primitiveArray.size }
         assertEquals(genericArray.asList(), primitiveArray.asList())
 
-        val uintList = listOf(1u, 2u, 3u)
-        val uintArray: UIntArray = uintList.toUIntArray()
-        expect(3) { uintArray.size }
-        assertArrayNotSameButEquals(uintList.toTypedArray(), uintArray.toTypedArray())
 
         val charList = listOf('a', 'b')
         val charArray: CharArray = charList.toCharArray()

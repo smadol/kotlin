@@ -329,6 +329,9 @@ object ArrayOps : TemplateGroupBase() {
 
         // TODO: Use different implementations for JS
         specialFor(ArraysOfObjects) {
+            if (primitive in PrimitiveType.unsignedPrimitives) {
+                sourceFile(SourceFile.UArrays)
+            }
             doc { "Returns an array of ${primitive.name} containing all of the elements of this generic array." }
             body {
                 """
@@ -337,6 +340,9 @@ object ArrayOps : TemplateGroupBase() {
             }
         }
         specialFor(Collections) {
+            if (primitive in PrimitiveType.unsignedPrimitives) {
+                sourceFile(SourceFile.UCollections)
+            }
             doc { "Returns an array of ${primitive.name} containing all of the elements of this collection." }
             body {
                 """

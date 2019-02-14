@@ -1788,10 +1788,6 @@ public final class kotlin/collections/ArraysKt {
 	public static final fun toTypedArray ([J)[Ljava/lang/Long;
 	public static final fun toTypedArray ([S)[Ljava/lang/Short;
 	public static final fun toTypedArray ([Z)[Ljava/lang/Boolean;
-	public static final fun toUByteArray ([Lkotlin/UByte;)[B
-	public static final fun toUIntArray ([Lkotlin/UInt;)[I
-	public static final fun toULongArray ([Lkotlin/ULong;)[J
-	public static final fun toUShortArray ([Lkotlin/UShort;)[S
 	public static final fun union ([BLjava/lang/Iterable;)Ljava/util/Set;
 	public static final fun union ([CLjava/lang/Iterable;)Ljava/util/Set;
 	public static final fun union ([DLjava/lang/Iterable;)Ljava/util/Set;
@@ -2107,10 +2103,6 @@ public final class kotlin/collections/CollectionsKt {
 	public static final fun toShortArray (Ljava/util/Collection;)[S
 	public static final fun toSortedSet (Ljava/lang/Iterable;)Ljava/util/SortedSet;
 	public static final fun toSortedSet (Ljava/lang/Iterable;Ljava/util/Comparator;)Ljava/util/SortedSet;
-	public static final fun toUByteArray (Ljava/util/Collection;)[B
-	public static final fun toUIntArray (Ljava/util/Collection;)[I
-	public static final fun toULongArray (Ljava/util/Collection;)[J
-	public static final fun toUShortArray (Ljava/util/Collection;)[S
 	public static final fun union (Ljava/lang/Iterable;Ljava/lang/Iterable;)Ljava/util/Set;
 	public static final fun unzip (Ljava/lang/Iterable;)Lkotlin/Pair;
 	public static final fun windowed (Ljava/lang/Iterable;IIZ)Ljava/util/List;
@@ -2306,6 +2298,10 @@ public final class kotlin/collections/UArraysKt {
 	public static final fun toTypedArray-GBYM_sE ([B)[Lkotlin/UByte;
 	public static final fun toTypedArray-QwZRm1k ([J)[Lkotlin/ULong;
 	public static final fun toTypedArray-rL5Bavg ([S)[Lkotlin/UShort;
+	public static final fun toUByteArray ([Lkotlin/UByte;)[B
+	public static final fun toUIntArray ([Lkotlin/UInt;)[I
+	public static final fun toULongArray ([Lkotlin/ULong;)[J
+	public static final fun toUShortArray ([Lkotlin/UShort;)[S
 }
 
 public abstract class kotlin/collections/UByteIterator : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {
@@ -2314,6 +2310,13 @@ public abstract class kotlin/collections/UByteIterator : java/util/Iterator, kot
 	public final fun next ()Lkotlin/UByte;
 	public abstract fun nextUByte ()B
 	public fun remove ()V
+}
+
+public final class kotlin/collections/UCollectionsKt {
+	public static final fun toUByteArray (Ljava/util/Collection;)[B
+	public static final fun toUIntArray (Ljava/util/Collection;)[I
+	public static final fun toULongArray (Ljava/util/Collection;)[J
+	public static final fun toUShortArray (Ljava/util/Collection;)[S
 }
 
 public abstract class kotlin/collections/UIntIterator : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {

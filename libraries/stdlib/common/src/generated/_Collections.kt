@@ -1030,58 +1030,6 @@ public fun Collection<Short>.toShortArray(): ShortArray {
 }
 
 /**
- * Returns an array of UByte containing all of the elements of this collection.
- */
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-public fun Collection<UByte>.toUByteArray(): UByteArray {
-    val result = UByteArray(size)
-    var index = 0
-    for (element in this)
-        result[index++] = element
-    return result
-}
-
-/**
- * Returns an array of UInt containing all of the elements of this collection.
- */
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-public fun Collection<UInt>.toUIntArray(): UIntArray {
-    val result = UIntArray(size)
-    var index = 0
-    for (element in this)
-        result[index++] = element
-    return result
-}
-
-/**
- * Returns an array of ULong containing all of the elements of this collection.
- */
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-public fun Collection<ULong>.toULongArray(): ULongArray {
-    val result = ULongArray(size)
-    var index = 0
-    for (element in this)
-        result[index++] = element
-    return result
-}
-
-/**
- * Returns an array of UShort containing all of the elements of this collection.
- */
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-public fun Collection<UShort>.toUShortArray(): UShortArray {
-    val result = UShortArray(size)
-    var index = 0
-    for (element in this)
-        result[index++] = element
-    return result
-}
-
-/**
  * Returns a [Map] containing key-value pairs provided by [transform] function
  * applied to elements of the given collection.
  * 
