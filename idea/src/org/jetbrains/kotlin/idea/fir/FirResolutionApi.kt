@@ -67,8 +67,11 @@ fun KtCallableDeclaration.getOrBuildFir(stage: FirStage = FirStage.DECLARATIONS)
     val callableId = CallableId(packageFqName, klassFqName, declName)
 
     val firProvider = FirProvider.getInstance(session) as FirProviderImpl
+    // TODO: minor file modifications should not force full rebuild (!)
     val cachedFirFile = firProvider.getFirFilesByPackage(packageFqName).find { it.psi == file }
+    // TODO: stage of cached FIR should be taken into account (!)
     if (cachedFirFile == null) {
+        println("FIR resolution: start transformation of ${file.name}")
         val builder = RawFirBuilder(session, stubMode = stage.stubMode)
         val firFile = builder.buildFirFile(file)
         firProvider.recordFile(firFile)
