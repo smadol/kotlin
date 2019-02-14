@@ -219,4 +219,52 @@ class UnsignedArraysTest {
         }
     }
 
+    @Test
+    fun all() {
+        assertTrue(ubyteArrayOf(0, 1, 2).all { it < 3 })
+        assertFalse(ushortArrayOf(0, 1, 2).all { it % 2u == 0u })
+        assertTrue(uintArrayOf(0, 2, 4).all { it % 2u == 0u })
+        assertTrue(ulongArrayOf(2, 3, 4).all { it > 1 })
+    }
+
+    @Test
+    fun none() {
+        assertTrue(ubyteArrayOf(0, 1, 2).none { it > 2 })
+        assertFalse(ushortArrayOf(0, 1, 2).none { it % 2u == 0u })
+        assertTrue(uintArrayOf(0, 2, 4).none { it % 2u != 0u })
+        assertTrue(ulongArrayOf(2, 3, 4).none { it < 2 })
+    }
+
+    @Test
+    fun any() {
+        assertTrue(ubyteArrayOf(0, 1, 2).any { it >= 2 })
+        assertFalse(ushortArrayOf(0, 1, 2).any { it == 5.toUShort() })
+        assertTrue(uintArrayOf(0, 2, 4).any { it % 3u == 1u })
+        assertTrue(ulongArrayOf(2, 3, 4).any { it % 3u == 0.toULong() })
+    }
+
+    @Test
+    fun count() {
+        assertEquals(1, ubyteArrayOf(0, 1, 2).count { it >= 2 })
+        assertEquals(2, ushortArrayOf(0, 1, 2).count { it % 2u == 0u })
+        assertEquals(0, uintArrayOf(0, 2, 4).count { it % 2u != 0u })
+        assertEquals(3, ulongArrayOf(2, 3, 4).count { it > 1 })
+    }
+
+    @Test
+    fun sumBy() {
+        assertEquals(3, ubyteArrayOf(0, 1, 2).sumBy { it.toInt() })
+        assertEquals(1, ushortArrayOf(0, 1, 2).sumBy { (it % 2u).toInt() })
+        assertEquals(0, uintArrayOf(0, 2, 4).sumBy { (it % 2u).toInt() })
+        assertEquals(6, ulongArrayOf(2, 3, 4).sumBy { (it - 1u).toInt() })
+    }
+
+    @Test
+    fun sumByDouble() {
+        // TODO: .toInt().toDouble() -> .toDouble() when conversion from unsigned primitives to Double gets implemented.
+        assertEquals(3.0, ubyteArrayOf(0, 1, 2).sumByDouble { it.toInt().toDouble() })
+        assertEquals(1.0, ushortArrayOf(0, 1, 2).sumByDouble { (it % 2u).toInt().toDouble() })
+        assertEquals(0.0, uintArrayOf(0, 2, 4).sumByDouble { (it % 2u).toInt().toDouble() })
+        assertEquals(6.0, ulongArrayOf(2, 3, 4).sumByDouble { (it - 1u).toInt().toDouble() })
+    }
 }
