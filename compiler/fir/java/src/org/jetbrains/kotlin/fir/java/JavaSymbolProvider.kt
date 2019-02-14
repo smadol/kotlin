@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirNamedFunction
 import org.jetbrains.kotlin.fir.declarations.impl.*
 import org.jetbrains.kotlin.fir.expressions.FirAnnotationCall
+import org.jetbrains.kotlin.fir.expressions.FirArrayOfCall
 import org.jetbrains.kotlin.fir.expressions.FirExpression
 import org.jetbrains.kotlin.fir.expressions.impl.*
 import org.jetbrains.kotlin.fir.resolve.AbstractFirSymbolProvider
@@ -61,12 +62,48 @@ class JavaSymbolProvider(
         }
     }
 
+    // TODO: use kind here
+    private fun <T> List<T>.createArrayOfCall(@Suppress("UNUSED_PARAMETER") kind: IrConstKind<T>): FirArrayOfCall {
+        return FirArrayOfCallImpl(session, null).apply {
+            for (element in this@createArrayOfCall) {
+                arguments += element.createConstant()
+            }
+        }
+    }
+
+    private fun Any?.createConstant(): FirExpression {
+        return when (this) {
+            is Byte -> FirConstExpressionImpl(session, null, IrConstKind.Byte, this)
+            is Short -> FirConstExpressionImpl(session, null, IrConstKind.Short, this)
+            is Int -> FirConstExpressionImpl(session, null, IrConstKind.Int, this)
+            is Long -> FirConstExpressionImpl(session, null, IrConstKind.Long, this)
+            is Char -> FirConstExpressionImpl(session, null, IrConstKind.Char, this)
+            is Float -> FirConstExpressionImpl(session, null, IrConstKind.Float, this)
+            is Double -> FirConstExpressionImpl(session, null, IrConstKind.Double, this)
+            is Boolean -> FirConstExpressionImpl(session, null, IrConstKind.Boolean, this)
+            is String -> FirConstExpressionImpl(session, null, IrConstKind.String, this)
+            null -> FirConstExpressionImpl(session, null, IrConstKind.Null, null)
+
+            else -> FirErrorExpressionImpl(session, null, "Unknown value in JavaLiteralAnnotationArgument: $this")
+        }
+    }
+
     private fun JavaAnnotationArgument.toFirExpression(): FirExpression {
         // TODO: this.name
         return when (this) {
-            is JavaLiteralAnnotationArgument -> when (value) {
-                null -> FirConstExpressionImpl(session, null, IrConstKind.Null, null)
-                else -> FirErrorExpressionImpl(session, null, "Unknown value in JavaLiteralAnnotationArgument: $value")
+            is JavaLiteralAnnotationArgument -> {
+                val value = value
+                when (value) {
+                    is ByteArray -> value.toList().createArrayOfCall(IrConstKind.Byte)
+                    is ShortArray -> value.toList().createArrayOfCall(IrConstKind.Short)
+                    is IntArray -> value.toList().createArrayOfCall(IrConstKind.Int)
+                    is LongArray -> value.toList().createArrayOfCall(IrConstKind.Long)
+                    is CharArray -> value.toList().createArrayOfCall(IrConstKind.Char)
+                    is FloatArray -> value.toList().createArrayOfCall(IrConstKind.Float)
+                    is DoubleArray -> value.toList().createArrayOfCall(IrConstKind.Double)
+                    is BooleanArray -> value.toList().createArrayOfCall(IrConstKind.Boolean)
+                    else -> value.createConstant()
+                }
             }
             is JavaArrayAnnotationArgument -> FirArrayOfCallImpl(session, null).apply {
                 for (element in getElements()) {
