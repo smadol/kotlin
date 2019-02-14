@@ -76,8 +76,11 @@ class JavaSymbolProvider(
             // TODO
             //is JavaEnumValueAnnotationArgument -> {}
             is JavaClassObjectAnnotationArgument -> FirGetClassCallImpl(session, null).apply {
-                // TODO
-                //arguments += getReferencedType().toFirType()
+                val referencedType = getReferencedType()
+                arguments += when (referencedType) {
+                    is JavaClassifierType -> FirClassReferenceExpressionImpl(session, null, referencedType.toFirResolvedTypeRef())
+                    else -> FirErrorExpressionImpl(session, null, "Unknown type in class object: $referencedType")
+                }
             }
             is JavaAnnotationAsAnnotationArgument -> getAnnotation().toFirAnnotationCall()
             else -> FirErrorExpressionImpl(session, null, "Unknown JavaAnnotationArgument: ${this::class.java}")
