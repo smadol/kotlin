@@ -104,7 +104,7 @@ internal fun doubleToULong(v: Double): ULong = when {
 internal fun uintToDouble(v: Int): Double = (v and Int.MAX_VALUE).toDouble() + (v ushr 31 shl 30).toDouble() * 2
 
 @PublishedApi
-internal fun ulongToDouble(v: Long): Double = (v and Long.MAX_VALUE).toDouble() + (v ushr 63 shl 62).toDouble() * 2
+internal fun ulongToDouble(v: Long): Double = (v ushr 11).toDouble() * 2048 + (v and 2047)
 
 
 internal fun ulongToString(v: Long): String = ulongToString(v, 10)

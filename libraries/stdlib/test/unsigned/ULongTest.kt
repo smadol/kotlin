@@ -159,9 +159,9 @@ class ULongTest {
                 assertTrue(up >= x && up >= v)
 
                 if (v > x) {
-                    assertTrue(v - x <= x - down)
+                    assertTrue(v - x <= x - down, "Expected $x being closer to $v than to $down\"")
                 } else {
-                    assertTrue(x - v <= up - x)
+                    assertTrue(x - v <= up - x, "Expected $x being closer to $v than to $up")
                 }
             }
         }
@@ -169,6 +169,12 @@ class ULongTest {
         testRounding(0u, 100u)
         testRounding(Long.MAX_VALUE.toULong() - 520u, 100u)
         testRounding(ULong.MAX_VALUE - 1040u, 100u)
+        testRounding(18446744073709550575u, 0u)     // 1111111111111111111111111111111111111111111111111111101111101111
+        testRounding(18446744073709549551u, 0u)     // 1111111111111111111111111111111111111111111111111111011111101111
+        testRounding(18446744073709549039u, 0u)     // 1111111111111111111111111111111111111111111111111111010111101111
+        testRounding(18446744073709548527u, 0u)     // 1111111111111111111111111111111111111111111111111111001111101111
+        testRounding(18446744073709550063u, 0u)     // 1111111111111111111111111111111111111111111111111111100111101111
+        testRounding(18446744073709551087u, 0u)     // 1111111111111111111111111111111111111111111111111111110111101111
     }
 
     @Test
