@@ -111,14 +111,18 @@ class JavaSymbolProvider(
                 FirFunctionCallImpl(session, null).apply {
                     val classId = this@toFirExpression.enumClassId
                     val entryName = this@toFirExpression.entryName
-                    calleeReference = if (classId != null && entryName != null) FirResolvedCallableReferenceImpl(
-                        session, null, entryName,
-                        session.service<FirSymbolProvider>().getCallableSymbols(
+                    val calleeReference = if (classId != null && entryName != null) {
+                        val callableSymbol = session.service<FirSymbolProvider>().getCallableSymbols(
                             CallableId(classId.packageFqName, classId.relativeClassName, entryName)
-                        ).first()
-                    ) else {
-                        FirErrorNamedReference(session, null, "Strange Java enum value: ${this@toFirExpression}")
+                        ).firstOrNull()
+                        callableSymbol?.let {
+                            FirResolvedCallableReferenceImpl(session, null, entryName, it)
+                        }
+                    } else {
+                        null
                     }
+                    this.calleeReference = calleeReference
+                        ?: FirErrorNamedReference(session, null, "Strange Java enum value: ${this@toFirExpression}")
                 }
             }
             is JavaClassObjectAnnotationArgument -> FirGetClassCallImpl(session, null).apply {
