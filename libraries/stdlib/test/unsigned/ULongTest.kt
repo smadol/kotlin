@@ -168,13 +168,7 @@ class ULongTest {
 
         testRounding(0u, 100u)
         testRounding(Long.MAX_VALUE.toULong() - 520u, 100u)
-        testRounding(ULong.MAX_VALUE - 1040u, 100u)
-        testRounding(18446744073709550575u, 0u)     // 1111111111111111111111111111111111111111111111111111101111101111
-        testRounding(18446744073709549551u, 0u)     // 1111111111111111111111111111111111111111111111111111011111101111
-        testRounding(18446744073709549039u, 0u)     // 1111111111111111111111111111111111111111111111111111010111101111
-        testRounding(18446744073709548527u, 0u)     // 1111111111111111111111111111111111111111111111111111001111101111
-        testRounding(18446744073709550063u, 0u)     // 1111111111111111111111111111111111111111111111111111100111101111
-        testRounding(18446744073709551087u, 0u)     // 1111111111111111111111111111111111111111111111111111110111101111
+        testRounding(ULong.MAX_VALUE - 10000u, 10000u)
     }
 
     @Test
@@ -185,7 +179,7 @@ class ULongTest {
         testEquals(-1.0, zero)
 
         testEquals(-2_000_000_000_000.0, zero)
-        testEquals((-0xFFFF_FFFF_FFFF).toDouble(), zero)
+        testEquals(-(2.0.pow(ULong.SIZE_BITS + 5)), zero)
         testEquals(Double.MIN_VALUE, zero)
         testEquals(Double.NEGATIVE_INFINITY, zero)
         testEquals(Double.NaN, zero)
@@ -199,12 +193,12 @@ class ULongTest {
         testEquals(Double.POSITIVE_INFINITY, max)
 
         repeat(100) {
-            val v = -Random.nextDouble() * 0xFFFF_FFFF_FFFF * 0xFFFF_FF
+            val v = -Random.nextDouble(until = 2.0.pow(ULong.SIZE_BITS + 8))
             testEquals(v, zero)
         }
 
         repeat(100) {
-            val v = (1.0 + Random.nextDouble()) * 0xFFFF_FFFF_FFFF * 0xFFFF_FF
+            val v = Random.nextDouble(from = max.toDouble(), until = 2.0.pow(ULong.SIZE_BITS + 8))
             testEquals(v, max)
         }
 
