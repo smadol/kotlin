@@ -28,7 +28,7 @@ class FirTypeResolverImpl : FirTypeResolver {
     private fun List<FirQualifierPart>.toTypeProjections() = flatMap {
         it.typeArguments.map {
             when (it) {
-                is FirStarProjection -> StarProjection
+                is FirStarProjection -> ConeStarProjection
                 is FirTypeProjectionWithVariance -> {
                     val type = (it.typeRef as FirResolvedTypeRef).type
                     when (it.variance) {

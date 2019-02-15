@@ -20,9 +20,11 @@ import org.jetbrains.kotlin.fir.symbols.ConeCallableSymbol
 import org.jetbrains.kotlin.fir.symbols.ConeFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.ConePropertySymbol
 import org.jetbrains.kotlin.fir.types.ConeKotlinType
+import org.jetbrains.kotlin.fir.types.ConeTypeContext
 import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.FirTypeRef
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.types.AbstractStrictEqualityTypeChecker
 import org.jetbrains.kotlin.utils.addToStdlib.cast
 
 class FirClassUseSiteScope(
@@ -37,12 +39,14 @@ class FirClassUseSiteScope(
     val overrides = mutableMapOf<ConeCallableSymbol, ConeCallableSymbol?>()
 
 
-    fun isSubtypeOf(subType: ConeKotlinType, superType: ConeKotlinType) = true
-    fun isSubtypeOf(subTypeRef: FirTypeRef, superTypeRef: FirTypeRef) =
-        //TODO: Discuss
-        isSubtypeOf(subTypeRef.cast<FirResolvedTypeRef>().type, superTypeRef.cast<FirResolvedTypeRef>().type)
+//    fun isSubtypeOf(subType: ConeKotlinType, superType: ConeKotlinType) = true
+//    fun isSubtypeOf(subTypeRef: FirTypeRef, superTypeRef: FirTypeRef) =
+//        TODO: Discuss
+//        isSubtypeOf(subTypeRef.cast<FirResolvedTypeRef>().type, superTypeRef.cast<FirResolvedTypeRef>().type)
 
-    fun isEqualTypes(a: ConeKotlinType, b: ConeKotlinType) = true
+    val context = object : ConeTypeContext {}
+
+    fun isEqualTypes(a: ConeKotlinType, b: ConeKotlinType) = AbstractStrictEqualityTypeChecker.strictEqualTypes(context, a, b)
     fun isEqualTypes(a: FirTypeRef, b: FirTypeRef) = isEqualTypes(a.cast<FirResolvedTypeRef>().type, b.cast<FirResolvedTypeRef>().type)
 
     fun isOverriddenFunCheck(member: FirNamedFunction, self: FirNamedFunction): Boolean {
@@ -76,7 +80,6 @@ class FirClassUseSiteScope(
             val member = (it as AbstractFirBasedSymbol<FirCallableMember>).fir
             member.isOverride && self.modality != Modality.FINAL
                     && sameReceivers(member.receiverTypeRef, self.receiverTypeRef)
-                    && isSubtypeOf(member.returnTypeRef, self.returnTypeRef)
                     && similarFunctionsOrBothProperties(member, self)
         }.firstOrNull() // TODO: WTF when there is two overrides for one fun? More fun
         overrides[this] = overriding

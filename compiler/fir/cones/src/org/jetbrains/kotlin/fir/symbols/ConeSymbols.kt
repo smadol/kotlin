@@ -7,14 +7,16 @@ package org.jetbrains.kotlin.fir.symbols
 
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.types.model.TypeConstructorMarker
+import org.jetbrains.kotlin.types.model.TypeParameterMarker
 
-interface ConeSymbol
+interface ConeSymbol : TypeConstructorMarker
 
-interface ConeTypeParameterSymbol : ConeSymbol {
+interface ConeTypeParameterSymbol : ConeSymbol, TypeParameterMarker {
     val name: Name
 }
 
-interface ConeClassLikeSymbol : ConeSymbol {
+interface ConeClassLikeSymbol : ConeSymbol, TypeConstructorMarker {
     val classId: ClassId
 }
 

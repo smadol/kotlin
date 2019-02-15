@@ -126,7 +126,7 @@ class FirTypeDeserializer(
 
     private fun typeArgument(parameter: ConeTypeParameterSymbol?, typeArgumentProto: ProtoBuf.Type.Argument): ConeKotlinTypeProjection {
         if (typeArgumentProto.projection == ProtoBuf.Type.Argument.Projection.STAR) {
-            return StarProjection
+            return ConeStarProjection
         }
 
         val projection = ProtoEnumFlags.variance(typeArgumentProto.projection)

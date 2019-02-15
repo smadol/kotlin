@@ -8,8 +8,9 @@ package org.jetbrains.kotlin.fir.types
 import org.jetbrains.kotlin.fir.symbols.ConeClassLikeSymbol
 import org.jetbrains.kotlin.fir.symbols.ConeSymbol
 import org.jetbrains.kotlin.fir.symbols.ConeTypeParameterSymbol
+import org.jetbrains.kotlin.types.model.*
 
-sealed class ConeKotlinTypeProjection {
+sealed class ConeKotlinTypeProjection : TypeArgumentMarker {
     abstract val kind: ProjectionKind
 
     companion object {
@@ -21,7 +22,7 @@ enum class ProjectionKind {
     STAR, IN, OUT, INVARIANT
 }
 
-object StarProjection : ConeKotlinTypeProjection() {
+object ConeStarProjection : ConeKotlinTypeProjection() {
     override val kind: ProjectionKind
         get() = ProjectionKind.STAR
 }
@@ -54,7 +55,7 @@ enum class ConeNullability(val suffix: String) {
 
 // We assume type IS an invariant type projection to prevent additional wrapper here
 // (more exactly, invariant type projection contains type)
-sealed class ConeKotlinType : ConeKotlinTypeProjection(), ConeTypedProjection {
+sealed class ConeKotlinType : ConeKotlinTypeProjection(), ConeTypedProjection, KotlinTypeMarker, TypeArgumentListMarker {
     override val kind: ProjectionKind
         get() = ProjectionKind.INVARIANT
 
@@ -93,13 +94,15 @@ class ConeClassErrorType(val reason: String) : ConeClassLikeType() {
     }
 }
 
-sealed class ConeSymbolBasedType : ConeKotlinType() {
+sealed class ConeSymbolBasedType : ConeKotlinType(), SimpleTypeMarker {
     abstract val symbol: ConeSymbol
 }
 
-abstract class ConeClassLikeType : ConeSymbolBasedType() {
+sealed class ConeClassLikeType : ConeSymbolBasedType() {
     abstract override val symbol: ConeClassLikeSymbol
 }
+
+abstract class ConeClassType : ConeClassLikeType()
 
 abstract class ConeAbbreviatedType : ConeClassLikeType() {
     abstract val abbreviationSymbol: ConeClassLikeSymbol
@@ -120,7 +123,7 @@ abstract class ConeFunctionType : ConeClassLikeType() {
     abstract val returnType: ConeKotlinType
 }
 
-class ConeFlexibleType(val lowerBound: ConeKotlinType, val upperBound: ConeKotlinType) : ConeKotlinType() {
+class ConeFlexibleType(val lowerBound: ConeSymbolBasedType, val upperBound: ConeSymbolBasedType) : ConeKotlinType(), FlexibleTypeMarker {
     override val typeArguments: Array<out ConeKotlinTypeProjection>
         get() = emptyArray()
 

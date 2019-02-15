@@ -33,7 +33,7 @@ class FirClassSubstitutionScope(
 
     fun wrapProjection(old: ConeKotlinTypeProjection, newType: ConeKotlinType): ConeKotlinTypeProjection {
         return when (old) {
-            is StarProjection -> old
+            is ConeStarProjection -> old
             is ConeKotlinTypeProjectionIn -> ConeKotlinTypeProjectionIn(newType)
             is ConeKotlinTypeProjectionOut -> ConeKotlinTypeProjectionOut(newType)
             is ConeKotlinType -> newType
