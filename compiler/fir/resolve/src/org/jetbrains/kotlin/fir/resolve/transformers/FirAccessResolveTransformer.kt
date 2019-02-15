@@ -51,6 +51,14 @@ class FirAccessResolveTransformer : FirAbstractTreeTransformerWithSuperTypes(rev
         return FirClassSubstitutionScope(useSiteSession, unsubstituted, substitution, true)
     }
 
+    private fun FirRegularClass.buildEnhancementScope(
+        session: FirSession,
+        unsubstituted: FirScope
+    ): FirJavaEnhancementScope {
+
+    }
+
+
     private fun FirRegularClass.buildUseSiteScope(useSiteSession: FirSession = session): FirClassUseSiteScope {
         val superTypeScope = FirCompositeScope(mutableListOf())
         val declaredScope = FirClassDeclaredMemberScope(this, useSiteSession)
@@ -59,13 +67,15 @@ class FirAccessResolveTransformer : FirAbstractTreeTransformerWithSuperTypes(rev
                 if (useSiteSuperType is ConeClassErrorType) return@mapNotNullTo null
                 val symbol = useSiteSuperType.symbol
                 if (symbol is FirClassSymbol) {
-                    val scope = symbol.fir.buildUseSiteScope(useSiteSession)
-                    useSiteSuperType.buildSubstitutionScope(useSiteSession, scope, symbol.fir) ?: scope
+                    val superClass = symbol.fir
+                    val useSiteScope = superClass.buildUseSiteScope(useSiteSession)
+                    useSiteSuperType.buildSubstitutionScope(useSiteSession, useSiteScope, superClass) ?: useSiteScope
                 } else {
                     null
                 }
             }
-        return FirClassUseSiteScope(useSiteSession, superTypeScope, declaredScope, true)
+        val useSiteScope = FirClassUseSiteScope(useSiteSession, superTypeScope, declaredScope, lookupInFir = true)
+        return useSiteScope
     }
 
     override fun transformRegularClass(regularClass: FirRegularClass, data: Nothing?): CompositeTransformResult<FirDeclaration> {

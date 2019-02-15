@@ -204,7 +204,9 @@ class JavaSymbolProvider(
             val callableSymbols = mutableListOf<ConeCallableSymbol>()
             findClass(classId)?.let { javaClass ->
                 if (firClass.declarations.isEmpty()) {
+                    // TODO: fields
                     for (javaMethod in javaClass.methods) {
+                        if (javaMethod.isStatic) continue // TODO: statics
                         val methodName = javaMethod.name
                         val methodId = CallableId(callableId.packageName, callableId.className, methodName)
                         val methodSymbol = FirFunctionSymbol(methodId)
