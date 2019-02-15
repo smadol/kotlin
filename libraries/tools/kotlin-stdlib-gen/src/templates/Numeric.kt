@@ -35,41 +35,34 @@ object Numeric : TemplateGroupBase() {
         specialFor(ArraysOfUnsigned) {
             inlineOnly()
 
-            val sum = if (p == p.sumType())
-                "sum()"
-            else
-                "sumBy { it.to${p.name}().to${p.signed().sumType().name}() }"
             body {
-                """
-                return storage.$sum.to${p.sumType().name}()
-                """
+                if (p == p.sumType())
+                    "return storage.sum().to${p.sumType().name}()"
+                else
+                    "return sumBy { it.to${p.sumType().name}() }"
             }
         }
         specialFor(Iterables, Sequences, ArraysOfObjects, ArraysOfPrimitives) {
             platformName("sumOf<T>")
 
             if (p.isUnsigned()) {
+                require(f != ArraysOfPrimitives) { "Arrays of unsigneds are separate from arrays of primitives." }
+                specialFor(Iterables) { sourceFile(SourceFile.UCollections) }
+                specialFor(Sequences) { sourceFile(SourceFile.USequences) }
+                specialFor(ArraysOfObjects) { sourceFile(SourceFile.UArrays) }
+
                 since("1.3")
                 annotation("@ExperimentalUnsignedTypes")
-                body {
-                    """
-                    var sum: ${p.signed().sumType().name} = ${p.signed().sumType().zero()}
-                    for (element in this) {
-                        sum += element.to${p.signed().sumType().name}()
-                    }
-                    return sum.to${p.sumType().name}()
-                    """
+            }
+
+            body {
+                """
+                var sum: ${p.sumType().name} = ${p.sumType().zero()}
+                for (element in this) {
+                    sum += element
                 }
-            } else {
-                body {
-                    """
-                    var sum: ${p.sumType().name} = ${p.sumType().zero()}
-                    for (element in this) {
-                        sum += element
-                    }
-                    return sum
-                    """
-                }
+                return sum
+                """
             }
         }
     }
