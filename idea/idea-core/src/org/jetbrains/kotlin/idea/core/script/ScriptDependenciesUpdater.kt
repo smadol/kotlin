@@ -68,6 +68,8 @@ class ScriptDependenciesUpdater(
 
         updateDependencies(file, scriptDef)
 
+        makeRootsChangeIfNeeded()
+
         return cache[file] ?: ScriptDependencies.Empty
     }
 
@@ -77,6 +79,12 @@ class ScriptDependenciesUpdater(
             else -> syncLoader
         }
         loader.updateDependencies(file, scriptDef)
+    }
+
+    private fun makeRootsChangeIfNeeded() {
+        if (fileAttributeLoader.notifyRootsChanged()) return
+        if (syncLoader.notifyRootsChanged()) return
+        if (asyncLoader.notifyRootsChanged()) return
     }
 
     private fun listenForChangesInScripts() {
