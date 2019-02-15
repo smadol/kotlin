@@ -34,7 +34,7 @@ import kotlin.math.ceil
 
 class FirTotalKotlinResolveInIdeTest : ModuleTestCase() {
 
-    private val projectRootFile = File("../testProject")
+    private val projectRootFile = File("C:/KK_130")
 
 
     override fun setUpProject() {
