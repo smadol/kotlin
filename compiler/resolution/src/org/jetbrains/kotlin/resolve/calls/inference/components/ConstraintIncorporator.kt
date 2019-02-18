@@ -13,6 +13,9 @@ import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.checker.NewCapturedType
 import org.jetbrains.kotlin.types.checker.NewCapturedTypeConstructor
 import org.jetbrains.kotlin.types.model.CaptureStatus
+import org.jetbrains.kotlin.types.model.KotlinTypeMarker
+import org.jetbrains.kotlin.types.model.TypeConstructorMarker
+import org.jetbrains.kotlin.types.model.TypeSystemInferenceExtensionContext
 import org.jetbrains.kotlin.types.typeUtil.contains
 import org.jetbrains.kotlin.utils.SmartSet
 import org.jetbrains.kotlin.utils.addIfNotNull
@@ -21,21 +24,21 @@ import java.util.*
 // todo problem: intersection types in constrains: A <: Number, B <: Inv<A & Any> =>? B <: Inv<out Number & Any>
 class ConstraintIncorporator(val typeApproximator: TypeApproximator) {
 
-    interface Context {
+    interface Context : TypeSystemInferenceExtensionContext {
         val allTypeVariablesWithConstraints: Collection<VariableWithConstraints>
 
         // if such type variable is fixed then it is error
-        fun getTypeVariable(typeConstructor: TypeConstructor): NewTypeVariable?
+        fun getTypeVariable(typeConstructor: TypeConstructorMarker): NewTypeVariable?
 
         fun getConstraintsForVariable(typeVariable: NewTypeVariable): Collection<Constraint>
 
-        fun addNewIncorporatedConstraint(lowerType: UnwrappedType, upperType: UnwrappedType)
+        fun addNewIncorporatedConstraint(lowerType: KotlinTypeMarker, upperType: KotlinTypeMarker)
     }
 
     // \alpha is typeVariable, \beta -- other type variable registered in ConstraintStorage
-    fun incorporate(c: Context, typeVariable: NewTypeVariable, constraint: Constraint) {
+    fun incorporate(c: Context, typeVariable: NewTypeVariable, constraint: Constraint) = with(c) {
         // we shouldn't incorporate recursive constraint -- It is too dangerous
-        if (constraint.type.contains { it.constructor == typeVariable.freshTypeConstructor }) return
+        if (constraint.type.contains { it.typeConstructor() == typeVariable.freshTypeConstructor }) return
 
         directWithVariable(c, typeVariable, constraint)
         otherInsideMyConstraint(c, typeVariable, constraint)
@@ -64,10 +67,10 @@ class ConstraintIncorporator(val typeApproximator: TypeApproximator) {
     }
 
     // \alpha <: Inv<\beta>, \beta <: Number => \alpha <: Inv<out Number>
-    private fun otherInsideMyConstraint(c: Context, typeVariable: NewTypeVariable, constraint: Constraint) {
+    private fun otherInsideMyConstraint(c: Context, typeVariable: NewTypeVariable, constraint: Constraint) = with(c) {
         val otherInMyConstraint = SmartSet.create<NewTypeVariable>()
         constraint.type.contains {
-            otherInMyConstraint.addIfNotNull(c.getTypeVariable(it.constructor))
+            otherInMyConstraint.addIfNotNull(c.getTypeVariable(it.typeConstructor()))
             false
         }
 
@@ -81,10 +84,10 @@ class ConstraintIncorporator(val typeApproximator: TypeApproximator) {
     }
 
     // \alpha <: Number, \beta <: Inv<\alpha> => \beta <: Inv<out Number>
-    private fun insideOtherConstraint(c: Context, typeVariable: NewTypeVariable, constraint: Constraint) {
+    private fun insideOtherConstraint(c: Context, typeVariable: NewTypeVariable, constraint: Constraint) = with(c) {
         for (typeVariableWithConstraint in c.allTypeVariablesWithConstraints) {
             val constraintsWhichConstraintMyVariable = typeVariableWithConstraint.constraints.filter {
-                it.type.contains { it.constructor == typeVariable.freshTypeConstructor }
+                it.type.contains { it.typeConstructor() == typeVariable.freshTypeConstructor }
             }
             constraintsWhichConstraintMyVariable.forEach {
                 generateNewConstraint(c, typeVariableWithConstraint.typeVariable, it, typeVariable, constraint)
@@ -99,6 +102,10 @@ class ConstraintIncorporator(val typeApproximator: TypeApproximator) {
         otherVariable: NewTypeVariable,
         otherConstraint: Constraint
     ) {
+
+        val baseConstraintType = baseConstraint.type as UnwrappedType // TODO: SUB
+        val otherConstraintType = otherConstraint.type as UnwrappedType // TODO: SUB
+
         val typeForApproximation = when (otherConstraint.kind) {
             ConstraintKind.EQUALITY -> {
                 baseConstraint.type.substitute(otherVariable, otherConstraint.type)
