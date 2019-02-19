@@ -79,6 +79,7 @@ dependencies {
     commonSources project(path: ":kotlin-stdlib-common", configuration: "sources")
     testCompile project(':kotlin-test:kotlin-test-js')
     merger project(":tools:kotlin-stdlib-js-merger")
+    merger project(path: ':tools:kotlin-stdlib-js-merger', configuration: 'customCompile')
     coroutinesExperimentalCompile project.files { sourceSets.main.output.files }.builtBy(compileKotlin2Js)
 }
 

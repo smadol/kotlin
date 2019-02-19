@@ -2,8 +2,25 @@ description = 'Merge utility for Kotlin Standard Library for JS'
 
 apply plugin: 'kotlin'
 
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-compiler:$bootstrapKotlinVersion"
+configurations {
+    customCompile
+}
+
+// hack to avoid problems with debugger, we don't want to add bootstrap compiler as a compile dependency
+// if you need to work with merger, change importCompiler to true and reimport (but don't commit)
+def importCompiler = false
+if (!importCompiler) {
+    dependencies { 
+        customCompile "org.jetbrains.kotlin:kotlin-compiler:$bootstrapKotlinVersion" 
+    }
+    gradle.taskGraph.whenReady {
+        // whenReady is needed to circumvent IJ import  
+        sourceSets.main.compileClasspath += configurations.customCompile
+    }
+} else {
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-compiler:$bootstrapKotlinVersion"
+    }
 }
 
 sourceSets {
