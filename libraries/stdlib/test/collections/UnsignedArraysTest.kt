@@ -6,19 +6,10 @@
 @file:Suppress("SIGNED_CONSTANT_CONVERTED_TO_UNSIGNED")
 package test.collections
 
+import test.collections.behaviors.iteratorBehavior
 import kotlin.test.*
 
 fun assertArrayContentEquals(expected: UIntArray, actual: UIntArray, message: String = "") { assertTrue(expected contentEquals actual, message) }
-
-fun <T> assertIterableContentEquals(expected: Iterable<T>, actual: Iterable<T>, message: String = "") {
-    val i1 = expected.iterator()
-    val i2 = actual.iterator()
-    while (i1.hasNext()) {
-        assertTrue(i2.hasNext())
-        assertEquals(i1.next(), i2.next())
-    }
-    assertFalse(i2.hasNext())
-}
 
 
 class UnsignedArraysTest {
@@ -329,11 +320,10 @@ class UnsignedArraysTest {
 
     @Test
     fun sumByDouble() {
-        // TODO: .toInt().toDouble() -> .toDouble() when conversion from unsigned primitives to Double gets implemented.
-        assertEquals(3.0, ubyteArrayOf(0, 1, 2).sumByDouble { it.toInt().toDouble() })
-        assertEquals(1.0, ushortArrayOf(0, 1, 2).sumByDouble { (it % 2u).toInt().toDouble() })
-        assertEquals(0.0, uintArrayOf(0, 2, 4).sumByDouble { (it % 2u).toInt().toDouble() })
-        assertEquals(6.0, ulongArrayOf(2, 3, 4).sumByDouble { (it - 1u).toInt().toDouble() })
+        assertEquals(3.0, ubyteArrayOf(0, 1, 2).sumByDouble { it.toDouble() })
+        assertEquals(1.0, ushortArrayOf(0, 1, 2).sumByDouble { (it % 2u).toDouble() })
+        assertEquals(0.0, uintArrayOf(0, 2, 4).sumByDouble { (it % 2u).toDouble() })
+        assertEquals(6.0, ulongArrayOf(2, 3, 4).sumByDouble { (it - 1u).toDouble() })
     }
 
     @Test
@@ -401,6 +391,10 @@ class UnsignedArraysTest {
 
     @Test
     fun withIndex() {
+        fun <T> assertIterableContentEquals(expected: Iterable<T>, actual: Iterable<T>) {
+            compare(expected.iterator(), actual.iterator()) { iteratorBehavior() }
+        }
+
         assertIterableContentEquals(listOf(), ubyteArrayOf().withIndex())
         assertIterableContentEquals(
             listOf(
