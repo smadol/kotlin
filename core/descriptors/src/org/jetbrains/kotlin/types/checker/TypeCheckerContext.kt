@@ -42,18 +42,23 @@ open class TypeCheckerContext(val errorTypeEqualsToAnything: Boolean, val allowe
     }
 
     override fun substitutionSupertypePolicy(type: SimpleTypeMarker): SupertypesPolicy.DoCustomTransform {
-        val substitutor = TypeConstructorSubstitution.create(type as SimpleType).buildSubstitutor()
+        return classicSubstitutionSupertypePolicy(type)
+    }
 
-        return object : SupertypesPolicy.DoCustomTransform() {
-            override fun transformType(context: AbstractTypeCheckerContext, type: KotlinTypeMarker): SimpleTypeMarker {
-                return substitutor.safeSubstitute(
-                    type.lowerBoundIfFlexible() as KotlinType,
-                    Variance.INVARIANT
-                ).asSimpleType()!!
+    override val KotlinTypeMarker.isAllowedTypeVariable: Boolean get() = this is UnwrappedType && allowedTypeVariable && constructor is NewTypeVariableConstructor
+
+    companion object {
+        fun ClassicTypeSystemContext.classicSubstitutionSupertypePolicy(type: SimpleTypeMarker): SupertypesPolicy.DoCustomTransform {
+            val substitutor = TypeConstructorSubstitution.create(type as SimpleType).buildSubstitutor()
+
+            return object : SupertypesPolicy.DoCustomTransform() {
+                override fun transformType(context: AbstractTypeCheckerContext, type: KotlinTypeMarker): SimpleTypeMarker {
+                    return substitutor.safeSubstitute(
+                        type.lowerBoundIfFlexible() as KotlinType,
+                        Variance.INVARIANT
+                    ).asSimpleType()!!
+                }
             }
         }
     }
-
-
-    override val KotlinTypeMarker.isAllowedTypeVariable: Boolean get() = this is UnwrappedType && allowedTypeVariable && constructor is NewTypeVariableConstructor
 }
