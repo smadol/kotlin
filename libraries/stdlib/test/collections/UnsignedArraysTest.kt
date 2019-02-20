@@ -20,10 +20,10 @@ class UnsignedArraysTest {
 
     @Test
     fun collectionBehavior() {
-        compare(listOf<UByte>(), ubyteArrayOf()) { this.collectionBehavior() }
-        compare(listOf<UShort>(1), ushortArrayOf(1)) { this.collectionBehavior() }
-        compare(listOf<UInt>(1, 2), uintArrayOf(1u, 2u)) { this.collectionBehavior() }
-        compare(listOf<ULong>(1, 2, 3), ulongArrayOf(1u, 2u, 3u)) { this.collectionBehavior() }
+        compare(listOf<UByte>(), ubyteArrayOf()) { collectionBehavior() }
+        compare(listOf<UShort>(1), ushortArrayOf(1)) { collectionBehavior() }
+        compare(listOf<UInt>(1, 2), uintArrayOf(1u, 2u)) { collectionBehavior() }
+        compare(listOf<ULong>(1, 2, 3), ulongArrayOf(1u, 2u, 3u)) { collectionBehavior() }
     }
 
     @Test
