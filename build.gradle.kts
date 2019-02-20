@@ -730,3 +730,9 @@ allprojects {
         }
     }
 }
+
+gradle.buildFinished {
+    gradle?.let { gradle ->
+        logger.lifecycle("Init scripts: ${gradle.startParameter.allInitScripts.joinToString()}")
+    }
+}
