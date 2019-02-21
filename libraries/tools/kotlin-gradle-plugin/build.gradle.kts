@@ -82,7 +82,7 @@ dependencies {
 }
 
 runtimeJar(rewriteDepsToShadedCompiler(jar)) {
-    from(jarContents.asPath)
+    from(jarContents)
 }
 
 tasks {
