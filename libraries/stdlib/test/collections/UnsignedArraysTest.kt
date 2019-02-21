@@ -365,7 +365,7 @@ class UnsignedArraysTest {
     }
 
     @Test
-    fun sumInPrimitiveArrays() {
+    fun sumInUnsignedArrays() {
         expect(14u) { uintArrayOf(2u, 3u, 9u).sum() }
         expect(400u) { ubyteArrayOf(200u, 200u).sum() }
         expect(50000u) { ushortArrayOf(20000u, 30000u).sum() }

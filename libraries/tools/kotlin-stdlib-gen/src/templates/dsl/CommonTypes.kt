@@ -92,14 +92,6 @@ fun PrimitiveType.zero() = when (this) {
     else -> "0"
 }
 
-fun PrimitiveType.signed() = when(this) {
-    PrimitiveType.UByte -> PrimitiveType.Byte
-    PrimitiveType.UShort -> PrimitiveType.Short
-    PrimitiveType.UInt -> PrimitiveType.Int
-    PrimitiveType.ULong -> PrimitiveType.Long
-    else -> this
-}
-
 enum class Inline {
     No,
     Yes,
