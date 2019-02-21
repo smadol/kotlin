@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2017 JetBrains s.r.o.
+ * Copyright 2010-2015 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package org.jetbrains.kotlin.daemon.common.impls
+package org.jetbrains.kotlin.daemon.common
 
-import org.jetbrains.kotlin.cli.common.repl.ILineId
 import java.rmi.Remote
 import java.rmi.RemoteException
 
-interface ReplStateFacade : Remote {
+interface RemoteOutputStream : Remote {
 
     @Throws(RemoteException::class)
-    fun getId(): Int
+    fun close()
 
     @Throws(RemoteException::class)
-    fun getHistorySize(): Int
+    fun write(data: ByteArray, offset: Int, length: Int)
 
     @Throws(RemoteException::class)
-    fun historyGet(index: Int): ILineId
-
-    @Throws(RemoteException::class)
-    fun historyReset(): List<ILineId>
-
-    @Throws(RemoteException::class)
-    fun historyResetTo(id: ILineId): List<ILineId>
+    fun write(dataByte: Int)
 }

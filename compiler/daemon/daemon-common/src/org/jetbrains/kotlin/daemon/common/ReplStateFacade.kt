@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-package org.jetbrains.kotlin.daemon.common.impls
+package org.jetbrains.kotlin.daemon.common
 
-import java.io.Serializable
+import org.jetbrains.kotlin.cli.common.repl.ILineId
 import java.rmi.Remote
 import java.rmi.RemoteException
 
-interface CompilationResults : Remote {
-    @Throws(RemoteException::class)
-    fun add(compilationResultCategory: Int, value: Serializable)
-}
+interface ReplStateFacade : Remote {
 
-enum class CompilationResultCategory(val code: Int) {
-    IC_COMPILE_ITERATION(0),
-    BUILD_REPORT_LINES(1),
-    VERBOSE_BUILD_REPORT_LINES(2),
+    @Throws(RemoteException::class)
+    fun getId(): Int
+
+    @Throws(RemoteException::class)
+    fun getHistorySize(): Int
+
+    @Throws(RemoteException::class)
+    fun historyGet(index: Int): ILineId
+
+    @Throws(RemoteException::class)
+    fun historyReset(): List<ILineId>
+
+    @Throws(RemoteException::class)
+    fun historyResetTo(id: ILineId): List<ILineId>
 }
