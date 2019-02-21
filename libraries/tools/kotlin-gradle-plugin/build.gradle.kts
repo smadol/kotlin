@@ -21,6 +21,7 @@ publish()
 
 repositories {
     google()
+    maven(url = "https://plugins.gradle.org/m2/")
 }
 
 pill {
@@ -50,6 +51,8 @@ dependencies {
     compileOnly("com.android.tools.build:builder-model:2.0.0")
     compileOnly("org.codehaus.groovy:groovy-all:2.4.12")
     compileOnly(gradleApi())
+
+    compileOnly("com.moowork.node:com.moowork.node.gradle.plugin:1.2.0")
 
     compileOnly(intellijCoreDep()) { includeJars("intellij-core") }
 
