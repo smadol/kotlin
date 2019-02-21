@@ -46,7 +46,7 @@ private val DEFAULT_CALL_CHECKERS = listOf(
     UnderscoreUsageChecker, AssigningNamedArgumentToVarargChecker(),
     PrimitiveNumericComparisonCallChecker, LambdaWithSuspendModifierCallChecker,
     UselessElvisCallChecker(), ResultTypeWithNullableOperatorsChecker(), NullableVarargArgumentCallChecker,
-    NamedFunAsExpressionChecker, ReifiedTypeParameterSubstitutionChecker()
+    NamedFunAsExpressionChecker, ReifiedTypeParameterSubstitutionChecker(), TypeOfChecker
 )
 private val DEFAULT_TYPE_CHECKERS = emptyList<AdditionalTypeChecker>()
 private val DEFAULT_CLASSIFIER_USAGE_CHECKERS = listOf(
