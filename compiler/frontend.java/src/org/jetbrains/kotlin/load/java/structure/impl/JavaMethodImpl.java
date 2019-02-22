@@ -16,19 +16,16 @@
 
 package org.jetbrains.kotlin.load.java.structure.impl;
 
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiAnnotationMethod;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
+import com.intellij.codeInsight.ExternalAnnotationsManager;
+import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.load.java.structure.*;
 import org.jetbrains.kotlin.name.Name;
 
-import java.util.List;
+import java.util.*;
 
-import static org.jetbrains.kotlin.load.java.structure.impl.JavaElementCollectionFromPsiArrayUtil.typeParameters;
-import static org.jetbrains.kotlin.load.java.structure.impl.JavaElementCollectionFromPsiArrayUtil.valueParameters;
+import static org.jetbrains.kotlin.load.java.structure.impl.JavaElementCollectionFromPsiArrayUtil.*;
 
 public class JavaMethodImpl extends JavaMemberImpl<PsiMethod> implements JavaMethod {
     public JavaMethodImpl(@NotNull PsiMethod psiMethod) {
@@ -81,5 +78,20 @@ public class JavaMethodImpl extends JavaMemberImpl<PsiMethod> implements JavaMet
         PsiType psiType = getPsi().getReturnType();
         assert psiType != null : "Method is not a constructor and has no return type: " + getName();
         return JavaTypeImpl.create(psiType);
+    }
+
+    @NotNull
+    @Override
+    public Collection<JavaAnnotation> getAnnotations() {
+        PsiMethod psi = getPsi();
+        ExternalAnnotationsManager externalAnnotationManager = ExternalAnnotationsManager.getInstance(psi.getProject());
+        PsiAnnotation[] externalAnnotations = externalAnnotationManager.findExternalAnnotations(psi);
+        Collection<JavaAnnotation> internalAnnotations = super.getAnnotations();
+        if (externalAnnotations != null) {
+            Collection<JavaAnnotation> allAnnotations = new ArrayList<>(internalAnnotations);
+            allAnnotations.addAll(annotations(externalAnnotations));
+            return allAnnotations;
+        }
+        return internalAnnotations;
     }
 }

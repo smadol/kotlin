@@ -107,6 +107,8 @@ open class JavaAnnotationDescriptor(
     protected val firstArgument: JavaAnnotationArgument? = annotation?.arguments?.firstOrNull()
 
     override val allValueArguments: Map<Name, ConstantValue<*>> get() = emptyMap()
+
+    override val isExternal: Boolean = annotation?.isExternal == true
 }
 
 class JavaDeprecatedAnnotationDescriptor(

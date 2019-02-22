@@ -35,6 +35,9 @@ interface AnnotationDescriptor {
     val allValueArguments: Map<Name, ConstantValue<*>>
 
     val source: SourceElement
+
+    val isExternal: Boolean
+        get() = false
 }
 
 val AnnotationDescriptor.abbreviationFqName: FqName?

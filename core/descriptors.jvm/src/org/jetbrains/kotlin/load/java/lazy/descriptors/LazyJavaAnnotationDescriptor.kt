@@ -112,4 +112,6 @@ class LazyJavaAnnotationDescriptor(
                     ClassId.topLevel(fqName),
                     c.components.deserializedDescriptorResolver.components.notFoundClasses
             )
+
+    override val isExternal: Boolean = javaAnnotation.isExternal
 }
