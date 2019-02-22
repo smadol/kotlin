@@ -17,6 +17,7 @@
 package org.jetbrains.kotlin.daemon.client
 
 import org.jetbrains.kotlin.daemon.common.LoopbackNetworkInterface
+import org.jetbrains.kotlin.daemon.common.SOCKET_ANY_FREE_PORT
 import org.jetbrains.kotlin.daemon.common.RemoteOutputStream
 import org.jetbrains.kotlin.daemon.common.SOCKET_ANY_FREE_PORT
 import java.io.OutputStream
@@ -24,8 +25,8 @@ import java.rmi.server.UnicastRemoteObject
 
 
 class RemoteOutputStreamServer(val out: OutputStream, port: Int = SOCKET_ANY_FREE_PORT)
-: RemoteOutputStream,
-  UnicastRemoteObject(port, LoopbackNetworkInterface.clientLoopbackSocketFactory, LoopbackNetworkInterface.serverLoopbackSocketFactory)
+    : RemoteOutputStream,
+        UnicastRemoteObject(port, LoopbackNetworkInterface.clientLoopbackSocketFactory, LoopbackNetworkInterface.serverLoopbackSocketFactory)
 {
     override fun close() {
         out.close()

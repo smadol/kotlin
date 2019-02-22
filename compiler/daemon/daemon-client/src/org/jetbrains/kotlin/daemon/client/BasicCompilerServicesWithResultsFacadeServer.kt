@@ -27,23 +27,18 @@ import java.rmi.server.UnicastRemoteObject
 
 
 open class BasicCompilerServicesWithResultsFacadeServer(
-    val messageCollector: MessageCollector,
-    val outputsCollector: ((File, List<File>) -> Unit)? = null,
-    port: Int = SOCKET_ANY_FREE_PORT
+        val messageCollector: MessageCollector,
+        val outputsCollector: ((File, List<File>) -> Unit)? = null,
+        port: Int = SOCKET_ANY_FREE_PORT
 ) : CompilerServicesFacadeBase,
-    UnicastRemoteObject(port, LoopbackNetworkInterface.clientLoopbackSocketFactory, LoopbackNetworkInterface.serverLoopbackSocketFactory) {
+        UnicastRemoteObject(port, LoopbackNetworkInterface.clientLoopbackSocketFactory, LoopbackNetworkInterface.serverLoopbackSocketFactory)
+{
     override fun report(category: Int, severity: Int, message: String?, attachment: Serializable?) {
         messageCollector.reportFromDaemon(outputsCollector, category, severity, message, attachment)
     }
 }
 
-fun MessageCollector.reportFromDaemon(
-    outputsCollector: ((File, List<File>) -> Unit)?,
-    category: Int,
-    severity: Int,
-    message: String?,
-    attachment: Serializable?
-) {
+fun MessageCollector.reportFromDaemon(outputsCollector: ((File, List<File>) -> Unit)?, category: Int, severity: Int, message: String?, attachment: Serializable?) {
     val reportCategory = ReportCategory.fromCode(category)
 
     when (reportCategory) {
@@ -54,8 +49,9 @@ fun MessageCollector.reportFromDaemon(
                         outputsCollector.invoke(it, outs.sourceFiles.toList())
                     }
                 }
-            } else {
-                report(CompilerMessageSeverity.OUTPUT, message.orEmpty())
+            }
+            else {
+                report(CompilerMessageSeverity.OUTPUT, message!!)
             }
         }
         ReportCategory.EXCEPTION -> {
@@ -71,7 +67,8 @@ fun MessageCollector.reportFromDaemon(
             }
             if (message != null) {
                 report(compilerSeverity, message, attachment as? CompilerMessageLocation)
-            } else {
+            }
+            else {
                 reportUnexpected(category, severity, message, attachment)
             }
         }
@@ -79,7 +76,8 @@ fun MessageCollector.reportFromDaemon(
         ReportCategory.IC_MESSAGE -> {
             if (message != null) {
                 report(CompilerMessageSeverity.LOGGING, message)
-            } else {
+            }
+            else {
                 reportUnexpected(category, severity, message, attachment)
             }
         }
@@ -97,8 +95,5 @@ private fun MessageCollector.reportUnexpected(category: Int, severity: Int, mess
         else -> CompilerMessageSeverity.LOGGING
     }
 
-    report(
-        compilerMessageSeverity,
-        "Unexpected message: category=$category; severity=$severity; message='$message'; attachment=$attachment"
-    )
+    report(compilerMessageSeverity, "Unexpected message: category=$category; severity=$severity; message='$message'; attachment=$attachment")
 }
