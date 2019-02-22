@@ -156,7 +156,12 @@ object Ordering : TemplateGroupBase() {
                 return toMutableList().apply { sort() }
             """
         }
-        body(ArraysOfPrimitives, ArraysOfUnsigned) {
+        body(ArraysOfPrimitives) {
+            """
+            return toTypedArray().apply { sort() }.asList()
+            """
+        }
+        body(ArraysOfUnsigned) {
             """
             return copyOf().apply { sort() }.asList()
             """

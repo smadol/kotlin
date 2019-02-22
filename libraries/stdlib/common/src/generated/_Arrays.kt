@@ -5148,49 +5148,49 @@ public fun <T : Comparable<T>> Array<out T>.sorted(): List<T> {
  * Returns a list of all elements sorted according to their natural sort order.
  */
 public fun ByteArray.sorted(): List<Byte> {
-    return copyOf().apply { sort() }.asList()
+    return toTypedArray().apply { sort() }.asList()
 }
 
 /**
  * Returns a list of all elements sorted according to their natural sort order.
  */
 public fun ShortArray.sorted(): List<Short> {
-    return copyOf().apply { sort() }.asList()
+    return toTypedArray().apply { sort() }.asList()
 }
 
 /**
  * Returns a list of all elements sorted according to their natural sort order.
  */
 public fun IntArray.sorted(): List<Int> {
-    return copyOf().apply { sort() }.asList()
+    return toTypedArray().apply { sort() }.asList()
 }
 
 /**
  * Returns a list of all elements sorted according to their natural sort order.
  */
 public fun LongArray.sorted(): List<Long> {
-    return copyOf().apply { sort() }.asList()
+    return toTypedArray().apply { sort() }.asList()
 }
 
 /**
  * Returns a list of all elements sorted according to their natural sort order.
  */
 public fun FloatArray.sorted(): List<Float> {
-    return copyOf().apply { sort() }.asList()
+    return toTypedArray().apply { sort() }.asList()
 }
 
 /**
  * Returns a list of all elements sorted according to their natural sort order.
  */
 public fun DoubleArray.sorted(): List<Double> {
-    return copyOf().apply { sort() }.asList()
+    return toTypedArray().apply { sort() }.asList()
 }
 
 /**
  * Returns a list of all elements sorted according to their natural sort order.
  */
 public fun CharArray.sorted(): List<Char> {
-    return copyOf().apply { sort() }.asList()
+    return toTypedArray().apply { sort() }.asList()
 }
 
 /**
