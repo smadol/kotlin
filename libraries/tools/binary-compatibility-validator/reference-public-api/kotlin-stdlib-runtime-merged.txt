@@ -4209,6 +4209,12 @@ public final class kotlin/ranges/ULongRange$Companion {
 }
 
 public final class kotlin/ranges/URangesKt {
+	public static final fun contains-68kG9v0 (Lkotlin/ranges/UIntRange;B)Z
+	public static final fun contains-Gab390E (Lkotlin/ranges/ULongRange;I)Z
+	public static final fun contains-ULb-yJY (Lkotlin/ranges/ULongRange;B)Z
+	public static final fun contains-ZsK3CEQ (Lkotlin/ranges/UIntRange;S)Z
+	public static final fun contains-fz5IDCE (Lkotlin/ranges/UIntRange;J)Z
+	public static final fun contains-uhHAxoY (Lkotlin/ranges/ULongRange;S)Z
 	public static final fun downTo-5PvTz6A (SS)Lkotlin/ranges/UIntProgression;
 	public static final fun downTo-J1ME1BU (II)Lkotlin/ranges/UIntProgression;
 	public static final fun downTo-Kr8caGY (BB)Lkotlin/ranges/UIntProgression;
@@ -4219,22 +4225,10 @@ public final class kotlin/ranges/URangesKt {
 	public static final fun reversed (Lkotlin/ranges/ULongProgression;)Lkotlin/ranges/ULongProgression;
 	public static final fun step (Lkotlin/ranges/UIntProgression;I)Lkotlin/ranges/UIntProgression;
 	public static final fun step (Lkotlin/ranges/ULongProgression;J)Lkotlin/ranges/ULongProgression;
-	public static final fun ubyteRangeContains- (Lkotlin/ranges/ClosedRange;I)Z
-	public static final fun ubyteRangeContains- (Lkotlin/ranges/ClosedRange;J)Z
-	public static final fun ubyteRangeContains- (Lkotlin/ranges/ClosedRange;S)Z
-	public static final fun uintRangeContains- (Lkotlin/ranges/ClosedRange;B)Z
-	public static final fun uintRangeContains- (Lkotlin/ranges/ClosedRange;J)Z
-	public static final fun uintRangeContains- (Lkotlin/ranges/ClosedRange;S)Z
-	public static final fun ulongRangeContains- (Lkotlin/ranges/ClosedRange;B)Z
-	public static final fun ulongRangeContains- (Lkotlin/ranges/ClosedRange;I)Z
-	public static final fun ulongRangeContains- (Lkotlin/ranges/ClosedRange;S)Z
 	public static final fun until-5PvTz6A (SS)Lkotlin/ranges/UIntRange;
 	public static final fun until-J1ME1BU (II)Lkotlin/ranges/UIntRange;
 	public static final fun until-Kr8caGY (BB)Lkotlin/ranges/UIntRange;
 	public static final fun until-eb3DHEI (JJ)Lkotlin/ranges/ULongRange;
-	public static final fun ushortRangeContains- (Lkotlin/ranges/ClosedRange;B)Z
-	public static final fun ushortRangeContains- (Lkotlin/ranges/ClosedRange;I)Z
-	public static final fun ushortRangeContains- (Lkotlin/ranges/ClosedRange;J)Z
 }
 
 public abstract interface class kotlin/reflect/KAnnotatedElement {

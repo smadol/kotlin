@@ -96,133 +96,55 @@ public inline operator fun ULongRange.contains(element: ULong?): Boolean {
 /**
  * Checks if the specified [value] belongs to this range.
  */
-@kotlin.jvm.JvmName("uintRangeContains-")
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<UInt>.contains(value: UByte): Boolean {
+public operator fun UIntRange.contains(value: UByte): Boolean {
     return contains(value.toUInt())
 }
 
 /**
  * Checks if the specified [value] belongs to this range.
  */
-@kotlin.jvm.JvmName("ulongRangeContains-")
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<ULong>.contains(value: UByte): Boolean {
+public operator fun ULongRange.contains(value: UByte): Boolean {
     return contains(value.toULong())
 }
 
 /**
  * Checks if the specified [value] belongs to this range.
  */
-@kotlin.jvm.JvmName("ushortRangeContains-")
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<UShort>.contains(value: UByte): Boolean {
-    return contains(value.toUShort())
-}
-
-/**
- * Checks if the specified [value] belongs to this range.
- */
-@kotlin.jvm.JvmName("ulongRangeContains-")
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<ULong>.contains(value: UInt): Boolean {
+public operator fun ULongRange.contains(value: UInt): Boolean {
     return contains(value.toULong())
 }
 
 /**
  * Checks if the specified [value] belongs to this range.
  */
-@kotlin.jvm.JvmName("ubyteRangeContains-")
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<UByte>.contains(value: UInt): Boolean {
-    return value.toUByteExactOrNull().let { if (it != null) contains(it) else false }
+public operator fun UIntRange.contains(value: ULong): Boolean {
+    return (value shr UInt.SIZE_BITS) == 0uL && contains(value.toUInt())
 }
 
 /**
  * Checks if the specified [value] belongs to this range.
  */
-@kotlin.jvm.JvmName("ushortRangeContains-")
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<UShort>.contains(value: UInt): Boolean {
-    return value.toUShortExactOrNull().let { if (it != null) contains(it) else false }
-}
-
-/**
- * Checks if the specified [value] belongs to this range.
- */
-@kotlin.jvm.JvmName("uintRangeContains-")
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<UInt>.contains(value: ULong): Boolean {
-    return value.toUIntExactOrNull().let { if (it != null) contains(it) else false }
-}
-
-/**
- * Checks if the specified [value] belongs to this range.
- */
-@kotlin.jvm.JvmName("ubyteRangeContains-")
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<UByte>.contains(value: ULong): Boolean {
-    return value.toUByteExactOrNull().let { if (it != null) contains(it) else false }
-}
-
-/**
- * Checks if the specified [value] belongs to this range.
- */
-@kotlin.jvm.JvmName("ushortRangeContains-")
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<UShort>.contains(value: ULong): Boolean {
-    return value.toUShortExactOrNull().let { if (it != null) contains(it) else false }
-}
-
-/**
- * Checks if the specified [value] belongs to this range.
- */
-@kotlin.jvm.JvmName("uintRangeContains-")
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<UInt>.contains(value: UShort): Boolean {
+public operator fun UIntRange.contains(value: UShort): Boolean {
     return contains(value.toUInt())
 }
 
 /**
  * Checks if the specified [value] belongs to this range.
  */
-@kotlin.jvm.JvmName("ulongRangeContains-")
 @SinceKotlin("1.3")
 @ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<ULong>.contains(value: UShort): Boolean {
+public operator fun ULongRange.contains(value: UShort): Boolean {
     return contains(value.toULong())
-}
-
-/**
- * Checks if the specified [value] belongs to this range.
- */
-@kotlin.jvm.JvmName("ubyteRangeContains-")
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-@Suppress("INAPPLICABLE_JVM_NAME")
-public operator fun ClosedRange<UByte>.contains(value: UShort): Boolean {
-    return value.toUByteExactOrNull().let { if (it != null) contains(it) else false }
 }
 
 /**
@@ -309,42 +231,6 @@ public infix fun UIntProgression.step(step: Int): UIntProgression {
 public infix fun ULongProgression.step(step: Long): ULongProgression {
     checkStepIsPositive(step > 0, step)
     return ULongProgression.fromClosedRange(first, last, if (this.step > 0) step else -step)
-}
-
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-internal fun UInt.toUByteExactOrNull(): UByte? {
-    return if (this in UByte.MIN_VALUE.toUInt()..UByte.MAX_VALUE.toUInt()) this.toUByte() else null
-}
-
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-internal fun ULong.toUByteExactOrNull(): UByte? {
-    return if (this in UByte.MIN_VALUE.toULong()..UByte.MAX_VALUE.toULong()) this.toUByte() else null
-}
-
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-internal fun UShort.toUByteExactOrNull(): UByte? {
-    return if (this in UByte.MIN_VALUE.toUShort()..UByte.MAX_VALUE.toUShort()) this.toUByte() else null
-}
-
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-internal fun ULong.toUIntExactOrNull(): UInt? {
-    return if (this in UInt.MIN_VALUE.toULong()..UInt.MAX_VALUE.toULong()) this.toUInt() else null
-}
-
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-internal fun UInt.toUShortExactOrNull(): UShort? {
-    return if (this in UShort.MIN_VALUE.toUInt()..UShort.MAX_VALUE.toUInt()) this.toUShort() else null
-}
-
-@SinceKotlin("1.3")
-@ExperimentalUnsignedTypes
-internal fun ULong.toUShortExactOrNull(): UShort? {
-    return if (this in UShort.MIN_VALUE.toULong()..UShort.MAX_VALUE.toULong()) this.toUShort() else null
 }
 
 /**

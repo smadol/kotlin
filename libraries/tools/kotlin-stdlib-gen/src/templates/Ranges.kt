@@ -151,34 +151,25 @@ object RangeOps : TemplateGroupBase() {
     }
 
     val f_contains = fn("contains(value: Primitive)").byTwoPrimitives {
-        include(Ranges, numericCombinations + unsignedCombinations)
+        include(Ranges, numericCombinations)
         filter { _, (rangeType, itemType) -> rangeType != itemType }
     } builderWith { (rangeType, itemType) ->
         operator()
         signature("contains(value: $itemType)")
 
-        val illegalStateMessage = "Required rangeType and itemType both to be %s or both not, got: $rangeType, $itemType"
-        check(rangeType.isNumeric() == itemType.isNumeric()) { illegalStateMessage.format("numeric") }
-        check(rangeType.isUnsigned() == itemType.isUnsigned()) { illegalStateMessage.format("unsigned") }
-
+        check(rangeType.isNumeric() == itemType.isNumeric()) { "Required rangeType and itemType both to be numeric or both not, got: $rangeType, $itemType" }
         if (rangeType.isIntegral() != itemType.isIntegral()) {
             deprecate(Deprecation("This `contains` operation mixing integer and floating point arguments has ambiguous semantics and is going to be removed.", level = DeprecationLevel.WARNING))
         }
 
-        platformName("${rangeType.name.toLowerCase()}RangeContains")
+        platformName("${rangeType.name.decapitalize()}RangeContains")
         returns("Boolean")
         doc { "Checks if the specified [value] belongs to this range." }
-
         body {
             if (shouldCheckForConversionOverflow(fromType = itemType, toType = rangeType))
                 "return value.to${rangeType}ExactOrNull().let { if (it != null) contains(it) else false }"
             else
                 "return contains(value.to$rangeType())"
-        }
-
-        if (rangeType.isUnsigned()) {
-            suppress("INAPPLICABLE_JVM_NAME")
-            platformName("${rangeType.name.toLowerCase()}RangeContains-")
         }
     }
 
@@ -201,11 +192,30 @@ object RangeOps : TemplateGroupBase() {
         body { "return element != null && contains(element)" }
     }
 
+    val f_contains_unsigned = fn("contains(element: Primitive)").byTwoPrimitives {
+        include(RangesOfPrimitives, unsignedCombinations)
+        filter { _, (rangeType, itemType) -> rangeType in rangePrimitives && rangeType != itemType }
+    } builderWith { (rangeType, itemType) ->
+        operator()
+        signature("contains(value: $itemType)")
+        returns("Boolean")
+
+        since("1.3")
+        doc { "Checks if the specified [value] belongs to this range." }
+
+        body {
+            if (shouldCheckForConversionOverflow(fromType = itemType, toType = rangeType))
+                "return (value shr $rangeType.SIZE_BITS) == ${itemType.zero()} && contains(value.to$rangeType())"
+            else
+                "return contains(value.to$rangeType())"
+        }
+    }
+
     val f_toPrimitiveExactOrNull = fn("to{}ExactOrNull()").byTwoPrimitives {
-        include(Primitives, numericCombinations + unsignedCombinations)
+        include(Primitives, numericCombinations)
         filter { _, (fromType, toType) -> shouldCheckForConversionOverflow(fromType, toType) }
     } builderWith { (fromType, toType) ->
-        check(toType.isIntegral() || toType.isUnsigned())
+        check(toType.isIntegral())
         visibility("internal")
 
         signature("to${toType}ExactOrNull()")
