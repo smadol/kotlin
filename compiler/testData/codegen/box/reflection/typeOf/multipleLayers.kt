@@ -1,6 +1,13 @@
 // IGNORE_BACKEND: JS, JS_IR, NATIVE
 // WITH_REFLECT
 
+// FILE: typeOf.kt
+// TODO: remove this in 1.4
+package kotlin.reflect
+inline fun <reified T> typeOf(): KType = null!!
+
+// FILE: test.kt
+
 package test
 
 import kotlin.reflect.typeOf

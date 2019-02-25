@@ -1,3 +1,10 @@
+// FILE: typeOf.kt
+// TODO: remove this in 1.4
+package kotlin.reflect
+inline fun <reified T> typeOf(): KType = null!!
+
+// FILE: test.kt
+
 import kotlin.reflect.typeOf
 
 inline fun <X, reified Y, Z : Y> test1() {

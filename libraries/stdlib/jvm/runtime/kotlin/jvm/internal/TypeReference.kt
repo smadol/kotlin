@@ -7,6 +7,7 @@ package kotlin.jvm.internal
 
 import kotlin.reflect.*
 
+@Suppress("NEWER_VERSION_IN_SINCE_KOTLIN", "API_NOT_AVAILABLE" /* See KT-30129 */) // TODO: remove this in 1.4
 @SinceKotlin("1.4")
 class TypeReference(
     override val classifier: KClassifier,

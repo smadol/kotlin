@@ -5,6 +5,10 @@
 
 package kotlin.reflect
 
+// TODO: uncomment this in 1.4
+/*
+@SinceKotlin("1.4")
 @Suppress("unused")
 inline fun <reified T> typeOf(): KType =
     throw UnsupportedOperationException("This function is implemented as an intrinsic on all supported platforms.")
+*/
