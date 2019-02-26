@@ -43,7 +43,7 @@ class IrIntrinsicMethods(irBuiltIns: IrBuiltIns) {
         irMapping[irBuiltIns.eqeqeq] = Equals(KtTokens.EQEQEQ)
         irMapping[irBuiltIns.ieee754equalsFunByOperandType[irBuiltIns.float]!!.descriptor] = Ieee754Equals(Type.FLOAT_TYPE)
         irMapping[irBuiltIns.ieee754equalsFunByOperandType[irBuiltIns.double]!!.descriptor] = Ieee754Equals(Type.DOUBLE_TYPE)
-        irMapping[irBuiltIns.booleanNot] = Not()
+        irMapping[irBuiltIns.booleanNotSymbol.descriptor] = Not()
 
         createPrimitiveComparisonIntrinsics(irBuiltIns.lessFunByOperandType, KtTokens.LT)
         createPrimitiveComparisonIntrinsics(irBuiltIns.lessOrEqualFunByOperandType, KtTokens.LTEQ)

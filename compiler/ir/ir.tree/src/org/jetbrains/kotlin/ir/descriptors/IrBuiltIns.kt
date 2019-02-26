@@ -16,9 +16,7 @@ import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.declarations.impl.IrExternalPackageFragmentImpl
 import org.jetbrains.kotlin.ir.symbols.impl.IrExternalPackageFragmentSymbolImpl
 import org.jetbrains.kotlin.ir.types.withHasQuestionMark
-import org.jetbrains.kotlin.ir.util.DeclarationStubGenerator
-import org.jetbrains.kotlin.ir.util.SymbolTable
-import org.jetbrains.kotlin.ir.util.TypeTranslator
+import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.types.KotlinType
@@ -158,7 +156,6 @@ class IrBuiltIns(
     val throwNpeFun = defineOperator("THROW_NPE", nothing, listOf())
     val throwCceFun = defineOperator("THROW_CCE", nothing, listOf())
     val throwIseFun = defineOperator("THROW_ISE", nothing, listOf())
-    val booleanNotFun = defineOperator("NOT", bool, listOf(bool))
     val noWhenBranchMatchedExceptionFun = defineOperator("noWhenBranchMatchedException", nothing, listOf())
     val illegalArgumentExceptionFun = defineOperator("illegalArgumentException", nothing, listOf(string))
 
@@ -166,7 +163,6 @@ class IrBuiltIns(
     val eqeq = eqeqFun.descriptor
     val throwNpe = throwNpeFun.descriptor
     val throwCce = throwCceFun.descriptor
-    val booleanNot = booleanNotFun.descriptor
     val noWhenBranchMatchedException = noWhenBranchMatchedExceptionFun.descriptor
     val illegalArgumentException = illegalArgumentExceptionFun.descriptor
 
@@ -175,9 +171,14 @@ class IrBuiltIns(
     val throwNpeSymbol = throwNpeFun.symbol
     val throwCceSymbol = throwCceFun.symbol
     val throwIseSymbol = throwIseFun.symbol
-    val booleanNotSymbol = booleanNotFun.symbol
     val noWhenBranchMatchedExceptionSymbol = noWhenBranchMatchedExceptionFun.symbol
     val illegalArgumentExceptionSymbol = illegalArgumentExceptionFun.symbol
+
+    init {
+        ExternalDependenciesGenerator(builtInsModule, symbolTable, this).generateUnboundSymbolsAsDependencies()
+    }
+
+    val booleanNotSymbol = booleanClass.functions.first { it.owner.name.asString() == "not" && it.owner.valueParameters.isEmpty() }
 
     val enumValueOfFun = createEnumValueOfFun()
     val enumValueOf = enumValueOfFun.descriptor

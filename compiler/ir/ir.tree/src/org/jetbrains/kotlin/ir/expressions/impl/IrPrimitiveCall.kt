@@ -28,7 +28,6 @@ import org.jetbrains.kotlin.ir.symbols.impl.createFunctionSymbol
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformer
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitor
-import java.lang.UnsupportedOperationException
 
 abstract class IrPrimitiveCallBase(
     startOffset: Int,
@@ -118,7 +117,7 @@ class IrUnaryPrimitiveImpl(
     type: IrType,
     origin: IrStatementOrigin?,
     symbol: IrFunctionSymbol
-) : IrPrimitiveCallBase(startOffset, endOffset, type, origin, symbol, 1),
+) : IrPrimitiveCallBase(startOffset, endOffset, type, origin, symbol, 0),
     IrCallWithShallowCopy {
 
     @Deprecated("Creates unbound symbol")
@@ -161,18 +160,16 @@ class IrUnaryPrimitiveImpl(
 
     lateinit var argument: IrExpression
 
-    override fun getValueArgument(index: Int): IrExpression? {
-        return when (index) {
-            ARGUMENT0 -> argument
-            else -> null
+    override var dispatchReceiver: IrExpression?
+        get() = argument
+        set(value) {
+            argument = value!!
         }
-    }
+
+    override fun getValueArgument(index: Int): IrExpression? = null
 
     override fun putValueArgument(index: Int, valueArgument: IrExpression?) {
-        when (index) {
-            ARGUMENT0 -> argument = valueArgument ?: throw AssertionError("Primitive call $descriptor argument is null")
-            else -> throw AssertionError("Primitive call $descriptor: no such argument index $index")
-        }
+        throw AssertionError("Primitive call $descriptor: no such argument index $index")
     }
 
     override fun <D> acceptChildren(visitor: IrElementVisitor<Unit, D>, data: D) {
