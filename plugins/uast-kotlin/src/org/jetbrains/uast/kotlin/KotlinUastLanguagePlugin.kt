@@ -490,8 +490,8 @@ internal object KotlinConverter {
                         el<UAnnotation> { KotlinUNestedAnnotation.tryCreate(original, givenParent) }
                     } else null
                 is KtLightAnnotationForSourceEntry -> convertDeclarationOrElement(original.kotlinOrigin, givenParent, requiredType)
-                is KtDelegatedSuperTypeEntry -> el<KotlinSupertypeEntryUExpressionList> {
-                    KotlinSupertypeEntryUExpressionList(original, givenParent)
+                is KtDelegatedSuperTypeEntry -> el<KotlinSupertypeDelegationUExpression> {
+                    KotlinSupertypeDelegationUExpression(original, givenParent)
                 }
                 else -> null
             }

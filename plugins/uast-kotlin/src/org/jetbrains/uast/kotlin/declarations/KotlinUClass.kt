@@ -56,7 +56,7 @@ abstract class AbstractKotlinUClass(givenParent: UElement?) : KotlinAbstractUEle
     val delegateExpressions: List<UExpression>
         get() = ktClass?.superTypeListEntries.orEmpty()
             .filterIsInstance<KtDelegatedSuperTypeEntry>()
-            .map { KotlinSupertypeEntryUExpressionList(it, this) }
+            .map { KotlinSupertypeDelegationUExpression(it, this) }
 
     override fun accept(visitor: UastVisitor) {
         if (visitor.visitClass(this)) return
@@ -75,15 +75,21 @@ abstract class AbstractKotlinUClass(givenParent: UElement?) : KotlinAbstractUEle
 
 }
 
-class KotlinSupertypeEntryUExpressionList(override val sourcePsi: KtDelegatedSuperTypeEntry, givenParent: UElement?) :
+class KotlinSupertypeDelegationUExpression(override val sourcePsi: KtDelegatedSuperTypeEntry, givenParent: UElement?) :
     KotlinAbstractUExpression(givenParent), UExpressionList {
 
     override val psi: PsiElement? get() = sourcePsi
 
+    val typeReference: UTypeReferenceExpression? by lazy {
+        sourcePsi.typeReference?.let { KotlinUTypeReferenceExpression(it.toPsiType(this), it, this) }
+    }
+
+    val delegateExpression: UExpression? by lazy {
+        sourcePsi.delegateExpression?.let { kotlinUastPlugin.convertElement(it, this, UExpression::class.java) as? UExpression }
+    }
+
     override val expressions: List<UExpression>
-        get() = sourcePsi.children.map {
-            kotlinUastPlugin.convertElement(it, this, UExpression::class.java) as? UExpression ?: UastEmptyExpression(this)
-        }
+        get() = listOf(typeReference ?: UastEmptyExpression(this), delegateExpression ?: UastEmptyExpression(this))
 
     override val kind: UastSpecialExpressionKind get() = KotlinSpecialExpressionKinds.SUPER_DELEGATION
 
