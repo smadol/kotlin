@@ -13,7 +13,8 @@ data class KotlinSourceSetImpl(
     override val sourceDirs: Set<File>,
     override val resourceDirs: Set<File>,
     override val dependencies: Set<KotlinDependency>,
-    override val dependsOnSourceSets: Set<String>
+    override val dependsOnSourceSets: Set<String>,
+    override val kotlinTaskProperties: KotlinTaskProperties
 ) : KotlinSourceSet {
 
     constructor(kotlinSourceSet: KotlinSourceSet) : this(
@@ -22,7 +23,8 @@ data class KotlinSourceSetImpl(
         HashSet(kotlinSourceSet.sourceDirs),
         HashSet(kotlinSourceSet.resourceDirs),
         kotlinSourceSet.dependencies.map { it.deepCopy() }.toSet(),
-        HashSet(kotlinSourceSet.dependsOnSourceSets)
+        HashSet(kotlinSourceSet.dependsOnSourceSets),
+        KotlinTaskPropertiesImpl(kotlinSourceSet.kotlinTaskProperties.incremental, kotlinSourceSet.kotlinTaskProperties.packagePrefix)
     )
 
     override var platform: KotlinPlatform = KotlinPlatform.COMMON
