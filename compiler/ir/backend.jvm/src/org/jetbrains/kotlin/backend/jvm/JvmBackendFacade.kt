@@ -24,20 +24,20 @@ object JvmBackendFacade {
     }
 
     internal fun doGenerateFilesInternal(
-            state: GenerationState,
-            errorHandler: CompilationErrorHandler,
-            irModuleFragment: IrModuleFragment,
-            psi2irContext: GeneratorContext
+        state: GenerationState,
+        errorHandler: CompilationErrorHandler,
+        irModuleFragment: IrModuleFragment,
+        psi2irContext: GeneratorContext
     ) {
         val jvmBackendContext = JvmBackendContext(
-                state, psi2irContext.sourceManager, psi2irContext.irBuiltIns, irModuleFragment, psi2irContext.symbolTable
+            state, psi2irContext.sourceManager, psi2irContext.irBuiltIns, irModuleFragment, psi2irContext.symbolTable
         )
         //TODO
         ExternalDependenciesGenerator(
             irModuleFragment.descriptor,
             psi2irContext.symbolTable,
             psi2irContext.irBuiltIns
-        ).generateUnboundSymbolsAsDependencies(irModuleFragment)
+        ).generateUnboundSymbolsAsDependencies()
 
         val jvmBackend = JvmBackend(jvmBackendContext)
 
@@ -45,11 +45,9 @@ object JvmBackendFacade {
             try {
                 jvmBackend.generateFile(irFile)
                 state.afterIndependentPart()
-            }
-            catch (e: Throwable) {
+            } catch (e: Throwable) {
                 errorHandler.reportException(e, null) // TODO ktFile.virtualFile.url
             }
         }
     }
-
 }
