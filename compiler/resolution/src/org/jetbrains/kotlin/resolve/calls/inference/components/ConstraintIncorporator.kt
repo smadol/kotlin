@@ -7,13 +7,11 @@ package org.jetbrains.kotlin.resolve.calls.inference.components
 
 import org.jetbrains.kotlin.resolve.calls.inference.model.Constraint
 import org.jetbrains.kotlin.resolve.calls.inference.model.ConstraintKind
-import org.jetbrains.kotlin.resolve.calls.inference.model.NewTypeVariable
 import org.jetbrains.kotlin.resolve.calls.inference.model.VariableWithConstraints
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.model.*
 import org.jetbrains.kotlin.utils.SmartSet
 import org.jetbrains.kotlin.utils.addIfNotNull
-import org.jetbrains.kotlin.utils.addToStdlib.swapReceiver
 import java.util.*
 
 // todo problem: intersection types in constrains: A <: Number, B <: Inv<A & Any> =>? B <: Inv<out Number & Any>
@@ -23,17 +21,17 @@ class ConstraintIncorporator(val typeApproximator: TypeApproximator) {
         val allTypeVariablesWithConstraints: Collection<VariableWithConstraints>
 
         // if such type variable is fixed then it is error
-        fun getTypeVariable(typeConstructor: TypeConstructorMarker): NewTypeVariable?
+        fun getTypeVariable(typeConstructor: TypeConstructorMarker): TypeVariableMarker?
 
-        fun getConstraintsForVariable(typeVariable: NewTypeVariable): Collection<Constraint>
+        fun getConstraintsForVariable(typeVariable: TypeVariableMarker): Collection<Constraint>
 
         fun addNewIncorporatedConstraint(lowerType: KotlinTypeMarker, upperType: KotlinTypeMarker)
     }
 
     // \alpha is typeVariable, \beta -- other type variable registered in ConstraintStorage
-    fun incorporate(c: Context, typeVariable: NewTypeVariable, constraint: Constraint) = with(c) {
+    fun incorporate(c: Context, typeVariable: TypeVariableMarker, constraint: Constraint) = with(c) {
         // we shouldn't incorporate recursive constraint -- It is too dangerous
-        if (constraint.type.contains { it.typeConstructor() == typeVariable.freshTypeConstructor }) return
+        if (constraint.type.contains { it.typeConstructor() == typeVariable.freshTypeConstructor() }) return
 
         directWithVariable(c, typeVariable, constraint)
         otherInsideMyConstraint(c, typeVariable, constraint)
@@ -41,7 +39,7 @@ class ConstraintIncorporator(val typeApproximator: TypeApproximator) {
     }
 
     // A <:(=) \alpha <:(=) B => A <: B
-    private fun directWithVariable(c: Context, typeVariable: NewTypeVariable, constraint: Constraint) {
+    private fun directWithVariable(c: Context, typeVariable: TypeVariableMarker, constraint: Constraint) {
         // \alpha <: constraint.type
         if (constraint.kind != ConstraintKind.LOWER) {
             c.getConstraintsForVariable(typeVariable).forEach {
@@ -62,8 +60,8 @@ class ConstraintIncorporator(val typeApproximator: TypeApproximator) {
     }
 
     // \alpha <: Inv<\beta>, \beta <: Number => \alpha <: Inv<out Number>
-    private fun otherInsideMyConstraint(c: Context, typeVariable: NewTypeVariable, constraint: Constraint) = with(c) {
-        val otherInMyConstraint = SmartSet.create<NewTypeVariable>()
+    private fun otherInsideMyConstraint(c: Context, typeVariable: TypeVariableMarker, constraint: Constraint) = with(c) {
+        val otherInMyConstraint = SmartSet.create<TypeVariableMarker>()
         constraint.type.contains {
             otherInMyConstraint.addIfNotNull(c.getTypeVariable(it.typeConstructor()))
             false
@@ -79,10 +77,10 @@ class ConstraintIncorporator(val typeApproximator: TypeApproximator) {
     }
 
     // \alpha <: Number, \beta <: Inv<\alpha> => \beta <: Inv<out Number>
-    private fun insideOtherConstraint(c: Context, typeVariable: NewTypeVariable, constraint: Constraint) = with(c) {
+    private fun insideOtherConstraint(c: Context, typeVariable: TypeVariableMarker, constraint: Constraint) = with(c) {
         for (typeVariableWithConstraint in c.allTypeVariablesWithConstraints) {
             val constraintsWhichConstraintMyVariable = typeVariableWithConstraint.constraints.filter {
-                it.type.contains { it.typeConstructor() == typeVariable.freshTypeConstructor }
+                it.type.contains { it.typeConstructor() == typeVariable.freshTypeConstructor() }
             }
             constraintsWhichConstraintMyVariable.forEach {
                 generateNewConstraint(c, typeVariableWithConstraint.typeVariable, it, typeVariable, constraint)
@@ -92,9 +90,9 @@ class ConstraintIncorporator(val typeApproximator: TypeApproximator) {
 
     private fun generateNewConstraint(
         c: Context,
-        targetVariable: NewTypeVariable,
+        targetVariable: TypeVariableMarker,
         baseConstraint: Constraint,
-        otherVariable: NewTypeVariable,
+        otherVariable: TypeVariableMarker,
         otherConstraint: Constraint
     ) {
 
@@ -142,16 +140,16 @@ class ConstraintIncorporator(val typeApproximator: TypeApproximator) {
         }
 
         if (baseConstraint.kind != ConstraintKind.UPPER) {
-            c.addNewIncorporatedConstraint(approximateCapturedTypes(typeForApproximation, toSuper = false), targetVariable.defaultType)
+            c.addNewIncorporatedConstraint(approximateCapturedTypes(typeForApproximation, toSuper = false), targetVariable.defaultType(c))
         }
         if (baseConstraint.kind != ConstraintKind.LOWER) {
-            c.addNewIncorporatedConstraint(targetVariable.defaultType, approximateCapturedTypes(typeForApproximation, toSuper = true))
+            c.addNewIncorporatedConstraint(targetVariable.defaultType(c), approximateCapturedTypes(typeForApproximation, toSuper = true))
         }
     }
 
-    private fun KotlinTypeMarker.substitute(c: Context, typeVariable: NewTypeVariable, value: KotlinTypeMarker): KotlinTypeMarker {
-        val substitutor = c.typeSubstitutorByTypeConstructor(mapOf(typeVariable.freshTypeConstructor to value))
-        return swapReceiver(c) { type -> substitutor.safeSubstitute(type) }
+    private fun KotlinTypeMarker.substitute(c: Context, typeVariable: TypeVariableMarker, value: KotlinTypeMarker): KotlinTypeMarker {
+        val substitutor = c.typeSubstitutorByTypeConstructor(mapOf(typeVariable.freshTypeConstructor(c) to value))
+        return substitutor.safeSubstitute(c, this)
     }
 
     private fun approximateCapturedTypes(type: KotlinTypeMarker, toSuper: Boolean): KotlinTypeMarker =
