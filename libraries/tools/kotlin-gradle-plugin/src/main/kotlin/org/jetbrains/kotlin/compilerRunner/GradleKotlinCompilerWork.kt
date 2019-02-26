@@ -10,9 +10,9 @@ import org.jetbrains.kotlin.cli.common.ExitCode
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.config.Services
 import org.jetbrains.kotlin.daemon.common.*
-import org.jetbrains.kotlin.daemon.common.impls.CompilationResultCategory
-import org.jetbrains.kotlin.daemon.common.impls.ReportCategory
-import org.jetbrains.kotlin.daemon.common.impls.ReportSeverity
+import org.jetbrains.kotlin.daemon.common.CompilationResultCategory
+import org.jetbrains.kotlin.daemon.common.ReportCategory
+import org.jetbrains.kotlin.daemon.common.ReportSeverity
 import org.jetbrains.kotlin.gradle.logging.*
 import org.jetbrains.kotlin.gradle.plugin.internal.state.TaskExecutionResults
 import org.jetbrains.kotlin.gradle.plugin.internal.state.TaskLoggers
