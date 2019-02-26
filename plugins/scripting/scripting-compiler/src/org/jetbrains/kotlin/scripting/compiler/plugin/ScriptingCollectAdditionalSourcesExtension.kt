@@ -7,11 +7,11 @@ package org.jetbrains.kotlin.scripting.compiler.plugin
 
 import com.intellij.mock.MockProject
 import com.intellij.openapi.project.Project
-import org.jetbrains.kotlin.scripting.compiler.plugin.dependencies.collectScriptsCompilationDependencies
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoots
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.extensions.CollectAdditionalSourcesExtension
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.scripting.dependencies.collectScriptsCompilationDependencies
 
 class ScriptingCollectAdditionalSourcesExtension(val project: MockProject) : CollectAdditionalSourcesExtension {
     override fun collectAdditionalSourcesAndUpdateConfiguration(
