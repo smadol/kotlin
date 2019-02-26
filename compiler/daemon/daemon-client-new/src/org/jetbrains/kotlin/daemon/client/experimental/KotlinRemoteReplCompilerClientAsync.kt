@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.daemon.common.ReportCategory
 import org.jetbrains.kotlin.daemon.common.ReportSeverity
 import java.io.File
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import org.jetbrains.kotlin.daemon.client.RemoteReplCompilerState
 
 // TODO: reduce number of ports used then SOCKET_ANY_FREE_PORT is passed (same problem with other calls)
 
@@ -27,63 +28,52 @@ open class KotlinRemoteReplCompilerClientAsync(
     messageCollector: MessageCollector,
     templateClasspath: List<File>,
     templateClassName: String
-) : KotlinRemoteReplCompilerClient {
+) : ReplCompiler {
     val services = BasicCompilerServicesWithResultsFacadeServerServerSide(
         messageCollector,
         null,
         findCallbackServerSocket()
     )
 
-    override val sessionId = runBlocking {
+    val sessionId = runBlocking {
         compileService.leaseReplSession(
-            clientAliveFlagFile?.absolutePath,
-            args,
-            CompilationOptions(
-                CompilerMode.NON_INCREMENTAL_COMPILER,
-                targetPlatform,
-                arrayOf(
-                    ReportCategory.COMPILER_MESSAGE.code,
-                    ReportCategory.DAEMON_MESSAGE.code,
-                    ReportCategory.EXCEPTION.code,
-                    ReportCategory.OUTPUT_MESSAGE.code
-                ),
-                ReportSeverity.INFO.code,
-                emptyArray()
-            ),
-            services.clientSide,
-            templateClasspath,
-            templateClassName
+                clientAliveFlagFile?.absolutePath,
+                args,
+                CompilationOptions(
+                        CompilerMode.NON_INCREMENTAL_COMPILER,
+                        targetPlatform,
+                        arrayOf(ReportCategory.COMPILER_MESSAGE.code, ReportCategory.DAEMON_MESSAGE.code, ReportCategory.EXCEPTION.code, ReportCategory.OUTPUT_MESSAGE.code),
+                        ReportSeverity.INFO.code,
+                        emptyArray()),
+                services,
+                templateClasspath,
+                templateClassName
         ).get()
     }
 
     // dispose should be called at the end of the repl lifetime to free daemon repl session and appropriate resources
-    override suspend fun dispose() {
-        compileService.releaseReplSession(sessionId)
+    open fun dispose() {
+        runBlocking {
+            try {
+                compileService.releaseReplSession(sessionId)
+            } catch (ex: java.lang.Exception) {
+                // assuming that communication failed and daemon most likely is already down
+            }
+        }
     }
 
-    override suspend fun createState(lock: ReentrantReadWriteLock): IReplStageState<*> {
-        println("creating state...")
-        val stateRes = compileService.replCreateState(sessionId)
-        println("stateRes = $stateRes")
-        val state = stateRes.get()
-        println("state = $state")
-        return RemoteReplCompilerStateAsync(state, lock)
+    override fun createState(lock: ReentrantReadWriteLock): IReplStageState<*> =
+            RemoteReplCompilerStateAsync(
+                    runBlocking { compileService.replCreateState(sessionId).get() },
+                    lock
+            ).toRMI()
+
+    override fun check(state: IReplStageState<*>, codeLine: ReplCodeLine): ReplCheckResult = runBlocking {
+        compileService.replCheck(sessionId, state.asState(RemoteReplCompilerStateAsync::class.java).replStateFacade.getId(), codeLine).get()
     }
 
-    override suspend fun check(
-        state: IReplStageState<*>,
-        codeLine: ReplCodeLine
-    ): ReplCheckResult =
-        compileService.replCheck(
-            sessionId,
-            state.asState(RemoteReplCompilerStateAsync::class.java).replStateFacade.getId(),
-            codeLine
-        ).get()
+    override fun compile(state: IReplStageState<*>, codeLine: ReplCodeLine): ReplCompileResult = runBlocking {
+        compileService.replCompile(sessionId, state.asState(RemoteReplCompilerStateAsync::class.java).replStateFacade.getId(), codeLine).get()
+    }
 
-    override suspend fun compile(state: IReplStageState<*>, codeLine: ReplCodeLine): ReplCompileResult =
-        compileService.replCompile(
-            sessionId,
-            state.asState(RemoteReplCompilerStateAsync::class.java).replStateFacade.getId(),
-            codeLine
-        ).get()
 }

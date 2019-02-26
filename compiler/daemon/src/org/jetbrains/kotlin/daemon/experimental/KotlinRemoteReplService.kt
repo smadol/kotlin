@@ -6,12 +6,10 @@
 package org.jetbrains.kotlin.daemon.experimental
 
 import com.intellij.openapi.Disposable
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.kotlin.cli.common.messages.*
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity.ERROR
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity.INFO
 import org.jetbrains.kotlin.cli.common.repl.*
-import org.jetbrains.kotlin.cli.common.repl.experimental.ReplCompiler
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoots
 import org.jetbrains.kotlin.cli.jvm.repl.GenericReplCompiler
 import org.jetbrains.kotlin.cli.jvm.repl.GenericReplCompilerState
@@ -79,17 +77,17 @@ open class KotlinJvmReplServiceAsync(
     protected val stateIdCounter = AtomicInteger()
 
     override fun createState(lock: ReentrantReadWriteLock): IReplStageState<*> =
-        runBlocking { replCompiler?.createState(lock) ?: throw IllegalStateException("repl compiler is not initialized properly") }
+        replCompiler?.createState(lock) ?: throw IllegalStateException("repl compiler is not initialized properly")
 
     override fun check(state: IReplStageState<*>, codeLine: ReplCodeLine): ReplCheckResult {
         try {
-            return runBlocking { replCompiler?.check(state, codeLine) ?: ReplCheckResult.Error("Initialization error") }
+            return replCompiler?.check(state, codeLine) ?: ReplCheckResult.Error("Initialization error")
         } finally {}
     }
 
     override fun compile(state: IReplStageState<*>, codeLine: ReplCodeLine): ReplCompileResult {
         try {
-            return runBlocking { replCompiler?.compile(state, codeLine) ?: ReplCompileResult.Error("Initialization error") }
+            return replCompiler?.compile(state, codeLine) ?: ReplCompileResult.Error("Initialization error")
         } finally { }
     }
 

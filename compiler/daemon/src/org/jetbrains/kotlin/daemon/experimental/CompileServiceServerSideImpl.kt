@@ -47,6 +47,7 @@ import org.jetbrains.kotlin.daemon.nowSeconds
 import org.jetbrains.kotlin.daemon.report.experimental.CompileServicesFacadeMessageCollector
 import org.jetbrains.kotlin.daemon.report.experimental.DaemonMessageReporterAsync
 import org.jetbrains.kotlin.daemon.report.experimental.RemoteICReporterAsync
+import org.jetbrains.kotlin.daemon.report.experimental.getICReporterAsync
 import org.jetbrains.kotlin.incremental.*
 import org.jetbrains.kotlin.incremental.components.LookupTracker
 import org.jetbrains.kotlin.incremental.multiproject.ModulesApiHistoryAndroid
@@ -594,7 +595,7 @@ class CompileServiceServerSideImpl(
         }
         args.freeArgs = freeArgsWithoutKotlinFiles
 
-        val reporter = RemoteICReporterAsync(servicesFacade, compilationResults, incrementalCompilationOptions)
+        val reporter = getICReporterAsync(servicesFacade, compilationResults, incrementalCompilationOptions)
 
         val changedFiles = if (incrementalCompilationOptions.areFileChangesKnown) {
             ChangedFiles.Known(incrementalCompilationOptions.modifiedFiles.orEmpty(), incrementalCompilationOptions.deletedFiles.orEmpty())
@@ -622,7 +623,7 @@ class CompileServiceServerSideImpl(
         compilerMessageCollector: MessageCollector,
         daemonMessageReporterAsync: DaemonMessageReporterAsync
     ): ExitCode {
-        val reporter = RemoteICReporterAsync(servicesFacade, compilationResults, incrementalCompilationOptions)
+        val reporter = getICReporterAsync(servicesFacade, compilationResults, incrementalCompilationOptions)
 
         val moduleFile = k2jvmArgs.buildFile?.let(::File)
         assert(moduleFile?.exists() ?: false) { "Module does not exist ${k2jvmArgs.buildFile}" }

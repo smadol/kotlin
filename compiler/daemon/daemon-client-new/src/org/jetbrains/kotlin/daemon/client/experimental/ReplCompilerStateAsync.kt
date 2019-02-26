@@ -12,6 +12,9 @@ import org.jetbrains.kotlin.daemon.common.ReplStateFacadeAsync
 import org.jetbrains.kotlin.daemon.common.experimental.ReplStateFacadeClientSide
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import org.jetbrains.kotlin.daemon.client.RemoteReplCompilerState
+import org.jetbrains.kotlin.daemon.common.toRMI
+
 
 class RemoteReplCompilerStateHistoryAsync(private val state: RemoteReplCompilerStateAsync) : IReplStageHistory<Unit>,
     AbstractList<ReplHistoryRecord<Unit>>() {
@@ -56,4 +59,6 @@ class RemoteReplCompilerStateAsync(
 
     override val history: IReplStageHistory<Unit> =
         RemoteReplCompilerStateHistoryAsync(this)
+
+    fun toRMI() = RemoteReplCompilerState(replStateFacade.toRMI(), lock)
 }

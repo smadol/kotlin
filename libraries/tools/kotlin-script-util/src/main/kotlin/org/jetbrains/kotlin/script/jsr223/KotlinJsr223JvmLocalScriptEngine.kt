@@ -19,7 +19,6 @@ package org.jetbrains.kotlin.script.jsr223
 import org.jetbrains.kotlin.cli.common.messages.MessageRenderer
 import org.jetbrains.kotlin.cli.common.messages.PrintingMessageCollector
 import org.jetbrains.kotlin.cli.common.repl.*
-import org.jetbrains.kotlin.cli.common.repl.experimental.ReplCompiler
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoots
 import org.jetbrains.kotlin.cli.jvm.config.addJvmSdkRoots
 import org.jetbrains.kotlin.cli.jvm.repl.GenericReplCompiler
@@ -45,10 +44,10 @@ class KotlinJsr223JvmLocalScriptEngine(
 ) : KotlinJsr223JvmScriptEngineBase(factory), KotlinJsr223JvmInvocableScriptEngine {
 
     override val replCompiler: ReplCompiler by lazy {
-       GenericReplCompiler(
-               makeScriptDefinition(templateClasspath, templateClassName),
-               makeCompilerConfiguration(),
-               PrintingMessageCollector(System.out, MessageRenderer.WITHOUT_PATHS, false))
+        GenericReplCompiler(
+                makeScriptDefinition(templateClasspath, templateClassName),
+                makeCompilerConfiguration(),
+                PrintingMessageCollector(System.out, MessageRenderer.WITHOUT_PATHS, false))
     }
     // TODO: bindings passing works only once on the first eval, subsequent setContext/setBindings call have no effect. Consider making it dynamic, but take history into account
     private val localEvaluator by lazy { GenericReplCompilingEvaluator(replCompiler, templateClasspath, Thread.currentThread().contextClassLoader, getScriptArgs(getContext(), scriptArgsTypes)) }

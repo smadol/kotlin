@@ -17,12 +17,10 @@
 package org.jetbrains.kotlin.daemon
 
 import com.intellij.openapi.Disposable
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.kotlin.cli.common.messages.*
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity.ERROR
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity.INFO
 import org.jetbrains.kotlin.cli.common.repl.*
-import org.jetbrains.kotlin.cli.common.repl.experimental.ReplCompiler
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoots
 import org.jetbrains.kotlin.cli.jvm.repl.GenericReplCompiler
 import org.jetbrains.kotlin.cli.jvm.repl.GenericReplCompilerState
@@ -44,13 +42,13 @@ import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 open class KotlinJvmReplService(
-    disposable: Disposable,
-    val portForServers: Int,
-    templateClasspath: List<File>,
-    templateClassName: String,
-    protected val messageCollector: MessageCollector,
-    @Deprecated("drop it")
-    protected val operationsTracer: RemoteOperationsTracer?
+        disposable: Disposable,
+        val portForServers: Int,
+        templateClasspath: List<File>,
+        templateClassName: String,
+        protected val messageCollector: MessageCollector,
+        @Deprecated("drop it")
+        protected val operationsTracer: RemoteOperationsTracer?
 ) : ReplCompileAction, ReplCheckAction, CreateReplStageStateAction {
 
     protected val configuration = CompilerConfiguration().apply {
@@ -58,7 +56,7 @@ open class KotlinJvmReplService(
         addJvmClasspathRoots(templateClasspath)
         put(CommonConfigurationKeys.MODULE_NAME, "kotlin-script")
         languageVersionSettings = LanguageVersionSettingsImpl(
-            LanguageVersion.LATEST_STABLE, ApiVersion.LATEST_STABLE, mapOf(AnalysisFlags.skipMetadataVersionCheck to true)
+                LanguageVersion.LATEST_STABLE, ApiVersion.LATEST_STABLE, mapOf(AnalysisFlags.skipMetadataVersionCheck to true)
         )
         configureScripting()
     }
@@ -69,14 +67,14 @@ open class KotlinJvmReplService(
         try {
             val cls = classloader.loadClass(templateClassName)
             val def = KotlinScriptDefinitionFromAnnotatedTemplate(cls.kotlin, emptyMap())
-            messageCollector.report(
-                INFO, "New script definition $templateClassName: files pattern = \"${def.scriptFilePattern}\", " +
-                        "resolver = ${def.dependencyResolver.javaClass.name}"
-            )
+            messageCollector.report(INFO, "New script definition $templateClassName: files pattern = \"${def.scriptFilePattern}\", " +
+                    "resolver = ${def.dependencyResolver.javaClass.name}")
             return def
-        } catch (ex: ClassNotFoundException) {
+        }
+        catch (ex: ClassNotFoundException) {
             messageCollector.report(ERROR, "Cannot find script definition template class $templateClassName")
-        } catch (ex: Exception) {
+        }
+        catch (ex: Exception) {
             messageCollector.report(ERROR, "Error processing script definition template $templateClassName: ${ex.message}")
         }
         return null
@@ -97,13 +95,14 @@ open class KotlinJvmReplService(
     protected val defaultStateFacade: RemoteReplStateFacadeServer by lazy { createRemoteState() }
 
     override fun createState(lock: ReentrantReadWriteLock): IReplStageState<*> =
-        runBlocking { replCompiler?.createState(lock) ?: throw IllegalStateException("repl compiler is not initialized properly") }
+            replCompiler?.createState(lock) ?: throw IllegalStateException("repl compiler is not initialized properly")
 
     override fun check(state: IReplStageState<*>, codeLine: ReplCodeLine): ReplCheckResult {
         operationsTracer?.before("check")
         try {
-            return runBlocking { replCompiler?.check(state, codeLine) ?: ReplCheckResult.Error("Initialization error") }
-        } finally {
+            return replCompiler?.check(state, codeLine) ?: ReplCheckResult.Error("Initialization error")
+        }
+        finally {
             operationsTracer?.after("check")
         }
     }
@@ -111,8 +110,9 @@ open class KotlinJvmReplService(
     override fun compile(state: IReplStageState<*>, codeLine: ReplCodeLine): ReplCompileResult {
         operationsTracer?.before("compile")
         try {
-            return runBlocking { replCompiler?.compile(state, codeLine) ?: ReplCompileResult.Error("Initialization error") }
-        } finally {
+            return replCompiler?.compile(state, codeLine) ?: ReplCompileResult.Error("Initialization error")
+        }
+        finally {
             operationsTracer?.after("compile")
         }
     }
@@ -124,13 +124,13 @@ open class KotlinJvmReplService(
     fun compile(codeLine: ReplCodeLine, verifyHistory: List<ReplCodeLine>?): ReplCompileResult = compile(defaultStateFacade.state, codeLine)
 
     fun createRemoteState(port: Int = portForServers): RemoteReplStateFacadeServer = statesLock.write {
-        val id = getValidId(stateIdCounter) { id -> states.none { it.key.getId() == id } }
+        val id = getValidId(stateIdCounter) { id -> states.none { it.key.getId() == id} }
         val stateFacade = RemoteReplStateFacadeServer(id, createState().asState(GenericReplCompilerState::class.java), port)
         states.put(stateFacade, true)
         stateFacade
     }
 
-    fun <R> withValidReplState(stateId: Int, body: (IReplStageState<*>) -> R): CompileService.CallResult<R> = statesLock.read {
+    fun<R> withValidReplState(stateId: Int, body: (IReplStageState<*>) -> R): CompileService.CallResult<R> = statesLock.read {
         states.keys.firstOrNull { it.getId() == stateId }?.let {
             CompileService.CallResult.Good(body(it.state))
         }
@@ -186,8 +186,8 @@ private fun CompilerConfiguration.configureScripting() {
     }
     if (error != null) {
         throw IllegalStateException(
-            "Unable to use scripting/REPL in the daemon, no kotlin-scripting-compiler.jar or its dependencies are found in the compiler classpath",
-            error
+                "Unable to use scripting/REPL in the daemon, no kotlin-scripting-compiler.jar or its dependencies are found in the compiler classpath",
+                error
         )
     }
 }

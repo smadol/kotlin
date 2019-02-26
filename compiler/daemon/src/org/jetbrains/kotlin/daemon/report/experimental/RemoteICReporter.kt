@@ -7,54 +7,167 @@ package org.jetbrains.kotlin.daemon.report.experimental
 
 import kotlinx.coroutines.*
 import org.jetbrains.kotlin.cli.common.ExitCode
-import org.jetbrains.kotlin.daemon.common.CompilationOptions
-import org.jetbrains.kotlin.daemon.common.CompilationResultsAsync
-import org.jetbrains.kotlin.daemon.common.CompilerServicesFacadeBaseAsync
-import org.jetbrains.kotlin.daemon.common.CompilationResultCategory
-import org.jetbrains.kotlin.daemon.common.ReportCategory
-import org.jetbrains.kotlin.daemon.common.ReportSeverity
-import org.jetbrains.kotlin.daemon.common.report
+import org.jetbrains.kotlin.daemon.common.*
 import org.jetbrains.kotlin.incremental.ICReporter
+import org.jetbrains.kotlin.incremental.ICReporterBase
 import java.io.File
 import java.io.Serializable
 
-internal class RemoteICReporterAsync(
-    private val servicesFacade: CompilerServicesFacadeBaseAsync,
-    private val compilationResults: CompilationResultsAsync?,
-    compilationOptions: CompilationOptions
-) : ICReporter {
-    private val shouldReportMessages = ReportCategory.IC_MESSAGE.code in compilationOptions.reportCategories
-    private val isVerbose = compilationOptions.reportSeverity == ReportSeverity.DEBUG.code
-    private val shouldReportCompileIteration =
-        CompilationResultCategory.IC_COMPILE_ITERATION.code in compilationOptions.requestedCompilationResults
+internal interface RemoteICReporterAsync: ICReporter {
+    fun flush()
+}
 
+internal class DebugMessagesICReporterAsync(
+        private val servicesFacade: CompilerServicesFacadeBaseAsync,
+        rootDir: File,
+        private val isVerbose: Boolean
+) : ICReporterBase(rootDir), RemoteICReporterAsync {
     override fun report(message: () -> String) {
         GlobalScope.async {
-            if (shouldReportMessages && isVerbose) {
-                servicesFacade.report(ReportCategory.IC_MESSAGE, ReportSeverity.DEBUG, message())
-            }
+            servicesFacade.report(
+                    ReportCategory.IC_MESSAGE,
+                    ReportSeverity.DEBUG, message()
+            )
         }
     }
 
-    override fun reportCompileIteration(sourceFiles: Collection<File>, exitCode: ExitCode) {
-        if (shouldReportCompileIteration) {
-            GlobalScope.async {
-                compilationResults?.add(
-                        CompilationResultCategory.IC_COMPILE_ITERATION.code,
-                        CompileIterationResult(sourceFiles, exitCode.toString())
-                )
-            }
+    override fun reportVerbose(message: () -> String) {
+        if (isVerbose) {
+            report(message)
+        }
+    }
+
+    override fun reportCompileIteration(incremental: Boolean, sourceFiles: Collection<File>, exitCode: ExitCode) {
+    }
+
+    override fun flush() {
+    }
+}
+
+internal class CompileIterationICReporterAsync(
+        private val compilationResults: CompilationResultsAsync?
+) : ICReporterBase(), RemoteICReporterAsync {
+    override fun reportCompileIteration(incremental: Boolean, sourceFiles: Collection<File>, exitCode: ExitCode) {
+        GlobalScope.async {
+            compilationResults?.add(
+                    CompilationResultCategory.IC_COMPILE_ITERATION.code,
+                    CompileIterationResult(sourceFiles, exitCode.toString())
+            )
+        }
+    }
+
+    override fun report(message: () -> String) {
+    }
+
+    override fun reportVerbose(message: () -> String) {
+    }
+
+    override fun flush() {
+    }
+}
+
+internal class BuildReportICReporterAsync(
+        private val compilationResults: CompilationResultsAsync?,
+        rootDir: File,
+        private val isVerbose: Boolean = false
+) : ICReporterBase(rootDir), RemoteICReporterAsync {
+    private val icLogLines = arrayListOf<String>()
+    private val recompilationReason = HashMap<File, String>()
+
+    override fun report(message: () -> String) {
+        icLogLines.add(message())
+    }
+
+    override fun reportVerbose(message: () -> String) {
+        if (isVerbose) {
+            report(message)
+        }
+    }
+
+    override fun reportCompileIteration(incremental: Boolean, sourceFiles: Collection<File>, exitCode: ExitCode) {
+        if (!incremental) return
+
+        icLogLines.add("Compile iteration:")
+        for (file in sourceFiles) {
+            val reason = recompilationReason[file]?.let { " <- $it" } ?: ""
+            icLogLines.add("  ${file.relativeOrCanonical()}$reason")
+        }
+        recompilationReason.clear()
+    }
+
+    override fun reportMarkDirty(affectedFiles: Iterable<File>, reason: String) {
+        affectedFiles.forEach { recompilationReason[it] = reason }
+    }
+
+    override fun flush() {
+        GlobalScope.async {
+            compilationResults?.add(CompilationResultCategory.BUILD_REPORT_LINES.code, icLogLines)
         }
     }
 }
 
-class CompileIterationResult(
-    @Suppress("unused") // used in Gradle
-    val sourceFiles: Iterable<File>,
-    @Suppress("unused") // used in Gradle
-    val exitCode: String
-) : Serializable {
-    companion object {
-        const val serialVersionUID: Long = 0
+internal class CompositeICReporterAsync(private val reporters: Iterable<RemoteICReporterAsync>) :
+        RemoteICReporterAsync {
+    override fun report(message: () -> String) {
+        reporters.forEach { it.report(message) }
     }
+
+    override fun reportVerbose(message: () -> String) {
+        reporters.forEach { it.reportVerbose(message) }
+    }
+
+    override fun reportCompileIteration(incremental: Boolean, sourceFiles: Collection<File>, exitCode: ExitCode) {
+        reporters.forEach { it.reportCompileIteration(incremental, sourceFiles, exitCode) }
+    }
+
+    override fun reportMarkDirtyClass(affectedFiles: Iterable<File>, classFqName: String) {
+        reporters.forEach { it.reportMarkDirtyClass(affectedFiles, classFqName) }
+    }
+
+    override fun reportMarkDirtyMember(affectedFiles: Iterable<File>, scope: String, name: String) {
+        reporters.forEach { it.reportMarkDirtyMember(affectedFiles, scope, name) }
+    }
+
+    override fun reportMarkDirty(affectedFiles: Iterable<File>, reason: String) {
+        reporters.forEach { it.reportMarkDirty(affectedFiles, reason) }
+    }
+
+    override fun flush() {
+        reporters.forEach { it.flush() }
+    }
+}
+
+internal fun getICReporterAsync(
+        servicesFacade: CompilerServicesFacadeBaseAsync,
+        compilationResults: CompilationResultsAsync?,
+        compilationOptions: IncrementalCompilationOptions
+): RemoteICReporterAsync {
+    val root = compilationOptions.modulesInfo.projectRoot
+    val reporters = ArrayList<RemoteICReporterAsync>()
+
+    if (ReportCategory.IC_MESSAGE.code in compilationOptions.reportCategories) {
+        val isVerbose = compilationOptions.reportSeverity == ReportSeverity.DEBUG.code
+        reporters.add(DebugMessagesICReporterAsync(servicesFacade, root, isVerbose = isVerbose))
+    }
+
+    val requestedResults = compilationOptions
+            .requestedCompilationResults
+            .mapNotNullTo(HashSet()) { resultCode ->
+                CompilationResultCategory.values().getOrNull(resultCode)
+            }
+    requestedResults.mapTo(reporters) { requestedResult ->
+        when (requestedResult) {
+            CompilationResultCategory.IC_COMPILE_ITERATION -> {
+                CompileIterationICReporterAsync(compilationResults)
+            }
+            CompilationResultCategory.BUILD_REPORT_LINES -> {
+                BuildReportICReporterAsync(compilationResults, root)
+            }
+            CompilationResultCategory.VERBOSE_BUILD_REPORT_LINES -> {
+                BuildReportICReporterAsync(compilationResults, root, isVerbose = true)
+            }
+        }
+    }
+
+    return CompositeICReporterAsync(reporters)
 }
