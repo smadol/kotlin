@@ -1174,10 +1174,13 @@ class NewMultiplatformIT : BaseGradleIT() {
     fun testPublishMultimoduleProjectWithMetadata() = doTestPublishMultimoduleProject(withMetadata = true)
 
     private fun doTestPublishMultimoduleProject(withMetadata: Boolean) {
-        val libProject = Project("sample-lib", gradleVersion, "new-mpp-lib-and-app").apply {
+        val libProject = Project("sample-lib", gradleVersion, "new-mpp-lib-and-app")
+        libProject.setupWorkingDir()
+
+        val externalLibProject = Project("sample-external-lib", gradleVersion, "new-mpp-lib-and-app").apply {
             if (withMetadata) {
                 setupWorkingDir()
-                // Make another publication that will be consumed as a module with metadata, see a similar conditional block below:
+                // Publish it into local repository where of lib:
                 projectDir.resolve("settings.gradle").writeText("rootProject.name = 'external'; enableFeaturePreview 'GRADLE_METADATA'")
                 gradleBuildScript().appendText(
                     "\n" + """
@@ -1185,7 +1188,7 @@ class NewMultiplatformIT : BaseGradleIT() {
                     version = "1.2.3"
                     publishing {
                         repositories {
-                            maven { url "file://${'$'}{rootProject.projectDir.absolutePath.replace('\\', '/')}/repo" }
+                            maven { url "file://${'$'}{rootProject.projectDir.absolutePath.replace('\\', '/')}/../sample-lib/repo" }
                         }
                     }
                     """.trimIndent()
@@ -1196,6 +1199,7 @@ class NewMultiplatformIT : BaseGradleIT() {
                 }
             }
         }
+
         val appProject = Project("sample-app", gradleVersion, "new-mpp-lib-and-app")
 
         with(libProject) {
