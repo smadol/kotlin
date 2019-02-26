@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.metadata.ProtoBuf
 import org.jetbrains.kotlin.metadata.deserialization.*
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.protobuf.ExtensionRegistryLite
+import org.jetbrains.kotlin.resolve.DescriptorUtils
 import org.jetbrains.kotlin.resolve.constants.ConstantValue
 import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedContainerSource
 import org.jetbrains.kotlin.storage.StorageManager
@@ -80,7 +81,8 @@ class DeserializationContext(
 ) {
     val typeDeserializer: TypeDeserializer = TypeDeserializer(
         this, parentTypeDeserializer, typeParameters,
-        "Deserializer for ${containingDeclaration.name}"
+        "Deserializer for \"${containingDeclaration.name}\"",
+        createPresentableContainerStringForError()
     )
 
     val memberDeserializer: MemberDeserializer = MemberDeserializer(this)
@@ -100,4 +102,12 @@ class DeserializationContext(
         metadataVersion, this.containerSource,
         parentTypeDeserializer = this.typeDeserializer, typeParameters = typeParameterProtos
     )
+
+    private fun createPresentableContainerStringForError(): String {
+        val moduleName = DescriptorUtils.getContainingModuleOrNull(containingDeclaration)?.name?.asString()
+        val containerString = containerSource?.presentableString
+        if (moduleName == null && containerString == null) return "[module not found]"
+
+        return listOfNotNull(moduleName, containerString).joinToString()
+    }
 }
