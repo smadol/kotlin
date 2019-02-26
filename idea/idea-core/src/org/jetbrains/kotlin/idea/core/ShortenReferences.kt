@@ -59,6 +59,30 @@ class ShortenReferences(val options: (KtElement) -> Options = { Options.DEFAULT 
 
         val RETAIN_COMPANION = ShortenReferences { Options(removeExplicitCompanion = false) }
 
+        fun canBePossibleToDropReceiver(element: KtDotQualifiedExpression, bindingContext: BindingContext): Boolean {
+            val receiver = element.receiverExpression
+            val nameRef = when (receiver) {
+                is KtThisExpression -> return true
+                is KtNameReferenceExpression -> receiver
+                is KtDotQualifiedExpression -> receiver.selectorExpression as? KtNameReferenceExpression ?: return false
+                else -> return false
+            }
+            val targetDescriptor = bindingContext[BindingContext.REFERENCE_TARGET, nameRef]
+            when (targetDescriptor) {
+                is ClassDescriptor -> {
+                    if (targetDescriptor.kind != ClassKind.OBJECT) return true
+                    // for object receiver we should additionally check that it's dispatch receiver (that is the member is inside the object) or not a receiver at all
+                    val resolvedCall = element.getResolvedCall(bindingContext) ?: return false
+                    val receiverKind = resolvedCall.explicitReceiverKind
+                    return receiverKind == ExplicitReceiverKind.DISPATCH_RECEIVER || receiverKind == ExplicitReceiverKind.NO_EXPLICIT_RECEIVER
+                }
+
+                is PackageViewDescriptor -> return true
+
+                else -> return false
+            }
+        }
+
         private fun DeclarationDescriptor.asString() = DescriptorRenderer.FQ_NAMES_IN_TYPES.render(this)
 
         private fun KtReferenceExpression.targets(context: BindingContext) = getImportableTargets(context)
@@ -533,30 +557,6 @@ class ShortenReferences(val options: (KtElement) -> Options = { Options.DEFAULT 
 
                 else ->
                     AnalyzeQualifiedElementResult.ImportDescriptors(targets)
-            }
-        }
-
-        private fun canBePossibleToDropReceiver(element: KtDotQualifiedExpression, bindingContext: BindingContext): Boolean {
-            val receiver = element.receiverExpression
-            val nameRef = when (receiver) {
-                is KtThisExpression -> return true
-                is KtNameReferenceExpression -> receiver
-                is KtDotQualifiedExpression -> receiver.selectorExpression as? KtNameReferenceExpression ?: return false
-                else -> return false
-            }
-            val targetDescriptor = bindingContext[BindingContext.REFERENCE_TARGET, nameRef]
-            when (targetDescriptor) {
-                is ClassDescriptor -> {
-                    if (targetDescriptor.kind != ClassKind.OBJECT) return true
-                    // for object receiver we should additionally check that it's dispatch receiver (that is the member is inside the object) or not a receiver at all
-                    val resolvedCall = element.getResolvedCall(bindingContext) ?: return false
-                    val receiverKind = resolvedCall.explicitReceiverKind
-                    return receiverKind == ExplicitReceiverKind.DISPATCH_RECEIVER || receiverKind == ExplicitReceiverKind.NO_EXPLICIT_RECEIVER
-                }
-
-                is PackageViewDescriptor -> return true
-
-                else -> return false
             }
         }
 
